@@ -41,3 +41,12 @@
 - The current API key schema has only `id`, `name`, `secret`, `createdBy`, and timestamps; it has no scopes, expiry, or revocation-state field. Workspace memberships exist for user sessions, but the inspected API-key chat/model routes do not use those memberships to restrict a key to a workspace.
 - No broad authorization rewrite was made because current API keys may be shared application-level credentials and a rushed change could lock out existing deployments. The next safe code change requires defining service-key vs user-key semantics and adding regression tests for admin authorization and workspace isolation.
 - Status remains **not production signed off**: static inspection only; no tests, lint, build, runtime, or deployment verification has been run here.
+
+
+## Privileged API authorization hardening — 2026-10-16
+
+- Added `server/utils/middleware/apiKeyOwnerIsAdmin.js`: it requires the authenticated API key to have a `createdBy` user who still exists, has role `admin`, and is not suspended. Missing owners and authorization lookup failures fail closed; no bearer secret is logged.
+- Applied this middleware after `validApiKey` to all routes in `server/endpoints/api/admin/index.js` and to `GET /v1/users`, in addition to the earlier Simple SSO token issuance check.
+- Compatibility note: unowned/legacy keys and keys created by non-admin users will receive HTTP 403 on these privileged routes. Create an API key while signed in as an active administrator to use them.
+- This narrows the administrative API exposure but does **not** implement workspace-scoped credentials, per-client quotas, or normalized usage accounting. API-key and tenant isolation remain incomplete.
+- Static code edits only; tests, lint, build, and runtime/deployment verification have not been run in this session.
