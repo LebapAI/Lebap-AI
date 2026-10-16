@@ -217,6 +217,23 @@ describe("validApiKey middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  test("rejects a credential with an invalid stored expiry", async () => {
+    ApiKey.getForAuthentication.mockResolvedValue({
+      id: 16,
+      createdBy: 7,
+      revokedAt: null,
+      expiresAt: "not-a-date",
+    });
+    const request = makeRequest("Bearer malformed-expiry-secret");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(response.json).toHaveBeenCalledWith({ error: "No valid api key found." });
+    expect(next).not.toHaveBeenCalled();
+  });
+
   test("treats an empty stored scope as restricted rather than unrestricted", async () => {
     ApiKey.getForAuthentication.mockResolvedValue({
       id: 15,
