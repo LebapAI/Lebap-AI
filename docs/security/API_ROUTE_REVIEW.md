@@ -119,3 +119,15 @@ The route `GET /v1/users/:id/issue-auth-token` was updated to require a key whos
 - Commits: `d85c20830eb2d5e1f54a1a467aeec0147aa81bf0`, `c9f8181ec6314b2de62f1069309abf4c09ec71a8`, and `0f0f2a9570c8e79aea38f5ea6bf283e0d423fb55`.
 - Compatibility impact: broad interim admin-only policy can block non-admin integrations, including legitimate external agents. Do not weaken this to key-only access until least-privilege credential scopes, workspace authorization, usage limits, and tests are implemented.
 - Static source verification only. Automated tests, lint, build, runtime API checks, provider-call tests, and deployment checks remain unexecuted.
+
+
+## API key management implementation follow-up — 2026-10-16
+
+The developer API now registers `server/endpoints/api/apiKeys/index.js` with these administrator-guarded routes:
+
+- `GET /v1/admin/api-keys` lists metadata only; the raw secret is excluded.
+- `POST /v1/admin/api-keys` creates a key for the active administrator who owns the presented API key. The new secret is returned only once in the creation response.
+- `DELETE /v1/admin/api-keys/:id` revokes a key after validating the ID and existence; the credential used for the current request cannot revoke itself.
+- Creation/revocation attempts are recorded through the existing event log. Audit-write failure is best-effort so a successful credential mutation is not reported as an ambiguous failure.
+
+A Jest test file was added for route guard registration, secret redaction, name validation, creation, self-revocation prevention, and revocation auditing. These tests have **not** been run. The feature does not add expiration, scopes, tenant/workspace binding, hashing-at-rest, usage accounting, or quotas. Do not treat this incremental change as production-ready credential governance.
