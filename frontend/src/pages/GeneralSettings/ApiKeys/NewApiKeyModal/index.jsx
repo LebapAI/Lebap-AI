@@ -142,8 +142,8 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
                       <input
                         type="checkbox"
                         checked={selectedWorkspaceSlugs.includes(
-                        workspace.slug
-                      )}
+                          workspace.slug
+                        )}
                         onChange={() => toggleWorkspace(workspace.slug)}
                         className="mt-1 accent-blue-500"
                       />
