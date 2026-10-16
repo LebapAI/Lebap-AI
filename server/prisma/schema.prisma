@@ -18,7 +18,8 @@ datasource db {
 model api_keys {
   id            Int      @id @default(autoincrement())
   name          String?
-  secret        String?  @unique
+  secret        String?  @unique // Legacy raw secrets; new credentials use secretHash.
+  secretHash    String?  @unique
   createdBy     Int?
   expiresAt     DateTime?
   revokedAt     DateTime?
