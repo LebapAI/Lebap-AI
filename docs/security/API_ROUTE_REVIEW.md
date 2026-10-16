@@ -172,8 +172,7 @@ A defensive edge case was found in expiry enforcement: a non-null expiry value t
 
 
 ## Business analytics route — 2026-10-16
-
-- Added `GET /v1/admin/business-analytics` in `server/endpoints/api/analytics/index.js`.
-- The route is registered in the developer API router and declares `[validApiKey, apiKeyOwnerIsAdmin]` middleware.
-- Date input is validated and limited to 366 days. The response aggregates usage ledger rows only; revenue/profit are explicitly null until billing and operating costs are integrated.
-- Unit tests were added for route middleware, date validation, aggregation shape, and unavailable schema handling, but have not been executed. Runtime authorization, Prisma migration/client compatibility, and frontend integration remain unverified.
+- Added `GET /admin/business-analytics` in `server/endpoints/api/analytics/index.js`, registered through `server/endpoints/admin.js` alongside the session-authenticated admin endpoints.
+- The route uses `validatedRequest` and `flexUserRoleValid([ROLES.admin])`, matching the browser session token used by the admin UI and supporting single-user and multi-user modes. It is intentionally not mounted in the developer API-key router.
+- Date ranges are validated and capped at 366 days; daily usage trends are aggregated in SQLite with bound query parameters. Revenue/profit remain unavailable until billing and operating-cost sources are integrated.
+- Tests and runtime checks remain unexecuted; this is source-level documentation, not proof of successful runtime authorization.
