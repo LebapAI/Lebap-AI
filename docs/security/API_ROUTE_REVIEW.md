@@ -93,3 +93,12 @@ The route `GET /v1/users/:id/issue-auth-token` was updated to require a key whos
 - Compatibility impact is intentional: legacy keys with no owner and keys owned by non-admins cannot call these privileged routes. Use an API key created by an active administrator.
 - Static source verification confirms the admin module has no remaining route middleware declaration consisting only of `[validApiKey]`. This is not a runtime test.
 - Still unresolved: workspace-level authorization for ordinary API keys, API-key scopes/expiry/revocation, per-key rate/concurrency/spend quotas, and normalized usage accounting. Do not enable untrusted multi-tenant customers until these are implemented and tested.
+
+
+## Sensitive system operations — targeted authorization hardening
+
+- Commit `8eb527b34d36d4bc1a2654bbf12703fca2ae253f` adds the shared `apiKeyOwnerIsAdmin` middleware to `POST /v1/system/update-env`, `GET /v1/system/export-chats`, and `DELETE /v1/system/remove-documents`.
+- These routes can change system configuration, export system-wide chat data, or permanently delete documents. They now require an API key associated with an active administrator, in addition to a valid bearer key.
+- This is a targeted change; other system routes and all other API groups still require a complete route-by-route authorization audit.
+- Compatibility note: unowned legacy keys and keys owned by non-admin users will receive 403 for these three routes. Create an administrator-owned key for authorized automation.
+- Source-level verification only; automated tests, lint, build, and runtime behavior have not been run.
