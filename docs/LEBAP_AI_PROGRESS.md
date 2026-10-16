@@ -265,3 +265,12 @@ Started the first implementation layer for durable API usage accounting:
 - Added unit tests for required fields, secret/prompt exclusion, non-negative usage values, explicit cost provenance, and duplicate-finalization behavior.
 - Commits: `b97c285433c2b369bc16d94030b4e2412cf25137` (schema), `142feab9145b4169143a70bb0cbd4bc75d8a1aaa` (migration), `3b8575589524e03fab9e4645bd17182f7b281ab1` (model), `6ed0216580f2cdbba783f649f405958c537e406d` (tests).
 - This is a storage foundation only: no API routes are wired to it yet, so usage is not being collected and no quotas/rate/spend limits are enforced. Migration and Prisma Client generation remain unapplied; tests/build/lint are unexecuted.
+
+
+## 2026-10-16 — API usage capture integration
+
+- Added an observe-only metering hook to `POST /v1/openai/chat/completions`, guarded by `ENABLE_API_USAGE_METERING=true` (default off).
+- Records start, status, latency, workspace/key metadata, and recognized token counters for non-streaming responses; streaming records latency/status but token counts remain unknown at route level.
+- Usage ledger failures do not block chat; prompts and raw provider errors are not written to the ledger. This is not quota/rate/spend enforcement.
+- Commit: `b817f694693e4ceb907fa36c4e8d1e03fefc76e9`.
+- Migration and Prisma Client generation remain outstanding. Tests, lint, build, and runtime checks have not been run. Keep the flag disabled until migration is applied and verified.
