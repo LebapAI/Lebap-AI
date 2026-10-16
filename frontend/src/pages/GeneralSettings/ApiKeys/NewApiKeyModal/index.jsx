@@ -19,6 +19,7 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
   const { t } = useTranslation();
   const [apiKey, setApiKey] = useState(null);
   const [name, setName] = useState("");
+  const [expiresInDays, setExpiresInDays] = useState("90");
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
   const [workspaces, setWorkspaces] = useState([]);
@@ -71,6 +72,7 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
     const { apiKey: newApiKey, error } = await Model.generateApiKey({
       name,
       workspaceSlugs: selectedWorkspaceSlugs,
+      expiresInDays: expiresInDays === "never" ? null : Number(expiresInDays),
     });
     if (!!newApiKey) {
       setApiKey(newApiKey);
@@ -114,6 +116,28 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
               placeholder={t("api.modal.name.placeholder")}
               hint={t("api.modal.name.helper")}
             />
+            <div className="flex flex-col gap-y-2">
+              <label
+                htmlFor="api-key-expiry"
+                className="text-sm font-semibold text-theme-text-primary"
+              >
+                Key expiration
+              </label>
+              <select
+                id="api-key-expiry"
+                value={expiresInDays}
+                onChange={(e) => setExpiresInDays(e.target.value)}
+                className="border border-white/10 bg-theme-bg-secondary text-theme-text-primary text-sm rounded-lg outline-none block w-full p-2.5"
+              >
+                <option value="30">30 days</option>
+                <option value="90">90 days (recommended)</option>
+                <option value="365">365 days</option>
+                <option value="never">Never expires</option>
+              </select>
+              <p className="text-xs text-theme-text-secondary">
+                Short-lived keys reduce the impact of leaked credentials.
+              </p>
+            </div>
             <div className="flex flex-col gap-y-2">
               <div>
                 <p className="text-sm font-semibold text-theme-text-primary">
