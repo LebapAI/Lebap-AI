@@ -133,7 +133,7 @@ function apiOpenAICompatibleEndpoints(app) {
         const workspace = await Workspace.get({ slug: model.trim() });
         if (!workspace) return response.status(401).end();
 
-        const userMessage = messages.pop();
+        const userMessage = messages[messages.length - 1];
         if (userMessage?.role !== "user") {
           return response.status(400).json({
             id: uuidv4(),
