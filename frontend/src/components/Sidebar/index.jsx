@@ -55,7 +55,10 @@ export default function Sidebar() {
                   className="h-10 w-10 shrink-0 object-contain"
                 />
                 <span className="whitespace-nowrap text-[21px] font-bold tracking-tight text-white">
-                  Lebap <span className="bg-gradient-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent">AI</span>
+                  Lebap{" "}
+                  <span className="bg-gradient-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent">
+                    AI
+                  </span>
                 </span>
               </Link>
             </div>
@@ -126,9 +129,17 @@ export function SidebarMobileHeader() {
         </button>
         <div className="flex items-center justify-center flex-grow">
           <div className="flex items-center justify-center gap-2">
-            <img src="/lebap-ai-logo.svg" alt="" aria-hidden="true" className="h-9 w-9 object-contain" />
+            <img
+              src="/lebap-ai-logo.svg"
+              alt=""
+              aria-hidden="true"
+              className="h-9 w-9 object-contain"
+            />
             <span className="text-lg font-bold tracking-tight text-white">
-              Lebap <span className="bg-gradient-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent">AI</span>
+              Lebap{" "}
+              <span className="bg-gradient-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent">
+                AI
+              </span>
             </span>
           </div>
         </div>
@@ -157,8 +168,8 @@ export function SidebarMobileHeader() {
             <div className="flex w-full items-center justify-between gap-x-4">
               <div className="flex shrink-1 w-fit items-center justify-start">
                 <img
-                  src={logo}
-                  alt="Logo"
+                  src="/lebap-ai-logo.svg"
+                  alt="Lebap AI"
                   className="rounded w-full max-h-[40px]"
                   style={{ objectFit: "contain" }}
                 />
