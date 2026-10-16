@@ -44,7 +44,43 @@ function extractAttachments(content) {
     }));
 }
 
+/**
+ * Normalize OpenAI-compatible embedding input and reject malformed payloads
+ * before calling the configured embedding provider.
+ * @param {unknown} value
+ * @returns {{input: string[] | null, error: string | null}}
+ */
+function normalizeEmbeddingInput(value) {
+  if (typeof value === "string") {
+    if (value.trim().length === 0) {
+      return { input: null, error: "Embedding input must be a non-empty string." };
+    }
+    return { input: [value], error: null };
+  }
+
+  if (!Array.isArray(value) || value.length === 0) {
+    return {
+      input: null,
+      error: "Embedding input must be a string or a non-empty array of strings.",
+    };
+  }
+
+  if (
+    !value.every(
+      (item) => typeof item === "string" && item.trim().length > 0
+    )
+  ) {
+    return {
+      input: null,
+      error: "Every embedding input must be a non-empty string.",
+    };
+  }
+
+  return { input: value, error: null };
+}
+
 module.exports = {
   extractTextContent,
   extractAttachments,
+  normalizeEmbeddingInput,
 };
