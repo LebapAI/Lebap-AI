@@ -71,3 +71,7 @@ In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` had a produ
 - This does **not** establish whether parent middleware or other runtime controls add protection; those paths remain to be inspected. It does establish that tenant authorization is not visible in the reviewed endpoint implementation.
 - Do not add an ownership restriction based only on `createdBy` until legacy-key behavior, key-creation semantics, and admin/service-key expectations are confirmed. A rushed filter could break existing installations or grant misleading partial isolation.
 - Next implementation gate: trace where API keys are created/deleted and how workspace permissions are enforced; then add explicit credential scope/tenant authorization plus regression tests before enabling third-party tenants.
+
+## Remediation status — Simple SSO token issuance
+
+The route `GET /v1/users/:id/issue-auth-token` was updated to require a key whose `createdBy` user is an active administrator. The API-key middleware attaches only non-secret metadata (`id`, `createdBy`, `name`) to `response.locals.apiKey`. This is a targeted fix, not a global authorization solution. Verify API-key lifecycle compatibility and run automated tests before production use. Commits `230bd6340cd7e208bfa2b5d5509741d9f51ed3f3` and `4eedcbe09b1e5c60750a28df0d6b15497d3ddade`.
