@@ -48,7 +48,9 @@ export default function ApiKeyRow({ apiKey, removeApiKey }) {
               ? `Expires ${moment(apiKey.expiresAt).format("lll")}`
               : "No expiry set"}
           </span>
-          <span className="text-theme-text-secondary">Secret hidden after creation</span>
+          <span className="text-theme-text-secondary">
+            Secret hidden after creation
+          </span>
         </div>
       </td>
       <td className="px-6 py-3 text-left align-middle">
