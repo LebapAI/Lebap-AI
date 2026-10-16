@@ -9,28 +9,36 @@ Last updated: 2026-10-16
 - Do not merge into or overwrite `main` without an explicit review and authorization.
 
 ## Confirmed project state
-- The upstream AnythingLLM source/history was transferred to `migration/anythingllm-upstream`.
-- `lebap-ai/development` is the working branch for Lebap AI changes.
-- The implementation roadmap exists at `docs/LEBAP_AI_IMPLEMENTATION_PLAN.md`.
-- API Hub architecture notes exist at `docs/architecture/API_HUB.md`.
-- API-key middleware requires an explicit `Authorization: Bearer <key>` header and avoids logging/echoing supplied credentials.
-- This work is based on GitHub file reads; no local build or test execution was available in this session.
+- Upstream AnythingLLM source/history is preserved in `migration/anythingllm-upstream`.
+- Development work is on `lebap-ai/development`.
+- Roadmap: `docs/LEBAP_AI_IMPLEMENTATION_PLAN.md`.
+- API Hub architecture: `docs/architecture/API_HUB.md`.
+- Progress tracking: this file.
+- Middleware requires an explicit `Authorization: Bearer <key>` header.
 
-## Work recorded in this session
-- Added `server/utils/middleware/validApiKey.test.js` in commit `62d90bce091850554e0bbf835449bb0133693576`.
-- Tests cover missing/malformed authorization headers, unknown keys, valid Bearer credentials, case-insensitive Bearer scheme, and failure to read multi-user settings.
-- **The new tests have not been executed. Do not treat them as passing.**
+## Tests added
+- `server/utils/middleware/validApiKey.test.js` was added in commit `62d90bce091850554e0bbf835449bb0133693576`.
+- It covers missing/malformed authorization headers, valid and unknown keys, case-insensitive Bearer scheme, and settings-read failure.
+- Root `package.json` defines `test: jest`; Jest's default test discovery includes files named `*.test.js`. No Jest config was found at repository root in the inspected paths.
+- **Tests have not been executed in this environment. Do not report them as passing.**
 
-## Known caveat
-- `server/models/apiKeys.js` catches database lookup exceptions and returns `null`. As a result, a database lookup failure can currently be reported by the middleware as HTTP 403 (invalid key), rather than HTTP 500 (authentication service unavailable). Assess the impact and implement a compatible fail-closed error path with tests before relying on this distinction operationally.
-- Check the new test file against the repository's Jest and ESLint conventions. Root `package.json` has a `test: jest` script; the server package does not define a test script.
+## Security caveat requiring follow-up
+- `server/models/apiKeys.js` currently catches database lookup exceptions in `ApiKey.get()` and returns `null`.
+- The middleware therefore cannot distinguish an invalid key from a failed API-key database lookup; both can become HTTP 403.
+- A proposed compatibility-preserving fix is to add a separate strict lookup method for authentication that allows database errors to propagate, use that method only in `validApiKey`, and add a test for database lookup failure. The existing `get()` behavior should remain unchanged for other callers.
+- An attempt to commit this code change was blocked by the GitHub write tool; no change to `server/models/apiKeys.js` was made.
+
+## Latest verified inspection
+- Branch list includes `lebap-ai/development`, `main`, and `migration/anythingllm-upstream`.
+- Read current versions of `server/utils/middleware/validApiKey.js`, `server/utils/middleware/validApiKey.test.js`, `server/models/apiKeys.js`, root `package.json`, `server/package.json`, and `server/eslint.config.mjs`.
+- No local build, Jest run, or lint run was performed; this session had GitHub file access but no configured checkout execution path.
 
 ## Exact next actions
-1. Inspect existing Jest configuration/test conventions and confirm the new test file is discovered by the root Jest command.
-2. Run focused tests and lint if an execution environment is available; record exact commands and outcomes. If not, state that they remain unverified.
-3. Resolve the API-key lookup error-handling caveat safely, adding tests without changing valid authentication behavior.
-4. Continue reviewing the API routes and data model before adding usage accounting, quotas, tenant isolation, or schema migrations.
-5. Update this progress file after each substantial completed task with commit references and verified results.
+1. Apply the strict authentication lookup fix in `server/models/apiKeys.js` and `validApiKey.js`, preserving the existing `ApiKey.get()` contract for all other call sites.
+2. Extend middleware tests to cover a rejected strict database lookup and ensure the middleware returns HTTP 500 without exposing the exception or credential.
+3. Check formatting against the server ESLint/Prettier configuration.
+4. Run focused tests and lint from a real checkout when an execution environment is available; record exact command output.
+5. Only after this authentication work is verified, review API routes and Prisma schema for request usage tracking and quotas. Do not add schema migrations before that review.
 
 ## Release status
-Lebap AI is under active development. The security middleware change and its newly added tests are not yet verified by an executed test run. No production-readiness claim is made.
+In development. Authentication tests exist but are unexecuted; the strict database-error path is not yet implemented. No production-readiness claim is made.
