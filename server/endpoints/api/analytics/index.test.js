@@ -1,4 +1,5 @@
 jest.mock("../../../utils/prisma", () => ({
+  $queryRawUnsafe: jest.fn(),
   api_usage_events: {
     aggregate: jest.fn(),
     groupBy: jest.fn(),
