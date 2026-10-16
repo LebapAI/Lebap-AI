@@ -13,7 +13,7 @@ const {
   OpenAICompatibleChat,
 } = require("../../../utils/chats/openaiCompatible");
 const { getModelTag } = require("../../utils");
-const { extractTextContent, extractAttachments } = require("./helpers");
+const { extractTextContent, extractAttachments, normalizeEmbeddingInput } = require("./helpers");
 const { handleImageGenUpload } = require("../../../utils/files/multer");
 
 function isWorkspaceAllowed(response, workspaceSlug) {
@@ -469,17 +469,17 @@ function apiOpenAICompatibleEndpoints(app) {
         const body = reqBody(request);
         // Support input or "inputs" (for backwards compatibility) as an array of strings or a single string
         // TODO: "inputs" key support will eventually be fully removed.
-        let input = body?.input || body?.inputs || [];
-        // if input is not an array, make it an array and force to string content
-        if (!Array.isArray(input)) input = [String(input)];
-
-        if (Array.isArray(input)) {
-          if (input.length === 0)
-            throw new Error("Input array cannot be empty.");
-          const validArray = input.every((text) => typeof text === "string");
-          if (!validArray)
-            throw new Error("All inputs to be embedded must be strings.");
+        const rawInput = body?.input ?? body?.inputs;
+        const normalizedInput = normalizeEmbeddingInput(rawInput);
+        if (normalizedInput.error) {
+          return response.status(400).json({
+            error: {
+              message: normalizedInput.error,
+              type: "invalid_request_error",
+            },
+          });
         }
+        const input = normalizedInput.input;
 
         const Embedder = getEmbeddingEngineSelection();
         usageEvent = await startUsageSafely({
