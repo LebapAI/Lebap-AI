@@ -284,3 +284,13 @@ Started the first implementation layer for durable API usage accounting:
 
 
 - Follow-up: added best-effort detection of client disconnects so open chat usage events can finalize as `aborted` rather than being marked completed; ordinary exceptions are recorded as failed. Commit: `fd8080ffa4979ae5995a6e1f5888a0cd0255b85e`. Runtime behavior is unverified.
+
+
+## 2026-10-16 — Business analytics first implementation
+
+- Added administrator-only `GET /v1/admin/business-analytics`, protected by `validApiKey` and `apiKeyOwnerIsAdmin`.
+- Added `frontend/src/pages/Admin/BusinessAnalytics/index.jsx`, registered `/settings/business-analytics`, and added an admin-only Settings navigation item.
+- Dashboard metrics include recorded API requests, completion/failure/abort status, completion rate, token counts, average latency, top models/providers, total users/active users, workspaces, API keys, and known-cost coverage.
+- Added date range validation (maximum 366 days) and backend tests for authorization middleware, invalid ranges, aggregate response, and safe failure when the migration/client is unavailable.
+- Revenue and profit are explicitly unavailable until billing and operating costs are integrated. Cost coverage is reported; unknown cost is never displayed as zero.
+- Usage collection still defaults off and currently captures OpenAI-compatible chat completion only. Migration and Prisma Client generation are pending; Jest, lint, frontend build, and runtime checks have not been executed.
