@@ -31,6 +31,7 @@ const {
 const {
   workspaceDeletionProtection,
 } = require("../utils/middleware/workspaceDeletionProtection");
+const { businessAnalyticsEndpoints } = require("./api/analytics");
 
 function adminEndpoints(app) {
   if (!app) return;
