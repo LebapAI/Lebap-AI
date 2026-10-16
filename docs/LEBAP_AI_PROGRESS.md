@@ -66,3 +66,12 @@
 - A broader validation rewrite was not applied because the update operation was blocked; no claims are made that malformed message objects are fully validated.
 - Workspace-level authorization, API-key lifecycle fields, quota/usage tracking, and automated tests remain open. No test/build/runtime verification has been run.
 
+
+
+## Product rebrand — 2026-10-16
+
+- Updated the root README's user-facing product branding to Lebap AI and removed the upstream AnythingLLM logo image from the README header.
+- Updated root package metadata (name, description, author, repository, issues, homepage) to identify this repository/product as Lebap AI; preserved existing scripts, dependency metadata, and package configuration.
+- Updated server package metadata to Lebap AI.
+- This is a scoped first pass, not a claim that every occurrence across frontend, desktop, Docker, translations, and internal compatibility identifiers has been changed. Those areas still require a repository-wide inventory and compatibility review.
+- No tests, lint, build, or runtime verification were run as part of these documentation/metadata edits.
