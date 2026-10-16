@@ -176,3 +176,11 @@ A defensive edge case was found in expiry enforcement: a non-null expiry value t
 - The route uses `validatedRequest` and `flexUserRoleValid([ROLES.admin])`, matching the browser session token used by the admin UI and supporting single-user and multi-user modes. It is intentionally not mounted in the developer API-key router.
 - Date ranges are validated and capped at 366 days; daily usage trends are aggregated in SQLite with bound query parameters. Revenue/profit remain unavailable until billing and operating-cost sources are integrated.
 - Tests and runtime checks remain unexecuted; this is source-level documentation, not proof of successful runtime authorization.
+
+
+## Usage ledger coverage follow-up — 2026-10-16
+
+- `/v1/openai/chat/completions`, `/v1/openai/images/generations`, and `/v1/openai/embeddings` now have best-effort usage-event capture behind `ENABLE_API_USAGE_METERING=true`.
+- Image generation/editing records operation type and observed completion/failure/abort status. Embeddings records model and outcome. Metering errors are swallowed so observability cannot interrupt provider requests.
+- Prompts, embedding inputs, image bytes, bearer credentials, and raw provider errors are not written to the ledger. Image and embedding costs/tokens remain unknown; do not infer a zero cost.
+- Migration and Prisma Client generation have not been applied/verified; tests, lint, build, and runtime checks remain outstanding. The feature flag must remain disabled until the migration and client are validated in a controlled environment.
