@@ -294,3 +294,13 @@ Started the first implementation layer for durable API usage accounting:
 - Added date range validation (maximum 366 days) and backend tests for authorization middleware, invalid ranges, aggregate response, and safe failure when the migration/client is unavailable.
 - Revenue and profit are explicitly unavailable until billing and operating costs are integrated. Cost coverage is reported; unknown cost is never displayed as zero.
 - Usage collection still defaults off and currently captures OpenAI-compatible chat completion only. Migration and Prisma Client generation are pending; Jest, lint, frontend build, and runtime checks have not been executed.
+
+
+## Business analytics trend follow-up — 2026-10-16
+
+- Added database-side daily aggregation for recorded API usage. The endpoint now returns daily request counts, completed/failed outcomes, tokens, and verified-cost coverage without loading the full event ledger into Node.
+- The admin page now shows a daily activity bar chart/list for the latest 14 dates with recorded activity in the selected period.
+- Corrected the completion-rate denominator to exclude in-progress events and use terminal outcomes only.
+- Updated endpoint tests for daily trend output and query parameterization.
+- Commits: `8c2b076ae2d4c71d0d1b27a3b6d201aaf8f6bd48`, `3dc3f39173989568580bb2059d06d7922b112763`, `5f762439d30e58b8d2cb5abaae867de10899d4a9`, `e9e7dba963428c7026ddaa2a8f5ba856f50a45af`.
+- No Jest tests, lint, frontend build, Prisma generation/migration, or runtime checks have been executed. This remains unverified source code and is not production-ready.
