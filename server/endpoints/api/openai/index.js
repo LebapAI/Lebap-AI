@@ -8,6 +8,7 @@ const { validApiKey } = require("../../../utils/middleware/validApiKey");
 const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
 const { EventLogs } = require("../../../models/eventLogs");
 const { ApiUsage } = require("../../../models/apiUsage");
+const { usageMeteringEnabled, usageMetricsFromChatResult } = require("../../../utils/apiUsageMetering");
 const {
   OpenAICompatibleChat,
 } = require("../../../utils/chats/openaiCompatible");
@@ -18,27 +19,6 @@ const { handleImageGenUpload } = require("../../../utils/files/multer");
 function isWorkspaceAllowed(response, workspaceSlug) {
   const allowlist = response.locals?.apiKey?.workspaceSlugs;
   return allowlist === null || allowlist === undefined || allowlist.includes(workspaceSlug);
-}
-
-function usageMeteringEnabled() {
-  return process.env.ENABLE_API_USAGE_METERING === "true";
-}
-
-function usageMetricsFromChatResult(chatResult) {
-  const usage = chatResult?.usage ?? {};
-  const pickCount = (...keys) => {
-    for (const key of keys) {
-      const value = usage[key];
-      if (Number.isSafeInteger(value) && value >= 0) return value;
-    }
-    return undefined;
-  };
-  return {
-    inputTokens: pickCount("prompt_tokens", "promptTokens", "input_tokens", "inputTokens"),
-    outputTokens: pickCount("completion_tokens", "completionTokens", "output_tokens", "outputTokens"),
-    totalTokens: pickCount("total_tokens", "totalTokens"),
-    costSource: "unknown",
-  };
 }
 
 async function finalizeUsageSafely(payload) {
