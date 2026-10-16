@@ -5,6 +5,7 @@ const { Workspace } = require("../../../models/workspace");
 const { getEmbeddingEngineSelection } = require("../../../utils/helpers");
 const { reqBody } = require("../../../utils/http");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
+const { isWorkspaceAllowed } = require("../../../utils/apiKeyScopes");
 const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
 const { EventLogs } = require("../../../models/eventLogs");
 const { ApiUsage } = require("../../../models/apiUsage");
@@ -15,11 +16,6 @@ const {
 const { getModelTag } = require("../../utils");
 const { extractTextContent, extractAttachments, normalizeEmbeddingInput } = require("./helpers");
 const { handleImageGenUpload } = require("../../../utils/files/multer");
-
-function isWorkspaceAllowed(response, workspaceSlug) {
-  const allowlist = response.locals?.apiKey?.workspaceSlugs;
-  return allowlist === null || allowlist === undefined || allowlist.includes(workspaceSlug);
-}
 
 async function finalizeUsageSafely(payload) {
   try {
@@ -174,7 +170,7 @@ function apiOpenAICompatibleEndpoints(app) {
         if (!workspace) return response.status(404).json({
           error: { message: "Workspace not found.", type: "invalid_request_error" },
         });
-        if (!isWorkspaceAllowed(response, workspace.slug)) {
+        if (!isWorkspaceAllowed(response.locals?.apiKey?.workspaceSlugs, workspace.slug)) {
           return response.status(403).json({
             error: { message: "API key is not authorized for this workspace.", type: "permission_error" },
           });
