@@ -120,3 +120,8 @@ The initial developer-API-key route was superseded after source review showed th
 ## 2026-10-16 — Usage accounting increment
 
 The feature-flagged usage ledger now has source hooks for OpenAI-compatible chat completions, image generation/editing, and embeddings. It records request outcomes and latency where supported; token and cost values remain unknown unless supplied by a trusted source. This improves observability but does not implement budgets, quotas, rate limiting, verified pricing, billing, or complete metering across all API routes. Migration/client generation and automated verification remain outstanding; no capability gate is closed by this increment.
+
+
+## API key administration hardening — 2026-10-16
+
+The standard admin and single-user API-key management paths now redact secret/verifier fields from listing responses, display status/scope/expiry in the UI, scope newly issued keys to currently existing workspaces, and soft-revoke credentials with audit events. Legacy NULL-scope keys remain unrestricted to avoid silently breaking existing integrations; rotation/remediation is still required. The latest changes require a fresh CI pass and migration/runtime validation.
