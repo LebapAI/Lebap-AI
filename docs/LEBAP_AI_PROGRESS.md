@@ -230,3 +230,12 @@
 - Commits: `2d211d1340af05e2cd22ddeb742ece0b83415143` (endpoint) and `a355a5d068339195bcea161a643652fee256954c` (tests).
 - Reconciled `docs/security/API_SECURITY_REVIEW.md` with the current implementation and remaining risks, including legacy unrestricted keys, legacy plaintext secrets, incomplete route coverage, missing usage/spend limits, and unexecuted verification (commit `256f26c38f52dd992e0098d716d8a651deab5b36`).
 - No tests or build were executed. The code and tests are committed, but remain unverified at runtime.
+
+
+## Privileged system-route hardening — 2026-10-16
+
+- Route inventory found three system-information endpoints that required only `validApiKey`: `GET /v1/system/env-dump`, `GET /v1/system`, and `GET /v1/system/vector-count`. This allowed a workspace-scoped credential to reach routes outside its intended OpenAI-compatible model/chat allowance, because the shared scope-denial guard was not attached there.
+- Added `apiKeyOwnerIsAdmin` to all three routes. They now require an active administrator-owned key, consistent with the other sensitive system operations.
+- Added `server/endpoints/api/system/index.test.js` to assert that all six system routes use both authentication and administrator authorization.
+- Commits: `3242794ecd9b6d42e6570a630a1362af0852956d` (route guards) and `c5c1ad25cc48e679541e4034b640a73a75494c7d` (regression tests).
+- Source changes are committed but tests have not been executed. Continue auditing all API route groups for routes that omit the shared guard; this finding shows that route-by-route verification is still necessary.
