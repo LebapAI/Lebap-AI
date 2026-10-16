@@ -6,9 +6,9 @@ This snapshot supersedes older dated notes below wherever they conflict with the
 
 - API keys support hashed secrets for newly issued keys, workspace allowlists, expiry, and soft revocation. Authentication checks expiry/revocation and attaches only non-secret key metadata.
 - Key issuance accepts validated expiry choices (30, 90, 365 days, or no expiry). The UI defaults to 90 days. Legacy clients omitting the field remain compatible and create non-expiring keys.
-- OpenAI-compatible `/models`, `/vector_stores`, and chat-completions paths enforce explicit workspace allowlists using shared helpers. Malformed explicit scopes fail closed. NULL legacy scope remains unrestricted for compatibility and must be addressed before untrusted multi-tenant rollout.
+- OpenAI-compatible `/models`, `/vector_stores`, chat-completions, workspace/thread API routes, and document operations now enforce explicit workspace allowlists or deny unscoped global operations; workspace list responses are filtered. Malformed explicit scopes fail closed. NULL legacy scope remains unrestricted for compatibility and must be addressed before untrusted multi-tenant rollout.
 - API usage metering is feature-flagged and observe-only. It records request/status/latency and available provider usage metadata; provider costs are not considered verified unless explicitly marked with a reliable source. Revenue and profit remain unavailable without billing data.
-- Verified CI: backend tests passed on commit `1357e667`; frontend build and lint passed on commit `2bcf2d94`. A newer backend run for the shared model-list scope helper is running for commit `e6494836`. The latest combined tree still needs a fresh full CI pass.
+- Verified CI before the current workspace/thread/document middleware batch: backend tests passed on commit `e6494836`; frontend build and lint passed on commit `2bcf2d94`. This new middleware batch requires fresh CI before sign-off.
 - Not yet verified: applying all migrations to a real database, runtime integration with provider credentials, distributed rate/concurrency limits, reliable provider cost accounting, and deployment behavior. This branch is **not production signed off** for untrusted multi-tenant API customers.
 
 ## Current focus — API key lifecycle, tenant isolation, and verification
@@ -17,8 +17,8 @@ This snapshot supersedes older dated notes below wherever they conflict with the
 
 - Re-checked current source on `lebap-ai/development` before continuing.
 - API-key authentication now attaches safe identity metadata and an optional parsed `workspaceSlugs` allowlist. Newly issued credentials store a SHA-256 verifier; expiry and revocation are checked in source.
-- OpenAI-compatible model listing and chat completion enforce explicitly configured workspace allowlists. NULL scope remains backward-compatible and unrestricted, so this is not yet complete tenant isolation.
-- The remaining authorization gap covers other API route families, operation scopes, client/tenant identity, and image/provider operations. Legacy raw-secret credentials also remain compatible until rotated.
+- Workspace-scoped keys are now checked on workspace/thread routes; workspace inventory listing is filtered and workspace-less document operations are denied for explicitly scoped keys. NULL legacy scope remains backward-compatible and unrestricted, so this is not yet complete tenant isolation.
+- Remaining authorization work includes auditing every route family and clarifying whether administrator-owned keys should be permitted to manage global platform settings, plus operation scopes, client/tenant identity, and distributed quotas. Legacy raw-secret credentials also remain compatible until rotated.
 - Earlier CI checkpoints are superseded by the current verified snapshot above. Migration application, Prisma Client generation against a real database, and runtime integration checks remain outstanding.
 - Security review details are recorded in `docs/security/API_ROUTE_REVIEW.md`.
 - Latest verified CI outcomes are recorded above. Production runtime and migration verification are still outstanding.
