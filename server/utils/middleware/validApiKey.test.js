@@ -153,10 +153,47 @@ describe("validApiKey middleware", () => {
       id: 12,
       createdBy: 7,
       name: "automation",
+      expiresAt: null,
+      revokedAt: null,
     });
     expect(JSON.stringify(response.locals)).not.toContain("supplied-secret");
     expect(JSON.stringify(response.locals)).not.toContain("must-not-be-copied");
     expect(next).toHaveBeenCalledTimes(1);
+  });
+
+
+  test("rejects a revoked credential", async () => {
+    ApiKey.getForAuthentication.mockResolvedValue({
+      id: 13,
+      createdBy: 7,
+      revokedAt: new Date(),
+      expiresAt: null,
+    });
+    const request = makeRequest("Bearer revoked-secret");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(response.json).toHaveBeenCalledWith({ error: "No valid api key found." });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test("rejects an expired credential", async () => {
+    ApiKey.getForAuthentication.mockResolvedValue({
+      id: 14,
+      createdBy: 7,
+      revokedAt: null,
+      expiresAt: new Date(Date.now() - 1000),
+    });
+    const request = makeRequest("Bearer expired-secret");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(response.json).toHaveBeenCalledWith({ error: "No valid api key found." });
+    expect(next).not.toHaveBeenCalled();
   });
 
 });
