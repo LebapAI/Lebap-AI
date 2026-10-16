@@ -185,3 +185,13 @@
 - Added middleware tests for expired/revoked credentials and endpoint tests for expiry validation.
 - Commits: `dd8a0b2d38add415271afbcb5c7756629eb0c195` (schema), `c10626733bcb8062989d9f018f52a18b9de0fd6b` (migration), `244f2addf4999e84551b0667b06e1f3352c45aea` (model), `1dfd943a1f7a486614dc8a8c9623c29d6aa27f82` (authentication), `f011f81ee14628c79de7a88f988d7f9c7d00615d` (API), `10d771a6350b82eed98caa768a137d756f83359c`, `e733f86317a8ff935f10c45bc0c5202a49f47440`, `2b288b614615c495ae7160dd397c9cfcadfa8a97`, `de5648b94a2c2c84553d218e917415a1ded06f29`, and `1ed0b1389d597ab7e7b2edc8c26f6540ce0724e5` (validation and tests).
 - Not run: Prisma migration application, Prisma client generation, Jest, lint, build, runtime API checks, or deployment. Do not assume the live database has the new columns until the migration is applied.
+
+
+## API credential storage hardening — 2026-10-16
+
+- New API credentials are now stored as SHA-256 verifiers in `secretHash`; the raw secret is returned only in the one-time creation response and is not written to the database.
+- Authentication checks the verifier for newly created keys and retains a compatibility lookup for existing legacy records with raw `secret` values. This is a transition design, not full legacy-secret eradication: old records remain raw until explicitly rotated/reissued.
+- Added a nullable unique `secretHash` field to the Prisma schema and a separate SQLite migration, preserving existing rows. The migration has not been applied and Prisma Client has not been regenerated.
+- Added model-level tests for hashed storage, one-time secret return, hashed lookup, and legacy lookup.
+- Security note: SHA-256 is used as a deterministic verifier because API keys are high-entropy random credentials; never use this scheme for human passwords. A later rotation/migration should remove legacy raw secrets once all existing keys have been reissued.
+- Verification remains source-only: Jest, lint, build, migration execution, and runtime API checks have not been run.
