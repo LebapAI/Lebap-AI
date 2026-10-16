@@ -1,5 +1,6 @@
 const { Telemetry } = require("../../../models/telemetry");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
+const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
 const { handleAPIFileUpload } = require("../../../utils/files/multer");
 const {
   findDocumentInDocuments,
@@ -647,7 +648,7 @@ function apiDocumentEndpoints(app) {
     }
   );
 
-  app.get("/v1/documents", [validApiKey], async (request, response) => {
+  app.get("/v1/documents", [validApiKey, apiKeyOwnerIsAdmin], async (request, response) => {
     /*
     #swagger.tags = ['Documents']
     #swagger.description = 'List of all locally-stored documents in instance. Optionally, pass ?folder=name to fetch the contents of a single folder, paginated with offset and limit (limit=all returns every document in that folder).'
@@ -705,7 +706,7 @@ function apiDocumentEndpoints(app) {
 
   app.get(
     "/v1/documents/folder/:folderName",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
     #swagger.tags = ['Documents']
@@ -897,7 +898,7 @@ function apiDocumentEndpoints(app) {
 
   // Be careful and place as last route to prevent override of the other /document/ GET
   // endpoints!
-  app.get("/v1/document/:docName", [validApiKey], async (request, response) => {
+  app.get("/v1/document/:docName", [validApiKey, apiKeyOwnerIsAdmin], async (request, response) => {
     /*
     #swagger.tags = ['Documents']
     #swagger.description = 'Get a single document by its unique AnythingLLM document name'
