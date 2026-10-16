@@ -11,6 +11,7 @@ const {
 const { multiUserMode, reqBody } = require("../../../utils/http");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
 const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
+const { apiKeyWorkspaceScope } = require("../../../utils/middleware/apiKeyWorkspaceScope");
 const { VALID_CHAT_MODE } = require("../../../utils/chats/stream");
 const { EventLogs } = require("../../../models/eventLogs");
 const {
@@ -26,7 +27,7 @@ const {
 function apiWorkspaceEndpoints(app) {
   if (!app) return;
 
-  app.post("/v1/workspace/new", [validApiKey, apiKeyOwnerIsAdmin], async (request, response) => {
+  app.post("/v1/workspace/new", [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope], async (request, response) => {
     /*
     #swagger.tags = ['Workspaces']
     #swagger.description = 'Create a new workspace'
@@ -107,7 +108,7 @@ function apiWorkspaceEndpoints(app) {
     }
   });
 
-  app.get("/v1/workspaces", [validApiKey, apiKeyOwnerIsAdmin], async (request, response) => {
+  app.get("/v1/workspaces", [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope], async (request, response) => {
     /*
     #swagger.tags = ['Workspaces']
     #swagger.description = 'List all current workspaces'
@@ -161,7 +162,7 @@ function apiWorkspaceEndpoints(app) {
     }
   });
 
-  app.get("/v1/workspace/:slug", [validApiKey, apiKeyOwnerIsAdmin], async (request, response) => {
+  app.get("/v1/workspace/:slug", [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope], async (request, response) => {
     /*
     #swagger.tags = ['Workspaces']
     #swagger.description = 'Get a workspace by its unique slug.'
@@ -228,7 +229,7 @@ function apiWorkspaceEndpoints(app) {
 
   app.delete(
     "/v1/workspace/:slug",
-    [validApiKey, apiKeyOwnerIsAdmin, workspaceDeletionProtection],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope, workspaceDeletionProtection],
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
@@ -279,7 +280,7 @@ function apiWorkspaceEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/update",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
@@ -360,7 +361,7 @@ function apiWorkspaceEndpoints(app) {
 
   app.get(
     "/v1/workspace/:slug/chats",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
@@ -457,7 +458,7 @@ function apiWorkspaceEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/update-embeddings",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
@@ -534,7 +535,7 @@ function apiWorkspaceEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/update-pin",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspaces']
@@ -603,7 +604,7 @@ function apiWorkspaceEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/chat",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
    #swagger.tags = ['Workspaces']
@@ -737,7 +738,7 @@ function apiWorkspaceEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/stream-chat",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
    #swagger.tags = ['Workspaces']
@@ -899,7 +900,7 @@ function apiWorkspaceEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/vector-search",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
