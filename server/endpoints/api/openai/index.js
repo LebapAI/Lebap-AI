@@ -100,6 +100,10 @@ function apiOpenAICompatibleEndpoints(app) {
     async (request, response) => {
       let usageEvent = null;
       const usageStartedAt = Date.now();
+      let clientDisconnected = false;
+      response.once("close", () => {
+        if (!response.writableEnded) clientDisconnected = true;
+      });
       /*
       #swagger.tags = ['OpenAI Compatible Endpoints']
       #swagger.description = 'Execute a chat with a workspace with OpenAI compatibility. Supports streaming as well. Model must be a workspace slug from /models.'
@@ -264,7 +268,7 @@ function apiOpenAICompatibleEndpoints(app) {
         if (usageEvent) {
           await finalizeUsageSafely({
             requestId: usageEvent.requestId,
-            status: "completed",
+            status: clientDisconnected ? "aborted" : "completed",
             latencyMs: Math.max(0, Date.now() - usageStartedAt),
             costSource: "unknown",
           });
@@ -273,7 +277,7 @@ function apiOpenAICompatibleEndpoints(app) {
         if (usageEvent) {
           await finalizeUsageSafely({
             requestId: usageEvent.requestId,
-            status: response.headersSent ? "aborted" : "failed",
+            status: clientDisconnected ? "aborted" : "failed",
             latencyMs: Math.max(0, Date.now() - usageStartedAt),
             errorCategory: "provider_or_chat_error",
             costSource: "unknown",
