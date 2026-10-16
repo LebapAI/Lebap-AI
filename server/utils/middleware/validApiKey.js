@@ -2,7 +2,10 @@ const { ApiKey } = require("../../models/apiKeys");
 const { SystemSettings } = require("../../models/systemSettings");
 
 function parseWorkspaceSlugs(value) {
-  if (value === null || value === undefined || value === "") return null;
+  // Only SQL NULL/undefined denotes a legacy, unrestricted key. An empty
+  // string is malformed persisted scope and must not silently grant access.
+  if (value === null || value === undefined) return null;
+  if (typeof value !== "string" || value.length === 0) return [];
   try {
     const parsed = JSON.parse(value);
     if (
