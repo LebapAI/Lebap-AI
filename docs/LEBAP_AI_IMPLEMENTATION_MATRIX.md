@@ -20,13 +20,13 @@ This matrix turns the 15 requested product capabilities into implementation work
 | 2 | Create and manage AI agents | Partial: workspace agent-related models and existing agent features are present. | First-class agent definitions, versions, lifecycle/status, configuration validation, execution history, permissions, and CRUD/API/UI tests. |
 | 3 | Multi-agent orchestration (Swarm and alternatives) | Not verified as a complete platform capability. | Comparative design; bounded orchestrator; task hand-off; shared state contract; retries/timeouts/cancellation; loop prevention; tracing; deterministic tests. |
 | 4 | MCP and external tools | Partial: MCP SDK dependency exists; that alone does not prove complete MCP operations. | Managed MCP connections, tool discovery, allowlists, auth/secret handling, per-agent permissions, timeouts, approval gates, audit events, malicious-output tests. |
-| 5 | Unified API Hub | Partial: existing developer/OpenAI-compatible routes and administrator-guarded API-key list/create/revoke endpoints now exist; no scoped credential enforcement or usage ledger yet. | Versioned hub routes, client/tenant identity, stable request IDs/errors, scoped credentials, quotas, usage events, OpenAPI docs and compatibility tests. |
+| 5 | Unified API Hub | Partial: developer/OpenAI-compatible routes and admin API-key management exist; nullable expiry/soft-revocation metadata and authentication enforcement are implemented in source, but migration/runtime verification is pending and scopes/usage ledger are absent. | Versioned hub routes, client/tenant identity, stable request IDs/errors, scoped credentials, quotas, usage events, OpenAPI docs and compatibility tests. |
 | 6 | Intelligent model routing | Partial: existing provider selection exists. | Policy-driven routing by capability, configured availability, latency and cost; bounded fallback/circuit breakers; no secret leakage; routing tests. |
 | 7 | Memory, documents, RAG, knowledge bases | Foundation exists for documents/workspaces/vector stores. | Agent memory lifecycle, source attribution, tenant/workspace permissions, retrieval evaluation, retention/deletion controls and cross-tenant isolation tests. |
 | 8 | Workflow automation | Partial: existing background/task capabilities require a full inventory. | Workflow definitions, triggers, durable state, retries, timeout/cancel, approvals, idempotency, execution logs and end-to-end tests. |
 | 9 | Agent framework integrations | Not verified as a common adapter layer. | Framework-neutral agent contract and at least two tested adapters; streaming, tool calls, cancellation and error normalization. |
 | 10 | Agent/tool catalog | Not verified as a complete catalog. | Search/list/detail, versioning, trust/source metadata, install/enable/disable, permission review and catalog API/UI tests. |
-| 11 | Security and extension governance | Partial: admin-key guards cover workspace, thread, document, embed, OpenAI-compatible and privileged admin routes; API-key management endpoints avoid exposing secrets in list responses and prevent self-revocation. Source-only verification. | Tenant isolation, scoped credentials, extension trust policy, scoped tool grants, credential lifecycle, audit trail, sandbox/resource limits, abuse tests and threat-model review. |
+| 11 | Security and extension governance | Partial: admin-key guards cover workspace, thread, document, embed, OpenAI-compatible and privileged admin routes; key listing redacts secrets, creation supports expiry, and authentication rejects expired/revoked keys. SQLite migration and tests are not run. | Tenant isolation, scoped credentials, extension trust policy, scoped tool grants, credential lifecycle, audit trail, sandbox/resource limits, abuse tests and threat-model review. |
 | 12 | Unified platform UI | Partial: inherited web UI exists and product metadata/branding has started. | Consistent navigation, design tokens, accessible responsive layouts, complete agent/API/provider/catalog/admin flows and browser smoke tests. |
 | 13 | Mobile support | Not verified to product acceptance criteria. | Tested responsive critical flows on mobile viewport; accessible navigation, forms, tables, chat/agent controls and mobile browser smoke tests. |
 | 14 | Admin panel | Partial: inherited administrative features exist. | Central controls for tenants, credentials, providers, routing, quotas, usage/costs, agents/tools, audit, system health and permissions. |
@@ -38,7 +38,7 @@ This matrix turns the 15 requested product capabilities into implementation work
 1. Inventory all API routes and authentication/authorization paths.
 2. Define tenant/client, user-key and service-key semantics without silently breaking legacy credentials.
 3. Implement and test workspace/tenant isolation.
-4. Add credential lifecycle (scope, revocation, expiry) through a staged SQLite-compatible migration.
+4. Expiry and soft revocation now have a staged SQLite migration and source changes; apply the migration and run tests before relying on them. Next add credential scopes and workspace/client binding.
 5. Add CI checks and repeatable test/build commands.
 
 **Do not expose the platform as a multi-tenant public API until this gate passes.**
@@ -83,3 +83,10 @@ The latest source review confirmed existing provider/workspace/document function
 ## 2026-10-16 incremental delivery note
 
 The API Hub now has an initial administrator-only credential management surface in `server/endpoints/api/apiKeys/index.js`: list metadata, create an administrator-owned key, and revoke a different key. The new test file covers secret handling and core endpoint decisions, but those tests have not been executed. This does not close Gate A: there are still no credential scopes, expiry fields, tenant/workspace binding, rate limits, quotas, or usage accounting, and no runtime verification has been performed.
+
+
+## Credential lifecycle implementation note — 2026-10-16
+
+The SQLite schema now declares nullable `api_keys.expiresAt` and `api_keys.revokedAt`, with migration `server/prisma/migrations/20261016150000_api_key_lifecycle/migration.sql`. New keys may have an optional future expiry; the authentication middleware rejects expired or revoked keys; the admin delete route now performs a soft revocation and key listings show lifecycle status without secrets.
+
+This remains source-only. The migration has not been applied, Prisma client has not been regenerated, and Jest/lint/build/runtime checks have not been run. Credential scopes, tenant/client identity, workspace allowlists, rate limits and usage metering remain open.
