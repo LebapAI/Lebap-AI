@@ -29,7 +29,9 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
     let active = true;
     async function loadWorkspaces() {
       const user = userFromStorage();
-      const available = !!user ? await Admin.workspaces() : await Workspace.all();
+      const available = !!user
+        ? await Admin.workspaces()
+        : await Workspace.all();
       if (!active) return;
       const normalized = Array.isArray(available)
         ? available.filter((workspace) => workspace?.slug && workspace?.name)
@@ -122,10 +124,13 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
                 </p>
               </div>
               {loadingWorkspaces ? (
-                <p className="text-xs text-theme-text-secondary">Loading workspaces…</p>
+                <p className="text-xs text-theme-text-secondary">
+                  Loading workspaces…
+                </p>
               ) : workspaces.length === 0 ? (
                 <p className="text-xs text-red-400">
-                  No workspaces are available. Create a workspace before issuing an API key.
+                  No workspaces are available. Create a workspace before
+                  issuing an API key.
                 </p>
               ) : (
                 <div className="max-h-48 overflow-y-auto rounded-lg border border-white/10 p-3 flex flex-col gap-y-3">
@@ -202,7 +207,11 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
             </ModalSecondaryButton>
             <ModalPrimaryButton
               type="submit"
-              disabled={loadingWorkspaces || workspaces.length === 0 || selectedWorkspaceSlugs.length === 0}
+              disabled={
+                loadingWorkspaces ||
+                workspaces.length === 0 ||
+                selectedWorkspaceSlugs.length === 0
+              }
             >
               {t("api.modal.create")}
             </ModalPrimaryButton>
