@@ -28,6 +28,12 @@ const ApiKey = {
     }
   },
 
+  // Authentication must distinguish an unknown key from a database failure.
+  // Keep get()'s existing null-on-error contract for its other callers.
+  getForAuthentication: async function (clause = {}) {
+    return prisma.api_keys.findFirst({ where: clause });
+  },
+
   get: async function (clause = {}) {
     try {
       const apiKey = await prisma.api_keys.findFirst({ where: clause });
