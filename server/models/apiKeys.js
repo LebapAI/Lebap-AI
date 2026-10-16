@@ -23,6 +23,7 @@ function publicApiKey(apiKey = {}) {
     lastUpdatedAt: apiKey.lastUpdatedAt || null,
     expiresAt: apiKey.expiresAt || null,
     revokedAt: apiKey.revokedAt || null,
+    lastUsedAt: apiKey.lastUsedAt || null,
     workspaceSlugs,
     status: apiKey.revokedAt
       ? "revoked"
@@ -107,6 +108,22 @@ const ApiKey = {
     } catch (error) {
       console.error("FAILED TO COUNT API KEYS.", error.message);
       return 0;
+    }
+  },
+
+  // Update the last successful authentication timestamp without changing the credential lifecycle.
+  markUsed: async function (id) {
+    if (!Number.isSafeInteger(id) || id <= 0) return false;
+    try {
+      const result = await prisma.api_keys.updateMany({
+        where: { id, revokedAt: null },
+        data: { lastUsedAt: new Date() },
+      });
+      return result.count === 1;
+    } catch (_error) {
+      // Usage telemetry must not turn valid authentication into an outage.
+      console.error("API key last-use tracking failed.");
+      return false;
     }
   },
 
