@@ -195,3 +195,13 @@
 - Added model-level tests for hashed storage, one-time secret return, hashed lookup, and legacy lookup.
 - Security note: SHA-256 is used as a deterministic verifier because API keys are high-entropy random credentials; never use this scheme for human passwords. A later rotation/migration should remove legacy raw secrets once all existing keys have been reissued.
 - Verification remains source-only: Jest, lint, build, migration execution, and runtime API checks have not been run.
+
+
+## Workspace-scoped API credentials — 2026-10-16
+
+- Added nullable `api_keys.workspaceSlugs` JSON storage and a separate SQLite migration. Existing keys remain unrestricted for backward compatibility; newly created keys may opt into a non-empty allowlist of existing workspace slugs.
+- API-key creation validates the allowlist format, rejects duplicates and unknown workspaces, and includes the scope in audit metadata and secret-redacted key listings.
+- API-key authentication parses the stored allowlist. Malformed stored scope fails closed as an empty allowlist rather than silently granting access.
+- OpenAI-compatible `GET /v1/openai/models` returns only allowlisted workspaces for scoped keys; chat completion checks the requested workspace before running the chat.
+- Scope is currently enforced only for OpenAI-compatible model listing and chat completion. Other API route families and image generation still need their own resource/operation authorization. Existing keys with NULL scope remain unrestricted by design until owners configure and rotate them.
+- Added endpoint tests for allowlist validation/storage and unknown workspace rejection; updated middleware metadata expectations. Tests, lint, build, migrations, and runtime checks have not been run.
