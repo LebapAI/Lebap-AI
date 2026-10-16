@@ -28,6 +28,34 @@ model api_keys {
   lastUpdatedAt DateTime @default(now())
 }
 
+// Append-oriented API usage ledger. Never store prompts, credentials, or raw provider errors here.
+model api_usage_events {
+  id                 Int      @id @default(autoincrement())
+  requestId          String   @unique
+  apiKeyId           Int?
+  route              String
+  operation          String
+  status             String   @default("started")
+  provider           String?
+  model              String?
+  workspaceSlug      String?
+  startedAt          DateTime @default(now())
+  finishedAt         DateTime?
+  latencyMs           Int?
+  inputTokens         Int?
+  outputTokens        Int?
+  totalTokens         Int?
+  estimatedCostUsd    Float?
+  costCurrency        String   @default("USD")
+  costSource          String   @default("unknown")
+  errorCategory       String?
+  createdAt           DateTime @default(now())
+
+  @@index([apiKeyId, createdAt])
+  @@index([createdAt])
+  @@index([status, createdAt])
+}
+
 model workspace_documents {
   id                   Int                   @id @default(autoincrement())
   docId                String                @unique
