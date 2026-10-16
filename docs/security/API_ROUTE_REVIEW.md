@@ -110,3 +110,12 @@ The route `GET /v1/users/:id/issue-auth-token` was updated to require a key whos
 - Commits: `5ed71739714d170d4714cb2a1558330375569372` and `bb80c04a659bca1f37d9803af850d2ca80a95f04`.
 - This is a temporary instance-admin boundary because the schema still lacks credential scopes and workspace allowlists. It does not provide tenant isolation and may break non-admin or legacy-key integrations. Replace it with explicit least-privilege scopes only after the credential lifecycle and workspace authorization model are implemented and tested.
 - Static verification: fetched the updated files and checked all six route declarations in each module. Automated tests, lint, build, runtime tests, and regression checks have not been run.
+
+## Follow-up remediation — document, workspace deletion, and image-generation routes (2026-10-16)
+
+- All routes in `server/endpoints/api/document/index.js` now require `validApiKey` followed by `apiKeyOwnerIsAdmin`, including upload, link/raw-text ingestion, reads, folder/file mutations, and generated-file downloads. Multipart authorization is placed before file upload handling.
+- Workspace deletion now requires an administrator-owned key before the existing deletion-protection middleware.
+- OpenAI-compatible image generation now requires an administrator-owned key before upload/provider processing, reducing exposure to unauthorised provider spend until server-side quotas and client scopes exist.
+- Commits: `d85c20830eb2d5e1f54a1a467aeec0147aa81bf0`, `c9f8181ec6314b2de62f1069309abf4c09ec71a8`, and `0f0f2a9570c8e79aea38f5ea6bf283e0d423fb55`.
+- Compatibility impact: broad interim admin-only policy can block non-admin integrations, including legitimate external agents. Do not weaken this to key-only access until least-privilege credential scopes, workspace authorization, usage limits, and tests are implemented.
+- Static source verification only. Automated tests, lint, build, runtime API checks, provider-call tests, and deployment checks remain unexecuted.
