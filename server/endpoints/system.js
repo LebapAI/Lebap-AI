@@ -41,7 +41,7 @@ const {
   isDefaultFilename,
 } = require("../utils/files/logo");
 const { Telemetry } = require("../models/telemetry");
-const { ApiKey } = require("../models/apiKeys");
+const { ApiKey, publicApiKey } = require("../models/apiKeys");
 const { getCustomModels } = require("../utils/helpers/customModels");
 const { WorkspaceChats } = require("../models/workspaceChats");
 const { WorkspaceThread } = require("../models/workspaceThread");
@@ -1041,9 +1041,9 @@ function systemEndpoints(app) {
         return response.sendStatus(401).end();
       }
 
-      const apiKeys = await ApiKey.where({});
+      const apiKeys = await ApiKey.where({}, 500);
       return response.status(200).json({
-        apiKeys,
+        apiKeys: apiKeys.map(publicApiKey),
         error: null,
       });
     } catch (error) {
@@ -1064,8 +1064,10 @@ function systemEndpoints(app) {
           return response.sendStatus(401).end();
         }
 
-        const { name = null } = reqBody(request);
-        const { apiKey, error } = await ApiKey.create(null, name);
+        const { name = null } = reqBody(request) || {};
+        const workspaces = await require("../models/workspace").Workspace.where();
+        const workspaceSlugs = workspaces.map((workspace) => workspace.slug);
+        const { apiKey, error } = await ApiKey.create(null, name, { workspaceSlugs });
         await EventLogs.logEvent(
           "api_key_created",
           { name: apiKey?.name },
@@ -1097,13 +1099,19 @@ function systemEndpoints(app) {
         const { id } = request.params;
         if (!id || isNaN(Number(id))) return response.sendStatus(400).end();
 
-        await ApiKey.delete({ id: Number(id) });
+        const revoked = await ApiKey.revoke(Number(id));
+        if (!revoked) {
+          return response.status(409).json({
+            success: false,
+            error: "API key was already revoked or could not be revoked.",
+          });
+        }
         await EventLogs.logEvent(
-          "api_key_deleted",
-          { deletedBy: response.locals?.user?.username },
+          "api_key_revoked",
+          { apiKeyId: Number(id), revokedBy: response.locals?.user?.username },
           response?.locals?.user?.id
         );
-        return response.status(200).end();
+        return response.status(200).json({ success: true, revokedId: Number(id) });
       } catch (error) {
         console.error(error);
         response.status(500).end();
