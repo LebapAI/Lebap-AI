@@ -84,3 +84,12 @@
 - Both changes were committed directly to `lebap-ai/development`; no other branch was changed.
 - Verification is source-level only. Automated tests, lint, build, and browser/runtime checks have not been run, so these commits are not production sign-off.
 - Next priority remains reviewing API key creation/rotation and workspace membership semantics, then implementing workspace authorization without silently breaking existing shared/service keys.
+
+
+## Sensitive system route hardening — 2026-10-16
+
+- Added `apiKeyOwnerIsAdmin` to the system configuration update, system-wide chat export, and permanent document-removal routes. These operations now require a valid API key owned by an active administrator.
+- Commit: `8eb527b34d36d4bc1a2654bbf12703fca2ae253f`.
+- Updated `docs/security/API_ROUTE_REVIEW.md` to document the change and compatibility impact (commit `b2c1d910929e95b438f418a2df63c1bae8c4f51a`).
+- Compatibility impact is intentional: unowned legacy keys and keys owned by non-admin users are denied on these three sensitive operations. Existing automations using them may need an administrator-owned key.
+- This does not complete the full API authorization audit or workspace tenant isolation. Tests, lint, build, and runtime checks have not been run.
