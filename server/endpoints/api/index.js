@@ -8,6 +8,7 @@ const { apiWorkspaceThreadEndpoints } = require("./workspaceThread");
 const { apiUserManagementEndpoints } = require("./userManagement");
 const { apiOpenAICompatibleEndpoints } = require("./openai");
 const { apiEmbedEndpoints } = require("./embed");
+const { apiRequestId } = require("../../utils/middleware/apiRequestId");
 
 // All endpoints must be documented and pass through the validApiKey Middleware.
 // How to JSDoc an endpoint
@@ -15,6 +16,9 @@ const { apiEmbedEndpoints } = require("./embed");
 function developerEndpoints(app, router) {
   if (!router) return;
   useSwagger(app);
+  // Establish a correlation ID before registering API routes so clients can
+  // reference failures without exposing internal exception details.
+  router.use(apiRequestId);
   apiAuthEndpoints(router);
   apiAdminEndpoints(router);
   apiSystemEndpoints(router);
