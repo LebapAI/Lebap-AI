@@ -40,6 +40,7 @@ Last updated: 2026-10-16
 3. Review API routes and Prisma schema for request usage tracking and quotas. Do not add schema migrations before that review.
 
 ## Latest implementation update — 2026-10-16
+- Added `docs/architecture/API_HUB_USAGE_METERING.md` (commit `558c2ff95b4087719a5fefcd4894e298945ef6eb`) after confirming the active schema uses SQLite and the current API-key model has no tenant, status, expiry, scope, or quota fields.
 - Added `docs/security/API_ROUTE_REVIEW.md` (commit `fab6796b5ced130a3603709dc20a351f3aac5922`) after inspecting the API router and OpenAI-compatible endpoints. This is a source review, not a runtime test.
 - `server/models/apiKeys.js`: added `getForAuthentication()` using Prisma lookup without swallowing exceptions.
 - `server/utils/middleware/validApiKey.js`: authentication uses the strict lookup; internal failures return the generic `Authentication service unavailable.` response.
