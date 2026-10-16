@@ -1,7 +1,7 @@
 <a name="readme-top"></a>
 
 <p align="center">
-  <a href="https://anythingllm.com"><img src="https://github.com/Mintplex-Labs/anything-llm/blob/master/images/wordmark.png?raw=true" alt="AnythingLLM logo"></a>
+  <a href="https://github.com/coinsells/Lebap-AI"><strong>Lebap AI</strong></a>
 </p>
 
 <div align='center'>
@@ -9,7 +9,7 @@
 </div>
 
 <p align="center">
-    <b>AnythingLLM:</b> The all-in-one AI app you were looking for.<br />
+    <b>Lebap AI:</b> The all-in-one AI app you were looking for.<br />
     Chat with your docs, use AI Agents, hyper-configurable, multi-user, & no frustrating setup required.
 </p>
 
@@ -33,16 +33,16 @@
 </p>
 
 <p align="center">
-👉 AnythingLLM for desktop (Mac, Windows, & Linux)! <a href="https://anythingllm.com/download" target="_blank"> Download Now</a>
+👉 Lebap AI for desktop (Mac, Windows, & Linux)! <a href="https://anythingllm.com/download" target="_blank"> Download Now</a>
 </p>
 
 <p align="center">
-📱 AnythingLLM Mobile (Android) is open source! <a href="https://github.com/Mintplex-Labs/anythingllm-mobile" target="_blank">View the repo</a>
+📱 Lebap AI Mobile (Android) is open source! <a href="https://github.com/Mintplex-Labs/anythingllm-mobile" target="_blank">View the repo</a>
 </p>
 
 Chat with your docs. Automate complex workflows with AI Agents. Hyper-configurable, multi-user ready, battle-tested—and runs locally by default with zero setup friction.
 
-![Chatting](https://github.com/Mintplex-Labs/anything-llm/releases/download/v1.11.2/AnythingLLM720p.gif)
+![Chatting](https://github.com/Mintplex-Labs/anything-llm/releases/download/v1.11.2/Lebap AI720p.gif)
 
 <details>
 <summary><kbd>Watch the demo!</kbd></summary>
@@ -53,11 +53,11 @@ Chat with your docs. Automate complex workflows with AI Agents. Hyper-configurab
 
 ### Product Overview
 
-AnythingLLM is the all-in-one AI application that lets you build a private, fully-featured ChatGPT—without compromises. Connect your favorite local or cloud LLM, ingest your documents, and start chatting in minutes. Out of the box you get built-in agents, multi-user support, vector databases, and document pipelines — no extra configuration required.
+Lebap AI is an AI application built from an open-source foundation that lets you build a private, fully-featured ChatGPT—without compromises. Connect your favorite local or cloud LLM, ingest your documents, and start chatting in minutes. Out of the box you get built-in agents, multi-user support, vector databases, and document pipelines — no extra configuration required.
 
-AnythingLLM supports multiple users as well where you can control the access and experience per user without compromising the security or privacy of the instance or your intellectual property.
+Lebap AI supports multiple users as well where you can control the access and experience per user without compromising the security or privacy of the instance or your intellectual property.
 
-## Cool Features of AnythingLLM
+## Lebap AI Features
 
 - [Built-in local LLM engine](/docker/HOW_TO_USE_DOCKER.md#built-in-llm-engine-optional) - Run local models on your CPU or GPU (NVIDIA via CUDA, AMD and Intel via Vulkan) with no extra setup, powered by [Lemonade](https://lemonade-server.ai) and [llama.cpp](https://github.com/ggml-org/llama.cpp).
 - [Dynamic Model Routing](https://docs.anythingllm.com/model-router/overview) - Automatically route chats to the best provider & model for the conversation based on rules you define.
@@ -124,7 +124,7 @@ AnythingLLM supports multiple users as well where you can control the access and
 
 **Embedder models:**
 
-- [AnythingLLM Native Embedder](/server/storage/models/README.md) (default)
+- [Lebap AI Native Embedder](/server/storage/models/README.md) (default)
 - [OpenAI](https://openai.com)
 - [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
 - [Gemini](https://ai.google.dev/)
@@ -141,7 +141,7 @@ AnythingLLM supports multiple users as well where you can control the access and
 
 **Audio Transcription models:**
 
-- [AnythingLLM Built-in](https://github.com/Mintplex-Labs/anything-llm/tree/master/server/storage/models#audiovideo-transcription) (default)
+- [Lebap AI Built-in](https://github.com/Mintplex-Labs/anything-llm/tree/master/server/storage/models#audiovideo-transcription) (default)
 - [OpenAI](https://openai.com/)
 
 **TTS (text-to-speech) support:**
@@ -181,7 +181,7 @@ This monorepo consists of six main sections:
 
 ## 🛳 Self-Hosting
 
-Mintplex Labs & the community maintain a number of deployment methods, scripts, and templates that you can use to run AnythingLLM locally. Refer to the table below to read how to deploy on your preferred environment or to automatically deploy.
+Mintplex Labs & the community maintain a number of deployment methods, scripts, and templates that you can use to run Lebap AI locally. Refer to the table below to read how to deploy on your preferred environment or to automatically deploy.
 | Docker | AWS | GCP | Digital Ocean | Render.com |
 |----------------------------------------|----|-----|---------------|------------|
 | [![Deploy on Docker][docker-btn]][docker-deploy] | [![Deploy on AWS][aws-btn]][aws-deploy] | [![Deploy on GCP][gcp-btn]][gcp-deploy] | [![Deploy on DigitalOcean][do-btn]][do-deploy] | [![Deploy on Render.com][render-btn]][render-deploy] |
@@ -194,7 +194,7 @@ Mintplex Labs & the community maintain a number of deployment methods, scripts, 
 | --------------------------------------------------------- |
 | [![Deploy on Easypanel][easypanel-btn]][easypanel-deploy] |
 
-[or set up a production AnythingLLM instance without Docker →](./BARE_METAL.md)
+[or set up a production Lebap AI instance without Docker →](./BARE_METAL.md)
 
 ## How to setup for development
 
@@ -208,14 +208,14 @@ Mintplex Labs & the community maintain a number of deployment methods, scripts, 
 
 ## Telemetry & Privacy
 
-AnythingLLM by Mintplex Labs Inc contains a telemetry feature that collects anonymous usage information.
+Lebap AI by Mintplex Labs Inc contains a telemetry feature that collects anonymous usage information.
 
 <details>
-<summary><kbd>More about Telemetry & Privacy for AnythingLLM</kbd></summary>
+<summary><kbd>More about Telemetry & Privacy for Lebap AI</kbd></summary>
 
 ### Why?
 
-We use this information to help us understand how AnythingLLM is used, to help us prioritize work on new features and bug fixes, and to help us improve AnythingLLM's performance and stability.
+We use this information to help us understand how Lebap AI is used, to help us prioritize work on new features and bug fixes, and to help us improve Lebap AI's performance and stability.
 
 ### Opting out
 
@@ -255,7 +255,7 @@ Basically, if telemetry is disabled we don't collect anything. However, dependin
 
 ## 👋 Contributing
 
-- [Contributing to AnythingLLM](./CONTRIBUTING.md) - How to contribute to AnythingLLM.
+- [Contributing to Lebap AI](./CONTRIBUTING.md) - How to contribute to Lebap AI.
 
 ## 💖 Sponsors
 
@@ -276,9 +276,9 @@ premium-sponsors (reserved for $100/mth sponsors who request to be called out he
 
 ## 🔗 More Products
 
-- **[AnythingLLM Mobile (Open-Source Licensed)][anythingllm-mobile]:** The same AnythingLLM on-device expierence, but on your phone.
-- **[AnythingLLM Browser Extension][anythingllm-extension]:** A browser extension that allows you to use AnythingLLM in your browser.
-- **[AnythingLLM Embed][anythingllm-embed]:** A widget that allows you to embed AnythingLLM in your website.
+- **[Lebap AI Mobile (Open-Source Licensed)][anythingllm-mobile]:** The same Lebap AI on-device expierence, but on your phone.
+- **[Lebap AI Browser Extension][anythingllm-extension]:** A browser extension that allows you to use Lebap AI in your browser.
+- **[Lebap AI Embed][anythingllm-embed]:** A widget that allows you to embed Lebap AI in your website.
 - **[Open Computer][open-computer]:** A full computer environment for AI agents to use.
 
 <div align="right">
