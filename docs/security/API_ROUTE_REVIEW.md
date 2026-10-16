@@ -169,3 +169,11 @@ A defensive edge case was found in expiry enforcement: a non-null expiry value t
 - Added regression tests in `server/utils/middleware/validApiKey.test.js` and `server/endpoints/api/apiKeys/index.test.js`.
 - Commits: `bd62229e4a4c1ad9222cc6ead45427a744f8cd61` (authentication), `3a69cb4d1a4a5053d485642ebd077a503794a4c7` (middleware test), `e86fc35a728b7a28313922a695807f5a1e921034` (safe metadata), `05da24af16857f79f4f27e099a4032114d604a73` (endpoint test).
 - Static source review only; tests, lint, build, migrations, and runtime verification remain outstanding.
+
+
+## Business analytics route — 2026-10-16
+
+- Added `GET /v1/admin/business-analytics` in `server/endpoints/api/analytics/index.js`.
+- The route is registered in the developer API router and declares `[validApiKey, apiKeyOwnerIsAdmin]` middleware.
+- Date input is validated and limited to 366 days. The response aggregates usage ledger rows only; revenue/profit are explicitly null until billing and operating costs are integrated.
+- Unit tests were added for route middleware, date validation, aggregation shape, and unavailable schema handling, but have not been executed. Runtime authorization, Prisma migration/client compatibility, and frontend integration remain unverified.
