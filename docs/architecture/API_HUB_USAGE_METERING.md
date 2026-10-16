@@ -136,3 +136,15 @@ Started the first implementation layer for durable API usage accounting:
 - Added unit tests for required fields, secret/prompt exclusion, non-negative usage values, explicit cost provenance, and duplicate-finalization behavior.
 - Commits: `b97c285433c2b369bc16d94030b4e2412cf25137` (schema), `142feab9145b4169143a70bb0cbd4bc75d8a1aaa` (migration), `3b8575589524e03fab9e4645bd17182f7b281ab1` (model), `6ed0216580f2cdbba783f649f405958c537e406d` (tests).
 - This is a storage foundation only: no API routes are wired to it yet, so usage is not being collected and no quotas/rate/spend limits are enforced. Migration and Prisma Client generation remain unapplied; tests/build/lint are unexecuted.
+
+
+## Feature-flagged chat metering hook — 2026-10-16
+
+The OpenAI-compatible chat-completions handler now has an observe-only usage hook controlled by `ENABLE_API_USAGE_METERING=true`:
+- It attempts to write a minimal started event after request validation and workspace authorization, using a server-generated ledger ID independent of the caller's `X-Request-Id`.
+- Non-streaming success records latency and token counts only when the returned metrics expose recognized non-negative integer fields. Cost remains unknown unless a later integration supplies explicit, validated cost data.
+- Streaming success records latency and completion status; token counts are currently unavailable from the route-level integration. Exceptions finalize as failed/aborted without storing prompts or raw provider errors.
+- Ledger creation/finalization errors are logged generically and do not block chat responses. This is deliberately observe-only, not quota enforcement.
+- The flag defaults off. Enable only after applying the SQLite migration and regenerating Prisma Client. Do not enable in production before that migration is applied.
+
+Remaining: wire usage capture for embeddings and image generation; test streaming/disconnect lifecycle and runtime behavior; apply and verify the migration; validate provider usage field names and pricing provenance; implement concurrency-safe limits only after usage collection is trustworthy. No tests, lint, build, migration, or runtime checks have been run for this change.
