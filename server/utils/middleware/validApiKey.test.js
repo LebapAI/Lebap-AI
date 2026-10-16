@@ -179,7 +179,6 @@ describe("validApiKey middleware", () => {
       name: "automation",
       expiresAt: null,
       revokedAt: null,
-      lastUsedAt: null,
       workspaceSlugs: ["allowed-workspace"],
     });
     expect(JSON.stringify(response.locals)).not.toContain("supplied-secret");
