@@ -1,4 +1,4 @@
-const { resolveWorkspaceScope } = require("./apiKeyScopes");
+const { resolveWorkspaceScope, parseWorkspaceSlugs, isWorkspaceAllowed } = require("./apiKeyScopes");
 
 describe("resolveWorkspaceScope", () => {
   const available = ["research", "support", "billing"];
@@ -38,5 +38,43 @@ describe("resolveWorkspaceScope", () => {
       workspaceSlugs: ["research", "support"],
       error: null,
     });
+  });
+});
+
+describe("parseWorkspaceSlugs", () => {
+  test("treats only null and undefined as legacy unrestricted scope", () => {
+    expect(parseWorkspaceSlugs(null)).toBeNull();
+    expect(parseWorkspaceSlugs(undefined)).toBeNull();
+  });
+
+  test.each(["", "not-json", "{}", "[]", "[\"\"]", "[\"support\", 3]"])(
+    "fails closed for malformed persisted scopes: %p",
+    (value) => {
+      expect(parseWorkspaceSlugs(value)).toEqual([]);
+    }
+  );
+
+  test("parses, trims, and deduplicates a valid persisted scope", () => {
+    expect(parseWorkspaceSlugs('[\"support\", \" research \", \"support\"]')).toEqual([
+      "support",
+      "research",
+    ]);
+  });
+});
+
+describe("isWorkspaceAllowed", () => {
+  test("allows legacy unrestricted scope only when scope is absent", () => {
+    expect(isWorkspaceAllowed(null, "support")).toBe(true);
+    expect(isWorkspaceAllowed(undefined, "support")).toBe(true);
+  });
+
+  test("allows only an explicitly listed workspace", () => {
+    expect(isWorkspaceAllowed(["support"], "support")).toBe(true);
+    expect(isWorkspaceAllowed(["support"], "billing")).toBe(false);
+    expect(isWorkspaceAllowed([], "support")).toBe(false);
+  });
+
+  test("fails closed for invalid non-array scopes", () => {
+    expect(isWorkspaceAllowed("support", "support")).toBe(false);
   });
 });
