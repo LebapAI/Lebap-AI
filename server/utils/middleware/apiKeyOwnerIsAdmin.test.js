@@ -93,4 +93,32 @@ describe("apiKeyOwnerIsAdmin", () => {
     });
     expect(next).not.toHaveBeenCalled();
   });
+
+  test("denies workspace-scoped keys on privileged routes outside scoped chat", async () => {
+    const response = makeResponse({ createdBy: 7, workspaceSlugs: ["workspace-a"] });
+    const next = jest.fn();
+    const request = { route: { path: "/v1/admin/api-keys" } };
+
+    await apiKeyOwnerIsAdmin(request, response, next);
+
+    expect(User.getForAuthorization).not.toHaveBeenCalled();
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(response.json).toHaveBeenCalledWith({
+      error: "Workspace-scoped API keys cannot access this operation.",
+    });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test("permits workspace-scoped keys to continue to owner validation on OpenAI chat routes", async () => {
+    User.getForAuthorization.mockResolvedValue({ id: 7, role: "admin", suspended: 0 });
+    const response = makeResponse({ createdBy: 7, workspaceSlugs: ["workspace-a"] });
+    const next = jest.fn();
+    const request = { route: { path: "/v1/openai/chat/completions" } };
+
+    await apiKeyOwnerIsAdmin(request, response, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(response.status).not.toHaveBeenCalled();
+  });
+
 });
