@@ -73,8 +73,20 @@ function isWorkspaceAllowed(workspaceSlugs, workspaceSlug) {
   );
 }
 
+/**
+ * Restrict a workspace inventory to the authenticated API key's allowlist.
+ * Legacy NULL scopes remain unrestricted; malformed scopes fail closed.
+ */
+function filterWorkspacesByApiKeyScope(workspaces, workspaceSlugs) {
+  if (!Array.isArray(workspaces)) return [];
+  return workspaces.filter((workspace) =>
+    isWorkspaceAllowed(workspaceSlugs, workspace?.slug)
+  );
+}
+
 module.exports = {
   resolveWorkspaceScope,
   parseWorkspaceSlugs,
   isWorkspaceAllowed,
+  filterWorkspacesByApiKeyScope,
 };
