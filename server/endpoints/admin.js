@@ -537,7 +537,9 @@ function adminEndpoints(app) {
           user?.id
         );
         return response.status(200).json({
-          apiKey,
+          apiKey: apiKey
+            ? { ...publicApiKey(apiKey), secret: apiKey.secret }
+            : null,
           error,
         });
       } catch (e) {
