@@ -118,5 +118,13 @@
 - Added `server/utils/middleware/apiKeyOwnerIsAdmin.test.js` with Jest coverage for an active admin key, missing/invalid key ownership, non-admin owner, suspended admin, missing owner record, and an owner-lookup exception.
 - Commit: `e215abc9fd61e3d835689fdb241311de2e6379c1`.
 - These are authored regression tests, not a passing test result: the connector session cannot execute the repository's Jest suite, so the tests still need to run in CI or a local checkout.
-- Important follow-up: inspect the `User.get()` error contract. It currently catches database errors and returns `null`, so some owner lookup failures may be surfaced as 403 rather than the middleware's 500 branch. This is fail-closed, but the distinction should be verified before relying on operational diagnostics.
+- Follow-up completed in commits `77e30bcd0a2047b959bccf2592f9c8ea17bb8ff5`, `3cfff3ebf6ca3fc23dc31d5d21dbf3fbc4060413`, and `e43fd146ba0dbd5342824799b20338930d6a3e6d`: added `User.getForAuthorization()`, which propagates database lookup errors, wired the admin-key middleware to it, and updated the regression test mock. This allows infrastructure failures to reach the middleware's generic HTTP 500 path instead of being mistaken for a missing owner (403).
 
+
+## Authorization lookup error handling — 2026-10-16
+
+- Added `User.getForAuthorization()` as a strict lookup for security decisions. Unlike the general-purpose `User.get()`, it does not swallow database errors.
+- Updated `apiKeyOwnerIsAdmin` to use the strict lookup. Missing or unauthorized owners still fail closed with 403; a database/query exception returns a generic 500 without leaking details.
+- Updated the regression test to mock the new method.
+- Commits: `77e30bcd0a2047b959bccf2592f9c8ea17bb8ff5`, `3cfff3ebf6ca3fc23dc31d5d21dbf3fbc4060413`, `e43fd146ba0dbd5342824799b20338930d6a3e6d`.
+- Source changes are verified in GitHub. Tests/lint/build/runtime checks remain unexecuted.
