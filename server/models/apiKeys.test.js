@@ -78,7 +78,7 @@ describe("public API key projection", () => {
       name: "automation",
       secret: "raw-secret",
       secretHash: "one-way-verifier",
-      workspaceSlugs: '["workspace-a","workspace-b"]',
+      workspaceSlugs: '["workspace-a"," workspace-b ","workspace-a"]',
       expiresAt: null,
       revokedAt: null,
     });
