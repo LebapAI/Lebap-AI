@@ -1,6 +1,6 @@
 const { ApiKey } = require("../../models/apiKeys");
 const { SystemSettings } = require("../../models/systemSettings");
-const { validApiKey } = require("./validApiKey");
+const { validApiKey, parseWorkspaceSlugs } = require("./validApiKey");
 
 jest.mock("../../models/apiKeys", () => ({
   ApiKey: {
@@ -30,6 +30,27 @@ function makeResponse() {
   response.json.mockReturnValue(response);
   return response;
 }
+
+describe("parseWorkspaceSlugs", () => {
+  test("preserves unrestricted compatibility only for a null database value", () => {
+    expect(parseWorkspaceSlugs(null)).toBeNull();
+    expect(parseWorkspaceSlugs(undefined)).toBeNull();
+  });
+
+  test.each(["", " ", "not-json", "{}", "[]", '["allowed",""]', '[1,"allowed"]'])(
+    "fails closed for malformed or empty scope %p",
+    (value) => {
+      expect(parseWorkspaceSlugs(value)).toEqual([]);
+    }
+  );
+
+  test("normalizes valid scopes and removes duplicates", () => {
+    expect(parseWorkspaceSlugs('["workspace-a"," workspace-b ","workspace-a"]')).toEqual([
+      "workspace-a",
+      "workspace-b",
+    ]);
+  });
+});
 
 describe("validApiKey middleware", () => {
   let next;
@@ -103,7 +124,6 @@ describe("validApiKey middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-
   test("returns a generic 500 if API key storage is unavailable", async () => {
     ApiKey.getForAuthentication.mockRejectedValue(new Error("private database details"));
     const request = makeRequest("Bearer secret-value");
@@ -163,7 +183,6 @@ describe("validApiKey middleware", () => {
     expect(next).toHaveBeenCalledTimes(1);
   });
 
-
   test("rejects a revoked credential", async () => {
     ApiKey.getForAuthentication.mockResolvedValue({
       id: 13,
@@ -198,4 +217,18 @@ describe("validApiKey middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
+  test("treats an empty stored scope as restricted rather than unrestricted", async () => {
+    ApiKey.getForAuthentication.mockResolvedValue({
+      id: 15,
+      createdBy: 7,
+      workspaceSlugs: "",
+    });
+    const request = makeRequest("Bearer scoped-secret");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.locals.apiKey.workspaceSlugs).toEqual([]);
+    expect(next).toHaveBeenCalledTimes(1);
+  });
 });
