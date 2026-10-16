@@ -85,6 +85,12 @@ jobs:
       - name: Run test suites
         run: yarn test
 
+      - name: Lint server
+        run: cd server && yarn lint:check
+
+      - name: Lint collector
+        run: cd collector && yarn lint:check
+
       - name: Fail job on error
         if: failure()
         run: exit 1
