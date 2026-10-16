@@ -1,21 +1,18 @@
 # Lebap AI — Development Progress
 
-## Security hardening update — env-dump endpoint
+## Current focus — API key ownership and tenant isolation
 
-- Follow-up review found that API-key authentication alone was insufficient: any valid key could trigger `dumpENV()`, which writes selected process environment values (including secrets) to a server-side `.env` file.
-- Commit `9b86a9aa464f7d6da2bdf29fe43f1f5e3e5e5525` disables the direct env-dump action in production (HTTP 404) and removes the now-unused import from the route module. The existing production `updateENV()` persistence path is unchanged.
-- Verified by re-fetching the source after commit. Tests, lint, and build have not been run.
+- Re-checked current source on `lebap-ai/development` before continuing.
+- Confirmed the API-key model stores `createdBy` and `name`, while `validApiKey` checks the bearer secret but does not attach safe key identity to the request context.
+- The OpenAI-compatible model listing enumerates all workspaces; the reviewed routes do not visibly bind requested workspace slugs to the authenticated key's owner or allowed workspace list.
+- This remains an audit finding, not a claim that no other middleware exists. Parent-router controls and key creation/deletion flows still need inspection.
+- Avoided applying a speculative ownership filter: key creation semantics, legacy keys, and intended admin/service-key access must be established first to prevent breaking existing users or creating false tenant isolation.
+- Security review details are recorded in `docs/security/API_ROUTE_REVIEW.md`.
+- Tests, lint, build, and runtime verification have not been run in this session.
 
+## Previously completed static hardening
 
-## Security hardening update — system API response redaction
-
-- Found that `POST /v1/system/update-env` echoed submitted setting values in its `newValues` response, potentially reflecting provider credentials to API callers.
-- Commit `f65397f106221dba22104184892d9d7111bda464` redacts likely secret fields at the API response boundary, returning booleans for presence rather than secret contents. Actual setting updates are unchanged.
-- Together with the env-dump endpoint hardening, this is a targeted static security improvement. Tests/lint/build remain unexecuted.
-
-
-## Security hardening update — system settings response redaction
-
-- Static review found that `GET /v1/system` returned `SystemSettings.currentSettings()` directly. Although several credential fields are already represented as booleans by the model, returning the full settings object without a response-boundary filter was an unnecessary exposure risk.
-- Commit `448567fb7466fa18efad4efa5111f51d484d8195` adds a shared response sanitizer and applies it to both `GET /v1/system` and `POST /v1/system/update-env`. Setting names matching key, token, secret, password, connection string, auth, credential, or private-key patterns now return only a boolean presence indicator.
-- This is static source work only. Tests, lint, build, and runtime behavior have not been executed in this session.
+- Production `GET /v1/system/env-dump` no longer invokes `dumpENV()` and returns HTTP 404 in production (commit `9b86a9aa464f7d6da2bdf29fe43f1f5e3e5e5525`).
+- `POST /v1/system/update-env` redacts likely secret values in its response (commit `f65397f106221dba22104184892d9d7111bda464`).
+- `GET /v1/system` and the update response use a shared response sanitizer for sensitive-looking setting names (commit `448567fb7466fa18efad4efa5111f51d484d8195`).
+- These changes have been source-verified after commit; runtime tests have not been executed.
