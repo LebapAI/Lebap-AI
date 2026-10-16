@@ -39,4 +39,42 @@ function resolveWorkspaceScope(requestedWorkspaceSlugs, availableWorkspaceSlugs 
   return { workspaceSlugs, error: null };
 }
 
-module.exports = { resolveWorkspaceScope };
+/**
+ * Parse a persisted JSON workspace allowlist. Only SQL NULL/undefined means
+ * legacy unrestricted access; malformed or empty values fail closed.
+ */
+function parseWorkspaceSlugs(value) {
+  if (value === null || value === undefined) return null;
+  if (typeof value !== "string" || value.length === 0) return [];
+  try {
+    const parsed = JSON.parse(value);
+    if (
+      Array.isArray(parsed) &&
+      parsed.length > 0 &&
+      parsed.every((slug) => typeof slug === "string" && slug.trim().length > 0)
+    ) {
+      return [...new Set(parsed.map((slug) => slug.trim()))];
+    }
+  } catch (_error) {
+    // Invalid persisted scope must fail closed.
+  }
+  return [];
+}
+
+/**
+ * Legacy NULL scopes remain unrestricted during migration. Explicit allowlists
+ * only authorize listed workspace slugs; malformed/empty lists authorize none.
+ */
+function isWorkspaceAllowed(workspaceSlugs, workspaceSlug) {
+  return (
+    workspaceSlugs === null ||
+    workspaceSlugs === undefined ||
+    (Array.isArray(workspaceSlugs) && workspaceSlugs.includes(workspaceSlug))
+  );
+}
+
+module.exports = {
+  resolveWorkspaceScope,
+  parseWorkspaceSlugs,
+  isWorkspaceAllowed,
+};
