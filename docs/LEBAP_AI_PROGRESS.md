@@ -59,3 +59,10 @@
 - Remaining high-priority issue: API keys are not yet workspace-scoped. The current schema has no key scope/expiry/revocation fields, and broad tenant filtering is unsafe until API-key ownership and legacy-key behavior are defined.
 - Verification limitation: source change committed, but tests, lint, build, and live API checks have not been run.
 
+## OpenAI request immutability — 2026-10-16
+
+- Changed the chat-completions handler to read the final user message by index instead of calling `messages.pop()`. This avoids mutating the parsed request payload while preserving the existing “last message must be from user” contract.
+- Commit: `2c270f71afe2ef65774f3427798d41fa7c8c91de`.
+- A broader validation rewrite was not applied because the update operation was blocked; no claims are made that malformed message objects are fully validated.
+- Workspace-level authorization, API-key lifecycle fields, quota/usage tracking, and automated tests remain open. No test/build/runtime verification has been run.
+
