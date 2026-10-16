@@ -215,3 +215,12 @@ The historical findings above describe the state at the time of each inspection.
 - Both `GET /v1/openai/models` and `GET /v1/openai/vector_stores` now filter workspace inventories through the same shared fail-closed scope helper. This keeps list endpoints consistent with chat authorization and prevents listing out-of-scope workspaces.
 - Unit tests cover allowed, denied, legacy NULL, empty, malformed, and non-array scopes. Backend CI passed on commit `1357e667`; frontend build/lint passed on commit `2bcf2d94`. A new backend run is required for this latest change.
 - Remaining gate: scopes are an explicit workspace allowlist, not a complete customer/tenant identity system. Existing legacy keys with a NULL scope remain unrestricted for backward compatibility; rotate and assign scopes before using keys for external tenant isolation.
+
+
+## Follow-up remediation — workspace allowlist enforcement on API routes
+
+- Added `apiKeyWorkspaceScope` middleware for workspace, workspace-thread, and document route families.
+- Workspace-specific routes now reject a slug outside the key allowlist. `GET /v1/workspaces` filters its response to allowed slugs; scoped keys cannot create new unscoped workspaces.
+- Document upload routes require every requested `addToWorkspaces` target to be in scope. Scoped keys are denied document operations that do not identify an allowed workspace; static file-type/metadata-schema endpoints remain available.
+- Legacy NULL scopes remain unrestricted for compatibility. Explicit empty/malformed scopes fail closed.
+- This is a source change that needs fresh backend/frontend CI and route-level integration verification; do not treat it as production sign-off.
