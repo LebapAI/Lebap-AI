@@ -1,9 +1,9 @@
 {
-  "name": "anything-llm-server",
+  "name": "lebap-ai-server",
   "version": "1.18.0",
-  "description": "Server endpoints to process or create content for chatting",
+  "description": "Lebap AI server endpoints for AI workspaces and agents",
   "main": "index.js",
-  "author": "Timothy Carambat (Mintplex Labs)",
+  "author": "Lebap AI",
   "license": "MIT",
   "private": false,
   "engines": {
