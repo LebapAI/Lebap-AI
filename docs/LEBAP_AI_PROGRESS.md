@@ -293,7 +293,7 @@ Started the first implementation layer for durable API usage accounting:
 - Dashboard metrics include recorded API requests, completion/failure/abort status, completion rate, token counts, average latency, top models/providers, total users/active users, workspaces, API keys, and known-cost coverage.
 - Added date range validation (maximum 366 days) and backend tests for authorization middleware, invalid ranges, aggregate response, and safe failure when the migration/client is unavailable.
 - Revenue and profit are explicitly unavailable until billing and operating costs are integrated. Cost coverage is reported; unknown cost is never displayed as zero.
-- Usage collection still defaults off and currently captures OpenAI-compatible chat completion only. Migration and Prisma Client generation are pending; Jest, lint, frontend build, and runtime checks have not been executed.
+- Usage collection still defaults off. Source hooks now cover OpenAI-compatible chat completions, image generation/editing, and embeddings. The backend test workflow passed on commit `7477fb17e21ac2ffc5d2ed50adaeefea3e3ba88c`; that success predates the subsequent embedding-input validation commits. Migration and Prisma Client generation remain pending; frontend build, lint, and runtime checks are not yet verified.
 
 
 ## Business analytics trend follow-up — 2026-10-16
