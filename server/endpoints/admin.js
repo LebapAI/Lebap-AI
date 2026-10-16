@@ -556,7 +556,11 @@ function adminEndpoints(app) {
         const { apiKey, error } = await ApiKey.create(user.id, name, { workspaceSlugs });
         await EventLogs.logEvent(
           "api_key_created",
-          { createdBy: user?.username, name: apiKey?.name },
+          {
+            createdBy: user?.username,
+            name: apiKey?.name,
+            workspaceSlugs: apiKey?.workspaceSlugs ?? JSON.stringify(workspaceSlugs),
+          },
           user?.id
         );
         return response.status(200).json({
