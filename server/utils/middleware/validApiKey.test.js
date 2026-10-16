@@ -15,9 +15,15 @@ jest.mock("../../models/systemSettings", () => ({
   },
 }));
 
-function makeRequest(authorization) {
+function makeRequest(authorization, overrides = {}) {
   return {
     header: jest.fn(() => authorization),
+    method: "GET",
+    path: "/v1/workspaces",
+    params: {},
+    query: {},
+    body: {},
+    ...overrides,
   };
 }
 
@@ -186,6 +192,25 @@ describe("validApiKey middleware", () => {
     expect(next).toHaveBeenCalledTimes(1);
   });
 
+  test("enforces explicit workspace scopes before a protected route runs", async () => {
+    ApiKey.getForAuthentication.mockResolvedValue({
+      id: 17,
+      createdBy: 7,
+      workspaceSlugs: '["workspace-a"]',
+    });
+    const request = makeRequest("Bearer scoped-secret", {
+      method: "GET",
+      path: "/v1/workspace/workspace-b",
+      params: { slug: "workspace-b" },
+    });
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(next).not.toHaveBeenCalled();
+  });
+
   test("rejects a revoked credential", async () => {
     ApiKey.getForAuthentication.mockResolvedValue({
       id: 13,
@@ -237,7 +262,7 @@ describe("validApiKey middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  test("treats an empty stored scope as restricted rather than unrestricted", async () => {
+  test("denies an empty stored scope instead of treating it as unrestricted", async () => {
     ApiKey.getForAuthentication.mockResolvedValue({
       id: 15,
       createdBy: 7,
@@ -249,6 +274,7 @@ describe("validApiKey middleware", () => {
     await validApiKey(request, response, next);
 
     expect(response.locals.apiKey.workspaceSlugs).toEqual([]);
-    expect(next).toHaveBeenCalledTimes(1);
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(next).not.toHaveBeenCalled();
   });
 });
