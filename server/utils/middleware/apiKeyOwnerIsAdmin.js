@@ -7,6 +7,17 @@ const { User } = require("../../models/user");
  */
 async function apiKeyOwnerIsAdmin(_request, response, next) {
   try {
+    const workspaceSlugs = response.locals?.apiKey?.workspaceSlugs;
+    const routePath = _request?.route?.path;
+    if (
+      Array.isArray(workspaceSlugs) &&
+      !["/v1/openai/models", "/v1/openai/chat/completions"].includes(routePath)
+    ) {
+      return response.status(403).json({
+        error: "Workspace-scoped API keys cannot access this operation.",
+      });
+    }
+
     const ownerId = response.locals?.apiKey?.createdBy;
     if (!Number.isInteger(Number(ownerId)) || Number(ownerId) <= 0) {
       return response.status(403).json({
