@@ -102,3 +102,11 @@ The route `GET /v1/users/:id/issue-auth-token` was updated to require a key whos
 - This is a targeted change; other system routes and all other API groups still require a complete route-by-route authorization audit.
 - Compatibility note: unowned legacy keys and keys owned by non-admin users will receive 403 for these three routes. Create an administrator-owned key for authorized automation.
 - Source-level verification only; automated tests, lint, build, and runtime behavior have not been run.
+
+## Follow-up remediation — thread and embed API route guards (2026-10-16)
+
+- The workspace-thread API module previously used `validApiKey` alone on six routes that create, update, delete, or read workspace-thread data. Those route declarations now also require `apiKeyOwnerIsAdmin`.
+- The embed developer API module previously used `validApiKey` alone for listing and managing embed configurations; all six route declarations now require `apiKeyOwnerIsAdmin`, including routes already guarded for chat-history access.
+- Commits: `5ed71739714d170d4714cb2a1558330375569372` and `bb80c04a659bca1f37d9803af850d2ca80a95f04`.
+- This is a temporary instance-admin boundary because the schema still lacks credential scopes and workspace allowlists. It does not provide tenant isolation and may break non-admin or legacy-key integrations. Replace it with explicit least-privilege scopes only after the credential lifecycle and workspace authorization model are implemented and tested.
+- Static verification: fetched the updated files and checked all six route declarations in each module. Automated tests, lint, build, runtime tests, and regression checks have not been run.
