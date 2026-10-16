@@ -21,7 +21,7 @@ async function validApiKey(request, response, next) {
       });
     }
 
-    const apiKey = await ApiKey.get({ secret: bearerKey });
+    const apiKey = await ApiKey.getForAuthentication({ secret: bearerKey });
     if (!apiKey) {
       return response.status(403).json({
         error: "No valid api key found.",
