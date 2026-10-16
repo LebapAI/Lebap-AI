@@ -84,8 +84,6 @@ describe("API key workspace scope middleware", () => {
       path: "/v1/workspaces",
       method: "GET",
     });
-    response.json = jest.fn(function (body) { this.body = body; return this; }.bind(response));
-
     apiKeyWorkspaceScope(request, response, next);
     response.json({
       workspaces: [
