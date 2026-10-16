@@ -2,7 +2,7 @@
 
 Status: partially implemented foundation; enforcement and production rollout remain incomplete  
 Date: 2026-10-16  
-Branch: `lebap-ai/development`
+Branch: `main`
 
 ## Goals
 
@@ -13,7 +13,7 @@ Provide a durable foundation for per-client usage analytics, enforceable quotas,
 - `api_keys` contains `id`, `name`, nullable unique legacy `secret`, nullable unique `secretHash` for newly issued keys, nullable `createdBy`, nullable `expiresAt`/`revokedAt`, and timestamps. Existing raw-secret records are retained during the compatibility rollout.
 - The active Prisma datasource is SQLite. PostgreSQL configuration is commented out. A production database migration must be an explicit infrastructure decision, not an assumed configuration.
 - OpenAI-compatible chat, embedding, image generation, and vector-store routes use existing workspace/provider code. Their behavior should remain compatible while a shared metering layer is introduced.
-- The API-key record has nullable expiry/revocation timestamps and an optional `workspaceSlugs` allowlist. After migration, allowlists are enforced on OpenAI-compatible model listing/chat only. Operation scopes, tenant ID, rate limits, and spend limits remain absent.
+- The API-key record has nullable expiry/revocation/last-use timestamps and an optional `workspaceSlugs` allowlist. The `validApiKey` middleware now applies workspace-scope enforcement after authentication, and OpenAI-compatible model listing separately filters visible workspaces. This still requires endpoint-by-endpoint security review and tests; operation scopes, tenant ID, rate limits, concurrency limits, and spend limits remain absent.
 
 ## Recommended data model
 
@@ -125,7 +125,7 @@ New credentials are now designed to store a one-way SHA-256 verifier in `secretH
 
 ## Workspace allowlist implementation update — 2026-10-16
 
-An optional workspace allowlist is stored in `api_keys.workspaceSlugs`. Key creation requires and validates a non-empty allowlist against existing workspaces, and OpenAI-compatible model listing/chat completion enforce the allowlist. A NULL allowlist intentionally retains existing behavior; this is not complete tenant isolation because other route families and image generation still need explicit authorization. The SQLite migration, generated Prisma client, tests, lint, build, and runtime checks remain outstanding.
+An optional workspace allowlist is stored in `api_keys.workspaceSlugs`. Key creation validates a non-empty allowlist against existing workspaces. Workspace-scope enforcement is now invoked by `validApiKey` as well as selected route guards; OpenAI-compatible model listing also filters the returned workspace inventory, and chat completion performs its own model/workspace check. NULL scopes retain legacy unrestricted behavior for backward compatibility, so this is not complete tenant isolation. The latest enforcement and last-use changes require the current CI runs and deployment migration to finish before being treated as verified.
 
 
 ## Usage ledger foundation committed — 2026-10-16
@@ -153,3 +153,12 @@ Remaining: wire usage capture for embeddings and image generation; test streamin
 ### Disconnect classification follow-up — 2026-10-16
 
 The chat handler now observes response closure before the response has finished and uses that signal to finalize an in-flight metering event as `aborted`; ordinary exceptions are classified as `failed`. This is best-effort classification and still requires runtime tests against actual client disconnects and provider stream failures. Commit: `fd8080ffa4979ae5995a6e1f5888a0cd0255b85e`.
+
+
+## Current status — 2026-10-17 (main)
+
+Recent implementation adds a nullable `api_keys.lastUsedAt` field and SQLite migration. Successful API-key authentication attempts best-effort update this timestamp; the admin API returns it and the API-key settings row displays the last-use time. The update is deliberately non-fatal if the telemetry write fails. Workspace-scope enforcement is also invoked from `validApiKey`, so scoped credentials are checked before protected handlers run; route-specific guards remain in place for defense in depth. Tests were added for last-use persistence and a scoped-key denial case.
+
+Verification status: the main backend workflow had passed on the prior CI configuration commit, and the development-branch rerun for commit `46dd69f8120945e539cfc3ef1f4e8fb8069bec62` completed successfully on attempt 2. CI runs for the new last-use/scope changes are still in progress at the time of this update. Do not mark this work production-verified until the latest backend and frontend workflows pass and the migration is applied to a controlled database.
+
+Still open: first-class tenant/client identity; operation-level scopes; rate and concurrency limits; concurrency-safe budget reservation; verified provider pricing; billing; broader API route authorization audit; end-to-end migration/runtime tests; and production database selection. Usage metering remains observe-only and does not enforce quotas.
