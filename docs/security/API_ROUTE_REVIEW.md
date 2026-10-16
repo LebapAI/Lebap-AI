@@ -71,3 +71,11 @@ In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` is register
 - Static inspection found `POST /v1/system/update-env` returned `newValues` directly from `updateENV()`, which includes the submitted raw values. Secret values could therefore be reflected to API clients.
 - Commit `f65397f106221dba22104184892d9d7111bda464` sanitizes the response at the API boundary: keys whose names indicate keys, tokens, secrets, passwords, connection strings, or auth tokens return only a boolean indicating whether a value is set. Non-sensitive settings retain their returned value.
 - The underlying setting update behavior is unchanged. Static source verification only; no runtime tests performed.
+
+
+## Follow-up finding — system settings response
+
+- `GET /v1/system` returned `SystemSettings.currentSettings()` directly. Some fields are already booleans, but the route had no centralized response-boundary redaction.
+- Commit `448567fb7466fa18efad4efa5111f51d484d8195` applies `sanitizeSettingValues()` to both `GET /v1/system` and `POST /v1/system/update-env`. Values for setting names matching key, token, secret, password, connection-string, auth, credential, or private-key patterns are replaced with boolean presence indicators.
+- Static inspection only; tests and runtime verification remain outstanding.
+- The older finding above that says image-generation errors return raw `e.message` was remediated earlier: the current route logs the detailed exception server-side and returns a generic error response.
