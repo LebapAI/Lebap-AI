@@ -274,3 +274,10 @@ Started the first implementation layer for durable API usage accounting:
 - Usage ledger failures do not block chat; prompts and raw provider errors are not written to the ledger. This is not quota/rate/spend enforcement.
 - Commit: `b817f694693e4ceb907fa36c4e8d1e03fefc76e9`.
 - Migration and Prisma Client generation remain outstanding. Tests, lint, build, and runtime checks have not been run. Keep the flag disabled until migration is applied and verified.
+
+
+### Follow-up hardening — usage helper isolation
+
+- Extracted the feature flag and safe token-counter normalization into `server/utils/apiUsageMetering.js`; added unit tests for default-off behavior, accepted counters, invalid values, and cost remaining unknown.
+- Commits: `c20147e64471994a69a2fb9155f18e8f1ce66772` (helper), `fb103bf771482542b4b08df55acf5d5d64fbd945` (route refactor), `8212e7ef965d16a101240006451a551e826909e7` (tests).
+- JavaScript source/test files were checked for parse syntax through the connected source content; this is not a substitute for running Jest, ESLint, Prisma migrations, or the app.
