@@ -1,6 +1,9 @@
+const crypto = require("crypto");
 const prisma = require("../utils/prisma");
 
 const ApiKey = {
+  hashSecret: (secret) =>
+    crypto.createHash("sha256").update(String(secret), "utf8").digest("hex"),
   tablename: "api_keys",
   writable: ["name"],
 
@@ -13,26 +16,43 @@ const ApiKey = {
     try {
       const normalizedName =
         typeof name === "string" && name.trim().length > 0 ? name.trim() : null;
+      const secret = this.makeSecret();
       const apiKey = await prisma.api_keys.create({
         data: {
           name: normalizedName,
-          secret: this.makeSecret(),
+          // Store only a one-way verifier for newly issued credentials.
+          // The raw secret is returned once and is never persisted.
+          secret: null,
+          secretHash: this.hashSecret(secret),
           createdBy: createdByUserId,
           expiresAt: options.expiresAt || null,
         },
       });
 
-      return { apiKey, error: null };
+      return { apiKey: { ...apiKey, secret }, error: null };
     } catch (error) {
       console.error("FAILED TO CREATE API KEY.", error.message);
       return { apiKey: null, error: error.message };
     }
   },
 
+  // New keys are looked up by a one-way SHA-256 verifier. During migration,
+  // retain exact-match lookup for legacy raw-secret records until they are rotated.
   // Authentication must distinguish an unknown key from a database failure.
-  // Keep get()'s existing null-on-error contract for its other callers.
   getForAuthentication: async function (clause = {}) {
-    return prisma.api_keys.findFirst({ where: clause });
+    if (typeof clause.secret !== "string" || clause.secret.length === 0) {
+      return prisma.api_keys.findFirst({ where: clause });
+    }
+
+    const suppliedSecret = clause.secret;
+    return prisma.api_keys.findFirst({
+      where: {
+        OR: [
+          { secretHash: this.hashSecret(suppliedSecret) },
+          { secret: suppliedSecret },
+        ],
+      },
+    });
   },
 
   get: async function (clause = {}) {
