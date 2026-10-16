@@ -56,3 +56,11 @@ These unknowns must be inspected or tested before making production-readiness cl
 In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` is registered without `validApiKey`. Its handler calls `dumpENV()` when `NODE_ENV === "production"`. The exact contents and access controls of the generated artifact were not inspected here, so exposure impact needs confirmation; nevertheless, a production environment-dump action should not be anonymously invocable.
 
 **Priority: high — remediation committed.** The route now includes `validApiKey` middleware. This enforces API-key authentication, but the existing key model has no administrative scopes; a dedicated admin scope and review of the artifact contents remain follow-up work.
+
+
+## Follow-up remediation — production env-dump
+
+- The endpoint was previously changed to require a valid API key, but any valid key could still trigger a write of selected process environment values—including credentials—to the server-side `.env` file.
+- Commit `9b86a9aa464f7d6da2bdf29fe43f1f5e3e5e5525` removes the direct `dumpENV()` call from `GET /v1/system/env-dump` and returns HTTP 404 for this endpoint in production. The non-production behavior remains a no-op success for compatibility.
+- Production environment persistence through the existing `updateENV()` path is unchanged; this change disables only the separate endpoint.
+- Static change only; runtime behavior and tests have not been executed in this session.
