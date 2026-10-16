@@ -148,7 +148,7 @@ describe("business analytics endpoint", () => {
 
   test("does not present unknown daily costs as zero-cost usage", async () => {
     mockSuccessfulQueries();
-    prisma.$queryRawUnsafe.mockResolvedValueOnce([
+    prisma.$queryRawUnsafe.mockReset().mockResolvedValueOnce([
       {
         date: "2026-10-15",
         requests: 2n,
