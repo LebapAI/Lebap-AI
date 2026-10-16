@@ -255,3 +255,13 @@ A defensive edge case was found in expiry enforcement: a non-null expiry value t
 - Added regression tests in `server/utils/middleware/validApiKey.test.js` and `server/endpoints/api/apiKeys/index.test.js`.
 - Commits: `bd62229e4a4c1ad9222cc6ead45427a744f8cd61` (authentication), `3a69cb4d1a4a5053d485642ebd077a503794a4c7` (middleware test), `e86fc35a728b7a28313922a695807f5a1e921034` (safe metadata), `05da24af16857f79f4f27e099a4032114d604a73` (endpoint test).
 - Static source review only; tests, lint, build, migrations, and runtime verification remain outstanding.
+
+
+## API usage ledger foundation — 2026-10-16
+
+Started the first implementation layer for durable API usage accounting:
+- Added `api_usage_events` to `server/prisma/schema.prisma` and an SQLite migration with a unique request ID and indexes for key/time/status queries.
+- Added `server/models/apiUsage.js` with a minimal start event and conditional, one-time finalization. The model whitelists persisted fields and intentionally does not accept prompts or credential values.
+- Added unit tests for required fields, secret/prompt exclusion, non-negative usage values, explicit cost provenance, and duplicate-finalization behavior.
+- Commits: `b97c285433c2b369bc16d94030b4e2412cf25137` (schema), `142feab9145b4169143a70bb0cbd4bc75d8a1aaa` (migration), `3b8575589524e03fab9e4645bd17182f7b281ab1` (model), `6ed0216580f2cdbba783f649f405958c537e406d` (tests).
+- This is a storage foundation only: no API routes are wired to it yet, so usage is not being collected and no quotas/rate/spend limits are enforced. Migration and Prisma Client generation remain unapplied; tests/build/lint are unexecuted.
