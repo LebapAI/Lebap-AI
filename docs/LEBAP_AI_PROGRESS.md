@@ -112,3 +112,11 @@
 - Remaining finding: the API still lacks tenant/client-bound credentials and workspace allowlists. Admin-owned keys remain broad instance-level credentials; this is not tenant isolation. Other document mutations, workspace threads, and embed configuration routes need a full authorization matrix and tests before a client-scoped API can be considered safe.
 - Source changes were committed and will be source-verified. Tests, lint, build, migration checks, and runtime/API checks have not been run; no production sign-off is implied.
 
+
+## Authorization regression tests added — 2026-10-16
+
+- Added `server/utils/middleware/apiKeyOwnerIsAdmin.test.js` with Jest coverage for an active admin key, missing/invalid key ownership, non-admin owner, suspended admin, missing owner record, and an owner-lookup exception.
+- Commit: `e215abc9fd61e3d835689fdb241311de2e6379c1`.
+- These are authored regression tests, not a passing test result: the connector session cannot execute the repository's Jest suite, so the tests still need to run in CI or a local checkout.
+- Important follow-up: inspect the `User.get()` error contract. It currently catches database errors and returns `null`, so some owner lookup failures may be surfaced as 403 rather than the middleware's 500 branch. This is fail-closed, but the distinction should be verified before relying on operational diagnostics.
+
