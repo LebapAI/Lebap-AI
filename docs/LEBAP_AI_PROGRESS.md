@@ -281,3 +281,6 @@ Started the first implementation layer for durable API usage accounting:
 - Extracted the feature flag and safe token-counter normalization into `server/utils/apiUsageMetering.js`; added unit tests for default-off behavior, accepted counters, invalid values, and cost remaining unknown.
 - Commits: `c20147e64471994a69a2fb9155f18e8f1ce66772` (helper), `fb103bf771482542b4b08df55acf5d5d64fbd945` (route refactor), `8212e7ef965d16a101240006451a551e826909e7` (tests).
 - JavaScript source/test files were checked for parse syntax through the connected source content; this is not a substitute for running Jest, ESLint, Prisma migrations, or the app.
+
+
+- Follow-up: added best-effort detection of client disconnects so open chat usage events can finalize as `aborted` rather than being marked completed; ordinary exceptions are recorded as failed. Commit: `fd8080ffa4979ae5995a6e1f5888a0cd0255b85e`. Runtime behavior is unverified.
