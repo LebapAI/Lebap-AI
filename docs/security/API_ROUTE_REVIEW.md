@@ -75,3 +75,12 @@ In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` had a produ
 ## Remediation status — Simple SSO token issuance
 
 The route `GET /v1/users/:id/issue-auth-token` was updated to require a key whose `createdBy` user is an active administrator. The API-key middleware attaches only non-secret metadata (`id`, `createdBy`, `name`) to `response.locals.apiKey`. This is a targeted fix, not a global authorization solution. Verify API-key lifecycle compatibility and run automated tests before production use. Commits `230bd6340cd7e208bfa2b5d5509741d9f51ed3f3` and `4eedcbe09b1e5c60750a28df0d6b15497d3ddade`.
+
+
+## Follow-up — parent router and API key schema confirmed
+
+- `server/index.js` mounts `apiRouter` at `/api` without a global API-key or role middleware. `developerEndpoints(app, apiRouter)` registers API groups on the router; therefore route-level middleware is the relevant control unless another route-specific layer is present.
+- The Prisma `api_keys` model contains `id`, `name`, `secret`, nullable `createdBy`, and timestamps only. There are no first-class scopes, expiry, or revocation-state fields in this schema.
+- Workspace membership data is stored in `workspace_users`, but the reviewed API-key OpenAI-compatible routes do not visibly bind the key to those memberships.
+- This strengthens the static finding that the current API is not yet demonstrably tenant-isolated. It does not establish external exploitability or rule out infrastructure-level network restrictions.
+- Do not describe this branch as production-ready for untrusted multi-tenant API customers until credential semantics, authorization, quotas, and regression tests are implemented and verified.
