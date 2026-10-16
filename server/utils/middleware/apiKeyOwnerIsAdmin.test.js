@@ -61,7 +61,7 @@ describe("apiKeyOwnerIsAdmin", () => {
     [{ id: 8, role: "admin", suspended: 1 }, "suspended admin"],
     [null, "missing owner record"],
   ])("rejects a %s", async (owner) => {
-    User.get.mockResolvedValue(owner);
+    User.getForAuthorization.mockResolvedValue(owner);
     const response = makeResponse({ createdBy: 8 });
     const next = jest.fn();
 
