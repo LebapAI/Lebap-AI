@@ -45,12 +45,20 @@ export default function Sidebar() {
         <div className="overflow-hidden h-full">
           <div className="flex shrink-0 w-full justify-center my-[18px]">
             <div className="flex w-[250px] min-w-[250px]">
-              <Link to={paths.home()} aria-label="Home">
+              <Link
+                to={paths.home()}
+                aria-label="Lebap AI home"
+                className={`flex items-center gap-3 transition-opacity duration-500 ${showSidebar ? "opacity-100" : "opacity-0"}`}
+              >
                 <img
-                  src={logo}
-                  alt="Logo"
-                  className={`rounded max-h-[24px] object-contain transition-opacity duration-500 ${showSidebar ? "opacity-100" : "opacity-0"}`}
+                  src="/lebap-ai-logo.svg"
+                  alt=""
+                  aria-hidden="true"
+                  className="h-10 w-10 shrink-0 object-contain"
                 />
+                <span className="whitespace-nowrap text-[21px] font-bold tracking-tight text-white">
+                  Lebap <span className="bg-gradient-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent">AI</span>
+                </span>
               </Link>
             </div>
           </div>
@@ -120,12 +128,12 @@ export function SidebarMobileHeader() {
           <List className="h-6 w-6" />
         </button>
         <div className="flex items-center justify-center flex-grow">
-          <img
-            src={logo}
-            alt="Logo"
-            className="block mx-auto h-6 w-auto"
-            style={{ maxHeight: "40px", objectFit: "contain" }}
-          />
+          <div className="flex items-center justify-center gap-2">
+            <img src="/lebap-ai-logo.svg" alt="" aria-hidden="true" className="h-9 w-9 object-contain" />
+            <span className="text-lg font-bold tracking-tight text-white">
+              Lebap <span className="bg-gradient-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent">AI</span>
+            </span>
+          </div>
         </div>
         <div className="w-12"></div>
       </div>
