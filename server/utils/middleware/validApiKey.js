@@ -1,6 +1,7 @@
 const { ApiKey } = require("../../models/apiKeys");
 const { SystemSettings } = require("../../models/systemSettings");
 const { parseWorkspaceSlugs } = require("../apiKeyScopes");
+const { apiKeyWorkspaceScope } = require("./apiKeyWorkspaceScope");
 
 
 async function validApiKey(request, response, next) {
@@ -57,7 +58,7 @@ async function validApiKey(request, response, next) {
 
     // Last-use tracking is best-effort and never blocks authentication on telemetry failure.
     if (typeof ApiKey.markUsed === "function") await ApiKey.markUsed(apiKey.id);
-    return next();
+    return apiKeyWorkspaceScope(request, response, next);
   } catch (_error) {
     // Fail closed if authentication infrastructure is unavailable.
     console.error("API key authentication failed due to an internal error.");
