@@ -42,6 +42,7 @@ function businessAnalyticsEndpoints(app) {
           statusGroups,
           modelGroups,
           providerGroups,
+          dailyTrendRows,
           knownCostTotals,
           totalUsers,
           activeUsers,
@@ -74,6 +75,24 @@ function businessAnalyticsEndpoints(app) {
             orderBy: { _count: { id: "desc" } },
             take: 10,
           }),
+          // Aggregate in SQLite rather than loading every event into Node. Date
+          // conversion handles both Prisma ISO timestamps and SQLite CURRENT_TIMESTAMP.
+          prisma.$queryRawUnsafe(
+            `SELECT
+              strftime('%Y-%m-%d', datetime("createdAt")) AS "date",
+              COUNT(*) AS "requests",
+              SUM(CASE WHEN "status" = 'completed' THEN 1 ELSE 0 END) AS "completed",
+              SUM(CASE WHEN "status" = 'failed' THEN 1 ELSE 0 END) AS "failed",
+              COALESCE(SUM("totalTokens"), 0) AS "totalTokens",
+              SUM(CASE WHEN "estimatedCostUsd" IS NOT NULL AND "costSource" <> 'unknown' THEN 1 ELSE 0 END) AS "knownCostEvents",
+              SUM(CASE WHEN "estimatedCostUsd" IS NOT NULL AND "costSource" <> 'unknown' THEN "estimatedCostUsd" ELSE 0 END) AS "knownCostUsd"
+            FROM "api_usage_events"
+            WHERE datetime("createdAt") >= datetime(?) AND datetime("createdAt") <= datetime(?)
+            GROUP BY strftime('%Y-%m-%d', datetime("createdAt"))
+            ORDER BY "date" ASC`,
+            from.toISOString(),
+            to.toISOString()
+          ),
           prisma.api_usage_events.aggregate({
             where: {
               createdAt: range,
@@ -93,6 +112,8 @@ function businessAnalyticsEndpoints(app) {
           statusGroups.map((row) => [row.status, row._count._all])
         );
         const knownCostEvents = knownCostTotals._count._all || 0;
+        const terminalRequests =
+          (byStatus.completed || 0) + (byStatus.failed || 0) + (byStatus.aborted || 0);
 
         return response.status(200).json({
           range: { from: from.toISOString(), to: to.toISOString() },
@@ -103,8 +124,8 @@ function businessAnalyticsEndpoints(app) {
             aborted: byStatus.aborted || 0,
             inProgress: byStatus.started || 0,
             successRate:
-              (usageTotals._count._all || 0) > 0
-                ? Number(((byStatus.completed || 0) / usageTotals._count._all * 100).toFixed(2))
+              terminalRequests > 0
+                ? Number(((byStatus.completed || 0) / terminalRequests * 100).toFixed(2))
                 : null,
             averageLatencyMs:
               usageTotals._avg.latencyMs === null
@@ -137,6 +158,19 @@ function businessAnalyticsEndpoints(app) {
             provider: row.provider || "unknown",
             requests: row._count._all,
           })),
+          dailyTrend: dailyTrendRows.map((row) => {
+            const knownDailyCostEvents = Number(row.knownCostEvents || 0);
+            return {
+              date: row.date,
+              requests: Number(row.requests || 0),
+              completed: Number(row.completed || 0),
+              failed: Number(row.failed || 0),
+              totalTokens: Number(row.totalTokens || 0),
+              knownCostEvents: knownDailyCostEvents,
+              // Null means no verified cost data for the day, not a free day.
+              knownCostUsd: knownDailyCostEvents > 0 ? Number(row.knownCostUsd || 0) : null,
+            };
+          }),
           platform: {
             totalUsers,
             activeUsers,
