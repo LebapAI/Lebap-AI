@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const prisma = require("../utils/prisma");
-const { ApiKey } = require("./apiKeys");
+const { ApiKey, publicApiKey } = require("./apiKeys");
 
 jest.mock("../utils/prisma", () => ({
   api_keys: {
@@ -68,5 +68,40 @@ describe("ApiKey secret storage", () => {
         ],
       },
     });
+  });
+});
+
+describe("public API key projection", () => {
+  test("never returns raw secrets or secret verifiers and parses workspace scope", () => {
+    const result = publicApiKey({
+      id: 3,
+      name: "automation",
+      secret: "raw-secret",
+      secretHash: "one-way-verifier",
+      workspaceSlugs: '["workspace-a","workspace-b"]',
+      expiresAt: null,
+      revokedAt: null,
+    });
+
+    expect(result).toMatchObject({
+      id: 3,
+      name: "automation",
+      workspaceSlugs: ["workspace-a", "workspace-b"],
+      status: "active",
+    });
+    expect(result).not.toHaveProperty("secret");
+    expect(result).not.toHaveProperty("secretHash");
+    expect(JSON.stringify(result)).not.toContain("raw-secret");
+    expect(JSON.stringify(result)).not.toContain("one-way-verifier");
+  });
+
+  test("treats malformed workspace scopes as restricted", () => {
+    expect(publicApiKey({ id: 4, workspaceSlugs: "not-json" }).workspaceSlugs).toEqual([]);
+    expect(publicApiKey({ id: 5, workspaceSlugs: "[]" }).workspaceSlugs).toEqual([]);
+  });
+
+  test("marks revoked and expired credentials accurately", () => {
+    expect(publicApiKey({ id: 6, revokedAt: new Date() }).status).toBe("revoked");
+    expect(publicApiKey({ id: 7, expiresAt: "2000-01-01T00:00:00.000Z" }).status).toBe("expired");
   });
 });
