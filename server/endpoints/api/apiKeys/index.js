@@ -92,33 +92,31 @@ function apiKeyManagementEndpoints(app) {
         }
 
         let workspaceSlugs = null;
-        if (body.workspaceSlugs !== undefined && body.workspaceSlugs !== null) {
-          if (
-            !Array.isArray(body.workspaceSlugs) ||
-            body.workspaceSlugs.length === 0 ||
-            body.workspaceSlugs.length > 100 ||
-            !body.workspaceSlugs.every(
-              (slug) => typeof slug === "string" && /^[a-z0-9][a-z0-9-]{0,99}$/.test(slug)
-            )
-          ) {
-            return response.status(400).json({
-              error: "workspaceSlugs must be a non-empty array of valid workspace slugs (maximum 100).",
-            });
-          }
-          workspaceSlugs = [...new Set(body.workspaceSlugs)];
-          if (workspaceSlugs.length !== body.workspaceSlugs.length) {
-            return response.status(400).json({
-              error: "workspaceSlugs must not contain duplicates.",
-            });
-          }
-          const existingWorkspaces = await Promise.all(
-            workspaceSlugs.map((slug) => Workspace.get({ slug }))
-          );
-          if (existingWorkspaces.some((workspace) => !workspace)) {
-            return response.status(400).json({
-              error: "Every workspaceSlugs entry must reference an existing workspace.",
-            });
-          }
+        if (
+          !Array.isArray(body.workspaceSlugs) ||
+          body.workspaceSlugs.length === 0 ||
+          body.workspaceSlugs.length > 100 ||
+          !body.workspaceSlugs.every(
+            (slug) => typeof slug === "string" && /^[a-z0-9][a-z0-9_-]{0,99}$/.test(slug)
+          )
+        ) {
+          return response.status(400).json({
+            error: "workspaceSlugs is required and must be a non-empty array of valid workspace slugs (maximum 100).",
+          });
+        }
+        workspaceSlugs = [...new Set(body.workspaceSlugs)];
+        if (workspaceSlugs.length !== body.workspaceSlugs.length) {
+          return response.status(400).json({
+            error: "workspaceSlugs must not contain duplicates.",
+          });
+        }
+        const existingWorkspaces = await Promise.all(
+          workspaceSlugs.map((slug) => Workspace.get({ slug }))
+        );
+        if (existingWorkspaces.some((workspace) => !workspace)) {
+          return response.status(400).json({
+            error: "Every workspaceSlugs entry must reference an existing workspace.",
+          });
         }
 
         let expiresAt = null;
