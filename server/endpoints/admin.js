@@ -8,6 +8,7 @@ const { User } = require("../models/user");
 const { DocumentVectors } = require("../models/vectors");
 const { Workspace } = require("../models/workspace");
 const { resolveWorkspaceScope } = require("../utils/apiKeyScopes");
+const { resolveApiKeyExpiry } = require("../utils/apiKeyExpiry");
 
 const { WorkspaceChats } = require("../models/workspaceChats");
 const {
@@ -529,7 +530,15 @@ function adminEndpoints(app) {
     async (request, response) => {
       try {
         const user = await userFromSession(request, response);
-        const { name = null, workspaceSlugs: requestedWorkspaceSlugs } = reqBody(request) || {};
+        const {
+          name = null,
+          workspaceSlugs: requestedWorkspaceSlugs,
+          expiresInDays,
+        } = reqBody(request) || {};
+        const { expiresAt, error: expiryError } = resolveApiKeyExpiry(expiresInDays);
+        if (expiryError) {
+          return response.status(400).json({ apiKey: null, error: expiryError });
+        }
         const workspaces = await Workspace.where();
         const { workspaceSlugs, error: scopeError } = resolveWorkspaceScope(
           requestedWorkspaceSlugs,
@@ -538,13 +547,14 @@ function adminEndpoints(app) {
         if (scopeError) {
           return response.status(400).json({ apiKey: null, error: scopeError });
         }
-        const { apiKey, error } = await ApiKey.create(user.id, name, { workspaceSlugs });
+        const { apiKey, error } = await ApiKey.create(user.id, name, { workspaceSlugs, expiresAt });
         await EventLogs.logEvent(
           "api_key_created",
           {
             createdBy: user?.username,
             name: apiKey?.name,
             workspaceSlugs,
+            expiresAt,
           },
           user?.id
         );
