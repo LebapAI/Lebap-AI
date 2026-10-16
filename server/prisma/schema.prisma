@@ -20,6 +20,8 @@ model api_keys {
   name          String?
   secret        String?  @unique
   createdBy     Int?
+  expiresAt     DateTime?
+  revokedAt     DateTime?
   createdAt     DateTime @default(now())
   lastUpdatedAt DateTime @default(now())
 }
