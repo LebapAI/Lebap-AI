@@ -5,6 +5,7 @@ const { validApiKey, parseWorkspaceSlugs } = require("./validApiKey");
 jest.mock("../../models/apiKeys", () => ({
   ApiKey: {
     getForAuthentication: jest.fn(),
+    markUsed: jest.fn(),
   },
 }));
 
@@ -60,6 +61,7 @@ describe("validApiKey middleware", () => {
     next = jest.fn();
     SystemSettings.isMultiUserMode.mockResolvedValue(false);
     ApiKey.getForAuthentication.mockResolvedValue({ id: 1 });
+    ApiKey.markUsed.mockResolvedValue(true);
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -96,6 +98,7 @@ describe("validApiKey middleware", () => {
 
     expect(response.locals.multiUserMode).toBe(false);
     expect(ApiKey.getForAuthentication).toHaveBeenCalledWith({ secret: "secret-value" });
+    expect(ApiKey.markUsed).toHaveBeenCalledWith(1);
     expect(next).toHaveBeenCalledTimes(1);
     expect(response.status).not.toHaveBeenCalled();
   });
@@ -176,6 +179,7 @@ describe("validApiKey middleware", () => {
       name: "automation",
       expiresAt: null,
       revokedAt: null,
+      lastUsedAt: null,
       workspaceSlugs: ["allowed-workspace"],
     });
     expect(JSON.stringify(response.locals)).not.toContain("supplied-secret");
