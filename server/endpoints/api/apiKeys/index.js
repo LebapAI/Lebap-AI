@@ -26,6 +26,10 @@ function parseWorkspaceSlugs(value) {
 }
 
 function publicApiKey(apiKey) {
+  const expiryTime =
+    apiKey.expiresAt === null || apiKey.expiresAt === undefined
+      ? null
+      : new Date(apiKey.expiresAt).getTime();
   return {
     id: apiKey.id,
     name: apiKey.name || null,
@@ -44,7 +48,8 @@ function publicApiKey(apiKey) {
     workspaceSlugs: parseWorkspaceSlugs(apiKey.workspaceSlugs),
     status: apiKey.revokedAt
       ? "revoked"
-      : apiKey.expiresAt && new Date(apiKey.expiresAt).getTime() <= Date.now()
+      : expiryTime !== null &&
+          (!Number.isFinite(expiryTime) || expiryTime <= Date.now())
         ? "expired"
         : "active",
   };
