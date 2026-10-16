@@ -194,3 +194,16 @@ A defensive edge case was found in expiry enforcement: a non-null expiry value t
 - The API-key table now displays status, workspace scope, and expiry metadata; it no longer renders or copies secrets from list responses.
 - Added model tests for public key projection, secret/verifier redaction, malformed scope fail-closed behavior, and revoked/expired status.
 - These changes are source-level only until the latest GitHub Actions run completes. Database migrations and generated Prisma Client remain pending validation; legacy NULL-scope keys remain unrestricted for compatibility and must be rotated or explicitly remediated.
+
+
+## Current-state correction — API key lifecycle and workspace inventory (2026-10-16)
+
+The historical findings above describe the state at the time of each inspection. The following controls have since been added on `lebap-ai/development`:
+
+- The current API-key model/schema and migrations include hashed-secret storage, workspace allowlists, expiry, and revocation timestamps. New raw secrets are returned once at creation; public API-key projections omit both the secret and verifier.
+- `validApiKey` rejects revoked, expired, and malformed-expiry credentials. Missing/invalid credentials and authentication infrastructure errors fail closed.
+- Both admin and single-user key-issuance routes validate `expiresInDays` server-side. Supported lifetimes are 30, 90, and 365 days, or null/no expiry. The UI defaults to 90 days; older clients that omit the field remain compatible and issue non-expiring keys.
+- OpenAI-compatible model listing and chat completion enforce explicit workspace allowlists. The vector-store listing now filters workspace records through the same scope policy, so names, slugs, and document counts for disallowed workspaces are not returned to explicitly scoped keys.
+- A NULL legacy scope is still intentionally treated as unrestricted for compatibility. Malformed/empty persisted scopes fail closed. Therefore, not every existing credential is tenant-isolated yet; legacy keys must be migrated or rotated before relying on strict tenant boundaries.
+- Privileged routes still use an interim active-admin-owned-key policy. This is not a substitute for customer/tenant identity, per-operation scopes, rate/concurrency controls, or hard spend quotas.
+- Backend CI previously passed for commit `d1ed57dd2731fdc738b45c840a7a5cff8a6bb248`, and frontend build/lint passed for commit `4459d53e53709473f14ef560435d175e82be8b17`. These commits predate the current expiry-selector and vector-store filtering changes; the newest combined tree must pass fresh CI and runtime/database checks before production sign-off.
