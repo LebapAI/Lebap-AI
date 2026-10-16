@@ -146,7 +146,17 @@ function apiSystemEndpoints(app) {
       try {
         const body = reqBody(request);
         const { newValues, error } = await updateENV(body);
-        response.status(200).json({ newValues, error });
+        // Never echo secret material back to API clients after a settings update.
+        // Keep the setting names but expose only whether a sensitive value is set.
+        const safeNewValues = Object.fromEntries(
+          Object.entries(newValues).map(([key, value]) => [
+            key,
+            /(key|token|secret|password|connectionstring|authtoken)/i.test(key)
+              ? Boolean(value)
+              : value,
+          ])
+        );
+        response.status(200).json({ newValues: safeNewValues, error });
       } catch (e) {
         console.error(e.message, e);
         response.sendStatus(500).end();
