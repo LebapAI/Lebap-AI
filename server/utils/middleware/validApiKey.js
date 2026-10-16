@@ -67,7 +67,7 @@ async function validApiKey(request, response, next) {
     };
 
     return next();
-  } catch (error) {
+  } catch (_error) {
     // Fail closed if authentication infrastructure is unavailable.
     console.error("API key authentication failed due to an internal error.");
     return response.status(500).json({
