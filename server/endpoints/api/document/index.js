@@ -50,7 +50,7 @@ function apiDocumentEndpoints(app) {
 
   app.post(
     "/v1/document/upload",
-    [validApiKey, handleAPIFileUpload, validateWorkspaceSlugQuery],
+    [validApiKey, apiKeyOwnerIsAdmin, handleAPIFileUpload, validateWorkspaceSlugQuery],
     async (request, response) => {
       /*
     #swagger.tags = ['Documents']
@@ -178,7 +178,7 @@ function apiDocumentEndpoints(app) {
 
   app.post(
     "/v1/document/upload/:folderName",
-    [validApiKey, handleAPIFileUpload, validateWorkspaceSlugQuery],
+    [validApiKey, apiKeyOwnerIsAdmin, handleAPIFileUpload, validateWorkspaceSlugQuery],
     async (request, response) => {
       /*
       #swagger.tags = ['Documents']
@@ -330,7 +330,7 @@ function apiDocumentEndpoints(app) {
 
   app.post(
     "/v1/document/upload-link",
-    [validApiKey, validateWorkspaceSlugQuery],
+    [validApiKey, apiKeyOwnerIsAdmin, validateWorkspaceSlugQuery],
     async (request, response) => {
       /*
     #swagger.tags = ['Documents']
@@ -506,7 +506,7 @@ function apiDocumentEndpoints(app) {
 
   app.post(
     "/v1/document/raw-text",
-    [validApiKey, validateWorkspaceSlugQuery],
+    [validApiKey, apiKeyOwnerIsAdmin, validateWorkspaceSlugQuery],
     async (request, response) => {
       /*
      #swagger.tags = ['Documents']
@@ -791,7 +791,7 @@ function apiDocumentEndpoints(app) {
 
   app.get(
     "/v1/document/accepted-file-types",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (_, response) => {
       /*
     #swagger.tags = ['Documents']
@@ -848,7 +848,7 @@ function apiDocumentEndpoints(app) {
 
   app.get(
     "/v1/document/metadata-schema",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (_, response) => {
       /*
     #swagger.tags = ['Documents']
@@ -955,7 +955,7 @@ function apiDocumentEndpoints(app) {
 
   app.post(
     "/v1/document/create-folder",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Documents']
@@ -1021,7 +1021,7 @@ function apiDocumentEndpoints(app) {
 
   app.delete(
     "/v1/document/remove-folder",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Documents']
@@ -1080,7 +1080,7 @@ function apiDocumentEndpoints(app) {
 
   app.post(
     "/v1/document/move-files",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Documents']
@@ -1183,7 +1183,7 @@ function apiDocumentEndpoints(app) {
 
   app.get(
     "/v1/document/generated-files/:filename",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Documents']
