@@ -1,26 +1,13 @@
 const crypto = require("crypto");
 const prisma = require("../utils/prisma");
-
+const { parseWorkspaceSlugs } = require("../utils/apiKeyScopes");
 
 function publicApiKey(apiKey = {}) {
   const expiryTime =
     apiKey.expiresAt === null || apiKey.expiresAt === undefined
       ? null
       : new Date(apiKey.expiresAt).getTime();
-  let workspaceSlugs = null;
-  if (apiKey.workspaceSlugs !== null && apiKey.workspaceSlugs !== undefined) {
-    try {
-      const parsed = JSON.parse(apiKey.workspaceSlugs);
-      workspaceSlugs =
-        Array.isArray(parsed) &&
-        parsed.length > 0 &&
-        parsed.every((slug) => typeof slug === "string" && slug.trim().length > 0)
-          ? [...new Set(parsed.map((slug) => slug.trim()))]
-          : [];
-    } catch (_error) {
-      workspaceSlugs = [];
-    }
-  }
+  const workspaceSlugs = parseWorkspaceSlugs(apiKey.workspaceSlugs);
   return {
     id: apiKey.id,
     name: apiKey.name || null,
