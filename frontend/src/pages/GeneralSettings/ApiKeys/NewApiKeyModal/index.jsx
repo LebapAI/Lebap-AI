@@ -4,6 +4,7 @@ import Admin from "@/models/admin";
 import paths from "@/utils/paths";
 import { userFromStorage } from "@/utils/request";
 import System from "@/models/system";
+import Workspace from "@/models/workspace";
 import { useTranslation } from "react-i18next";
 import {
   ModalHeader,
@@ -20,15 +21,54 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
   const [name, setName] = useState("");
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [workspaces, setWorkspaces] = useState([]);
+  const [selectedWorkspaceSlugs, setSelectedWorkspaceSlugs] = useState([]);
+  const [loadingWorkspaces, setLoadingWorkspaces] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    async function loadWorkspaces() {
+      const user = userFromStorage();
+      const available = !!user ? await Admin.workspaces() : await Workspace.all();
+      if (!active) return;
+      const normalized = Array.isArray(available)
+        ? available.filter((workspace) => workspace?.slug && workspace?.name)
+        : [];
+      setWorkspaces(normalized);
+      setLoadingWorkspaces(false);
+    }
+    loadWorkspaces().catch(() => {
+      if (active) {
+        setWorkspaces([]);
+        setLoadingWorkspaces(false);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const toggleWorkspace = (slug) => {
+    setSelectedWorkspaceSlugs((current) =>
+      current.includes(slug)
+        ? current.filter((item) => item !== slug)
+        : [...current, slug]
+    );
+  };
 
   const handleCreate = async (e) => {
     setError(null);
     e.preventDefault();
+    if (selectedWorkspaceSlugs.length === 0) {
+      setError("Select at least one workspace for this API key.");
+      return;
+    }
     const user = userFromStorage();
     const Model = !!user ? Admin : System;
 
     const { apiKey: newApiKey, error } = await Model.generateApiKey({
       name,
+      workspaceSlugs: selectedWorkspaceSlugs,
     });
     if (!!newApiKey) {
       setApiKey(newApiKey);
@@ -63,14 +103,58 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
           </p>
         )}
         {!apiKey && (
-          <ModalInput
-            label={t("api.modal.name.label")}
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder={t("api.modal.name.placeholder")}
-            hint={t("api.modal.name.helper")}
-          />
+          <>
+            <ModalInput
+              label={t("api.modal.name.label")}
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t("api.modal.name.placeholder")}
+              hint={t("api.modal.name.helper")}
+            />
+            <div className="flex flex-col gap-y-2">
+              <div>
+                <p className="text-sm font-semibold text-theme-text-primary">
+                  Workspace access
+                </p>
+                <p className="text-xs text-theme-text-secondary mt-1">
+                  This key can access only the workspaces selected here.
+                </p>
+              </div>
+              {loadingWorkspaces ? (
+                <p className="text-xs text-theme-text-secondary">Loading workspaces…</p>
+              ) : workspaces.length === 0 ? (
+                <p className="text-xs text-red-400">
+                  No workspaces are available. Create a workspace before issuing an API key.
+                </p>
+              ) : (
+                <div className="max-h-48 overflow-y-auto rounded-lg border border-white/10 p-3 flex flex-col gap-y-3">
+                  {workspaces.map((workspace) => (
+                    <label
+                      key={workspace.slug}
+                      className="flex items-start gap-x-3 text-sm text-theme-text-primary cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedWorkspaceSlugs.includes(workspace.slug)}
+                        onChange={() => toggleWorkspace(workspace.slug)}
+                        className="mt-1 accent-blue-500"
+                      />
+                      <span className="min-w-0">
+                        <span className="block">{workspace.name}</span>
+                        <span className="block text-xs text-theme-text-secondary">
+                          {workspace.slug}
+                        </span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              )}
+              <p className="text-xs text-theme-text-secondary">
+                Selected: {selectedWorkspaceSlugs.length} of {workspaces.length}
+              </p>
+            </div>
+          </>
         )}
         {apiKey && (
           <div className="relative">
@@ -116,7 +200,10 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
             <ModalSecondaryButton onClick={closeModal} type="button">
               {t("api.modal.cancel")}
             </ModalSecondaryButton>
-            <ModalPrimaryButton type="submit">
+            <ModalPrimaryButton
+              type="submit"
+              disabled={loadingWorkspaces || workspaces.length === 0 || selectedWorkspaceSlugs.length === 0}
+            >
               {t("api.modal.create")}
             </ModalPrimaryButton>
           </>
