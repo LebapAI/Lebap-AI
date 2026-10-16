@@ -58,3 +58,7 @@ Still in development. Changes are committed to `lebap-ai/development`; tests/lin
 - Extended static review across the developer API route groups. Most inspected admin, workspace, document, workspace-thread, user-management, and embed routes explicitly include `validApiKey`.
 - Found a high-priority exception: `GET /v1/system/env-dump` in `server/endpoints/api/system/index.js` has no `validApiKey` middleware and calls `dumpENV()` in production. Documented in `docs/security/API_ROUTE_REVIEW.md` (commit `9f8a285a9317627d51fbe7a43b6c2baa14aee7b8`).
 - Attempted a direct targeted code fix, but the GitHub connector blocked that write. **The unauthenticated env-dump route remains unfixed** and should be the next code change. Do not treat the documentation update as remediation.
+
+- **Remediation committed:** `server/endpoints/api/system/index.js` now attaches `[validApiKey]` to `GET /v1/system/env-dump`. Commit: `8f812717060b7dfe3f2c9ee06ad69fb926803790`.
+- Updated `docs/security/API_ROUTE_REVIEW.md` to reflect the fix (commit `a8bb0d519774e2793dc45df62dbfac8569f21dce`). API-key authentication is now required, but the existing key model has no admin scopes; add scoped authorization and inspect the dumped artifact contents as follow-up work.
+- Static source change only: tests and lint have not been executed.
