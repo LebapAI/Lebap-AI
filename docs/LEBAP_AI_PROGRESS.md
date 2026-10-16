@@ -1,14 +1,14 @@
 # Lebap AI — Development Progress
 
-## Current focus — API key ownership and tenant isolation
+## Current focus — API key lifecycle, tenant isolation, and verification
 
 - Re-checked current source on `lebap-ai/development` before continuing.
 - API-key authentication now attaches safe identity metadata and an optional parsed `workspaceSlugs` allowlist. Newly issued credentials store a SHA-256 verifier; expiry and revocation are checked in source.
 - OpenAI-compatible model listing and chat completion enforce explicitly configured workspace allowlists. NULL scope remains backward-compatible and unrestricted, so this is not yet complete tenant isolation.
 - The remaining authorization gap covers other API route families, operation scopes, client/tenant identity, and image/provider operations. Legacy raw-secret credentials also remain compatible until rotated.
-- These are source-level changes only; migration application, Prisma Client generation, automated tests, lint, build, and runtime checks remain outstanding.
+- CI verification on 2026-10-16: backend workflow passed for commit `d1ed57dd2731fdc738b45c840a7a5cff8a6bb248`; frontend build and lint workflow passed for commit `4459d53e53709473f14ef560435d175e82be8b17`. These are different commits, so the combined latest tree still needs a fresh full CI pass. Migration application, Prisma Client generation against a real database, and runtime integration checks remain outstanding.
 - Security review details are recorded in `docs/security/API_ROUTE_REVIEW.md`.
-- Tests, lint, build, and runtime verification have not been run in this session.
+- Latest verified CI outcomes are recorded above. Production runtime and migration verification are still outstanding.
 
 ## Previously completed static hardening
 
@@ -364,3 +364,11 @@ A source review caught an integration issue before runtime validation: the brows
 - Added tests for legacy NULL behavior, malformed JSON, empty lists, duplicate slugs, whitespace normalization, and explicit allow/deny decisions. Invalid stored scope fails closed; only NULL/undefined preserves legacy unrestricted behavior.
 - Verified JavaScript syntax for the shared helper, its tests, authentication middleware, OpenAI-compatible endpoints, and API-key model/tests.
 - Backend CI passed for commit `6400ead9a70520de7b6304eb83feadfff9247c1a`. The frontend production build also passed on commit `ed0a248badadb2eea103c3a54c1eecc130a521ca`, but the lint step failed with 13 Prettier/unused-import errors; the follow-up fixes are being applied and must pass a fresh CI run before frontend lint is considered verified.
+
+
+## API key expiry controls — 2026-10-16
+
+- Added a shared server-side expiry parser for API-key issuance. It accepts only 30, 90, or 365 days, or an explicit no-expiry choice; invalid values return HTTP 400.
+- Both multi-user admin and single-user system API-key issuance routes now persist `expiresAt` and include it in the audit event.
+- The creation modal defaults to 90 days and lets an administrator select 30 days, 90 days, 365 days, or never. Existing API clients that omit `expiresInDays` remain backward-compatible and create non-expiring keys.
+- This implements expiry selection, not full rotation automation. Runtime verification and fresh combined CI are required before production sign-off.
