@@ -140,3 +140,16 @@ A Jest test file was added for route guard registration, secret redaction, name 
 - `validApiKey` rejects credentials with `revokedAt` set or an expiry timestamp at/before the current time. The admin revocation route sets `revokedAt` instead of deleting the credential record.
 - Tests were added for expiry validation and authentication rejection of expired/revoked keys. They have not been executed.
 - The migration has not been applied and Prisma client generation has not been run. Do not assume the deployed database contains the new columns. Scopes, workspace/client binding, key hashing, rate limits and usage metering remain unimplemented.
+
+
+## Follow-up review — workspace-scoped API credentials (2026-10-16)
+
+The earlier findings above describe the state at the time of the initial review. Subsequent changes on this branch have partially remediated them:
+
+- Newly issued keys require an explicit, non-empty list of existing workspace slugs and store a SHA-256 verifier rather than a raw secret.
+- `/v1/openai/models` filters the model list to the key's allowlist, and `/v1/openai/chat/completions` checks the requested workspace before provider execution.
+- `apiKeyOwnerIsAdmin` denies workspace-scoped keys on other guarded routes. The guard still requires an active administrator owner, including on the two permitted OpenAI-compatible routes.
+- `/v1/openai/vector_stores`, embeddings, image generation, document operations, and other privileged routes are not intended to be available to workspace-scoped keys under the current guard. This depends on the guard being attached to the route and the Express route metadata being populated; runtime tests are still required.
+- API-key metadata listing now fails closed for malformed stored workspace scope, matching authentication behavior.
+
+The following original findings remain open: NULL-scoped legacy keys are unrestricted, legacy raw-secret records remain accepted, no normalized usage ledger or enforceable rate/spend limits exist, and a complete route-by-route authorization audit has not been finished. No tests, migration, build, or runtime checks have been executed here.
