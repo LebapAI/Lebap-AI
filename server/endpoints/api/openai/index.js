@@ -213,7 +213,7 @@ function apiOpenAICompatibleEndpoints(app) {
 
   app.post(
     "/v1/openai/images/generations",
-    [validApiKey, handleImageGenUpload],
+    [validApiKey, apiKeyOwnerIsAdmin, handleImageGenUpload],
     async (request, response) => {
       /*
       #swagger.tags = ['OpenAI Compatible Endpoints']
