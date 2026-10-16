@@ -115,7 +115,7 @@ This document is a design specification only. This document began as a design sp
 
 ## Implementation update — 2026-10-16
 
-The source now includes nullable API-key `expiresAt` and `revokedAt` fields, an SQLite migration, optional expiry validation at creation, authentication rejection of expired/revoked credentials, and soft revocation. The migration, Prisma client generation, tests, and runtime behavior have not been verified. All tenant/client scoping, workspace allowlists, hashed-secret migration, usage events, quotas, and rate/concurrency enforcement described above remain design work.
+The source now includes nullable API-key `expiresAt` and `revokedAt` fields, an SQLite migration, optional expiry validation at creation, authentication rejection of expired/revoked credentials, and soft revocation. The migration, Prisma client generation, tests, and runtime behavior have not been verified. Workspace allowlists and one-way secret verifiers for newly issued API keys exist in source, with legacy-secret compatibility retained. Usage events exist in source and are feature-flagged. First-class tenant/client scoping, quota enforcement, verified pricing, and rate/concurrency enforcement remain unfinished.
 
 
 ## API credential storage update — 2026-10-16
