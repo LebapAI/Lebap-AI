@@ -4,7 +4,7 @@ const { validApiKey } = require("./validApiKey");
 
 jest.mock("../../models/apiKeys", () => ({
   ApiKey: {
-    get: jest.fn(),
+    getForAuthentication: jest.fn(),
   },
 }));
 
@@ -38,7 +38,7 @@ describe("validApiKey middleware", () => {
     jest.clearAllMocks();
     next = jest.fn();
     SystemSettings.isMultiUserMode.mockResolvedValue(false);
-    ApiKey.get.mockResolvedValue({ id: 1 });
+    ApiKey.getForAuthentication.mockResolvedValue({ id: 1 });
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -63,7 +63,7 @@ describe("validApiKey middleware", () => {
     expect(response.json).toHaveBeenCalledWith({
       error: "No valid api key found.",
     });
-    expect(ApiKey.get).not.toHaveBeenCalled();
+    expect(ApiKey.getForAuthentication).not.toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -74,7 +74,7 @@ describe("validApiKey middleware", () => {
     await validApiKey(request, response, next);
 
     expect(response.locals.multiUserMode).toBe(false);
-    expect(ApiKey.get).toHaveBeenCalledWith({ secret: "secret-value" });
+    expect(ApiKey.getForAuthentication).toHaveBeenCalledWith({ secret: "secret-value" });
     expect(next).toHaveBeenCalledTimes(1);
     expect(response.status).not.toHaveBeenCalled();
   });
@@ -85,12 +85,12 @@ describe("validApiKey middleware", () => {
 
     await validApiKey(request, response, next);
 
-    expect(ApiKey.get).toHaveBeenCalledWith({ secret: "secret-value" });
+    expect(ApiKey.getForAuthentication).toHaveBeenCalledWith({ secret: "secret-value" });
     expect(next).toHaveBeenCalledTimes(1);
   });
 
   test("rejects a token that does not match a stored key", async () => {
-    ApiKey.get.mockResolvedValue(null);
+    ApiKey.getForAuthentication.mockResolvedValue(null);
     const request = makeRequest("Bearer unknown-value");
     const response = makeResponse();
 
@@ -100,6 +100,22 @@ describe("validApiKey middleware", () => {
     expect(response.json).toHaveBeenCalledWith({
       error: "No valid api key found.",
     });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+
+  test("returns a generic 500 if API key storage is unavailable", async () => {
+    ApiKey.getForAuthentication.mockRejectedValue(new Error("private database details"));
+    const request = makeRequest("Bearer secret-value");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(500);
+    expect(response.json).toHaveBeenCalledWith({
+      error: "Authentication service unavailable.",
+    });
+    expect(JSON.stringify(response.json.mock.calls)).not.toContain("private database details");
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -114,7 +130,7 @@ describe("validApiKey middleware", () => {
     expect(response.json).toHaveBeenCalledWith({
       error: "Authentication service unavailable.",
     });
-    expect(ApiKey.get).not.toHaveBeenCalled();
+    expect(ApiKey.getForAuthentication).not.toHaveBeenCalled();
     expect(next).not.toHaveBeenCalled();
     expect(console.error).toHaveBeenCalledWith(
       "API key authentication failed due to an internal error."
