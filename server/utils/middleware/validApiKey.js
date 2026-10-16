@@ -47,9 +47,14 @@ async function validApiKey(request, response, next) {
     }
 
     const now = Date.now();
-    const expired =
-      apiKey.expiresAt && new Date(apiKey.expiresAt).getTime() <= now;
-    if (apiKey.revokedAt || expired) {
+    const expiryTime =
+      apiKey.expiresAt === null || apiKey.expiresAt === undefined
+        ? null
+        : new Date(apiKey.expiresAt).getTime();
+    const invalidExpiry =
+      expiryTime !== null && !Number.isFinite(expiryTime);
+    const expired = expiryTime !== null && expiryTime <= now;
+    if (apiKey.revokedAt || invalidExpiry || expired) {
       return response.status(403).json({
         error: "No valid api key found.",
       });
