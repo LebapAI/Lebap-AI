@@ -130,7 +130,7 @@ The developer API now registers `server/endpoints/api/apiKeys/index.js` with the
 - `DELETE /v1/admin/api-keys/:id` revokes a key after validating the ID and existence; the credential used for the current request cannot revoke itself.
 - Creation/revocation attempts are recorded through the existing event log. Audit-write failure is best-effort so a successful credential mutation is not reported as an ambiguous failure.
 
-A Jest test file was added for route guard registration, secret redaction, name validation, creation, self-revocation prevention, and revocation auditing. These tests have **not** been run. The feature does not add expiration, scopes, tenant/workspace binding, hashing-at-rest, usage accounting, or quotas. Do not treat this incremental change as production-ready credential governance.
+A Jest test file was added for route guard registration, secret redaction, name validation, creation, self-revocation prevention, and revocation auditing. These tests have **not** been run. At the initial implementation stage, expiry and soft revocation were not present; the follow-up section below adds nullable expiry/revocation fields and enforcement. Scopes, tenant/workspace binding, hashing-at-rest, usage accounting, and quotas remain unimplemented. Do not treat this incremental change as production-ready credential governance.
 
 
 ## API credential lifecycle follow-up — expiry and soft revocation (2026-10-16)
