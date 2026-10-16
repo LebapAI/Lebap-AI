@@ -1,6 +1,6 @@
 const prisma = require("../../../utils/prisma");
 const { validatedRequest } = require("../../../utils/middleware/validatedRequest");
-const { strictMultiUserRoleValid, ROLES } = require("../../../utils/middleware/multiUserProtected");
+const { flexUserRoleValid, ROLES } = require("../../../utils/middleware/multiUserProtected");
 
 const DEFAULT_RANGE_DAYS = 30;
 const MAX_RANGE_DAYS = 366;
@@ -17,7 +17,7 @@ function businessAnalyticsEndpoints(app) {
 
   app.get(
     "/admin/business-analytics",
-    [validatedRequest, strictMultiUserRoleValid([ROLES.admin])],
+    [validatedRequest, flexUserRoleValid([ROLES.admin])],
     async (request, response) => {
       const now = new Date();
       const defaultFrom = new Date(now.getTime() - DEFAULT_RANGE_DAYS * 24 * 60 * 60 * 1000);
