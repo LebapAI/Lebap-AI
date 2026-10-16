@@ -30,6 +30,19 @@ async function finalizeUsageSafely(payload) {
   }
 }
 
+async function startUsageSafely(payload) {
+  if (!usageMeteringEnabled()) return null;
+  try {
+    const event = { requestId: uuidv4(), ...payload };
+    await ApiUsage.createStarted(event);
+    return event;
+  } catch (_error) {
+    // Metering is observe-only; failures must never break provider requests.
+    console.error("API usage event creation failed.");
+    return null;
+  }
+}
+
 function apiOpenAICompatibleEndpoints(app) {
   if (!app) return;
 
@@ -330,6 +343,9 @@ function apiOpenAICompatibleEndpoints(app) {
         }
       }
       */
+      let usageEvent = null;
+      const usageStartedAt = Date.now();
+      let clientDisconnected = false;
       try {
         const prompt = request.body?.prompt;
         const size = request.body?.size;
@@ -337,8 +353,21 @@ function apiOpenAICompatibleEndpoints(app) {
         if (!prompt || !String(prompt).trim().length)
           return response.status(400).json({ error: "A prompt is required." });
 
+        usageEvent = await startUsageSafely({
+          apiKeyId: response.locals?.apiKey?.id ?? null,
+          route: "/v1/openai/images/generations",
+          operation: (request.files || []).length > 0 ? "image.edit" : "image.generate",
+          provider: process.env.IMAGE_GEN_PROVIDER ?? null,
+          model: null,
+          workspaceSlug: null,
+        });
         const abortController = new AbortController();
-        response.on("close", () => abortController.abort());
+        response.on("close", () => {
+          if (!response.writableEnded) {
+            clientDisconnected = true;
+            abortController.abort();
+          }
+        });
         const signal = abortController.signal;
 
         const imageBuffers = (request.files || []).map((f) => f.buffer);
@@ -361,6 +390,14 @@ function apiOpenAICompatibleEndpoints(app) {
                 signal,
               });
 
+        if (usageEvent) {
+          await finalizeUsageSafely({
+            requestId: usageEvent.requestId,
+            status: "completed",
+            latencyMs: Math.max(0, Date.now() - usageStartedAt),
+            costSource: "unknown",
+          });
+        }
         if (responseFormat === "blob") {
           if (result.notice)
             response.setHeader("X-Image-Notice", result.notice);
@@ -378,7 +415,17 @@ function apiOpenAICompatibleEndpoints(app) {
         });
       } catch (e) {
         const { isAbortError } = require("../../../utils/helpers/abortSignals");
-        if (isAbortError(e)) return response.end();
+        const aborted = clientDisconnected || isAbortError(e);
+        if (usageEvent) {
+          await finalizeUsageSafely({
+            requestId: usageEvent.requestId,
+            status: aborted ? "aborted" : "failed",
+            latencyMs: Math.max(0, Date.now() - usageStartedAt),
+            errorCategory: aborted ? undefined : "image_generation_error",
+            costSource: "unknown",
+          });
+        }
+        if (aborted) return response.end();
         console.error("OpenAI-compatible image generation failed.", e);
         return response.status(500).json({
           error: "Image generation failed. Check server logs for details.",
@@ -415,6 +462,8 @@ function apiOpenAICompatibleEndpoints(app) {
         }
       }
       */
+      let usageEvent = null;
+      const usageStartedAt = Date.now();
       try {
         const body = reqBody(request);
         // Support input or "inputs" (for backwards compatibility) as an array of strings or a single string
@@ -432,6 +481,14 @@ function apiOpenAICompatibleEndpoints(app) {
         }
 
         const Embedder = getEmbeddingEngineSelection();
+        usageEvent = await startUsageSafely({
+          apiKeyId: response.locals?.apiKey?.id ?? null,
+          route: "/v1/openai/embeddings",
+          operation: "embedding.create",
+          provider: null,
+          model: Embedder.model ?? null,
+          workspaceSlug: null,
+        });
         const embeddings = await Embedder.embedChunks(input);
         const data = [];
         embeddings.forEach((embedding, index) => {
@@ -442,12 +499,29 @@ function apiOpenAICompatibleEndpoints(app) {
           });
         });
 
+        if (usageEvent) {
+          await finalizeUsageSafely({
+            requestId: usageEvent.requestId,
+            status: "completed",
+            latencyMs: Math.max(0, Date.now() - usageStartedAt),
+            costSource: "unknown",
+          });
+        }
         return response.status(200).json({
           object: "list",
           data,
           model: Embedder.model,
         });
       } catch (e) {
+        if (usageEvent) {
+          await finalizeUsageSafely({
+            requestId: usageEvent.requestId,
+            status: "failed",
+            latencyMs: Math.max(0, Date.now() - usageStartedAt),
+            errorCategory: "embedding_error",
+            costSource: "unknown",
+          });
+        }
         console.error(e.message, e);
         response.status(500).end();
       }
