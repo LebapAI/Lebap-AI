@@ -110,3 +110,8 @@ Added `GET /v1/admin/business-analytics` guarded by API-key validation and activ
 ## Business analytics trend follow-up — 2026-10-16
 
 The business-analytics endpoint now returns a bounded daily trend using a database-side SQLite aggregation instead of loading every usage event into application memory. The dashboard renders the latest 14 dates with recorded activity. The completion-rate denominator now excludes in-progress events and includes only terminal outcomes (completed, failed, aborted). Tests were updated to cover daily trend output, but have not been executed. Migration, Prisma Client generation, frontend build, and runtime checks remain outstanding.
+
+
+## Business analytics authorization correction — 2026-10-16
+
+The initial developer-API-key route was superseded after source review showed the admin UI authenticates with the browser session token. The live source now registers `GET /admin/business-analytics` through the standard admin endpoint group with `validatedRequest` and `flexUserRoleValid([ROLES.admin])`. This resolves the known authentication mismatch at source level; runtime validation remains outstanding.
