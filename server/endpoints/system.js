@@ -1068,29 +1068,12 @@ function systemEndpoints(app) {
 
         const { name = null, workspaceSlugs: requestedWorkspaceSlugs } = reqBody(request) || {};
         const workspaces = await Workspace.where();
-        const availableSlugs = new Set(workspaces.map((workspace) => workspace.slug));
-        let workspaceSlugs = workspaces.map((workspace) => workspace.slug);
-
-        if (requestedWorkspaceSlugs !== undefined) {
-          if (
-            !Array.isArray(requestedWorkspaceSlugs) ||
-            requestedWorkspaceSlugs.length === 0 ||
-            !requestedWorkspaceSlugs.every(
-              (slug) => typeof slug === "string" && slug.trim().length > 0
-            )
-          ) {
-            return response.status(400).json({
-              apiKey: null,
-              error: "Choose at least one valid workspace for this API key.",
-            });
-          }
-          workspaceSlugs = [...new Set(requestedWorkspaceSlugs.map((slug) => slug.trim()))];
-          if (workspaceSlugs.some((slug) => !availableSlugs.has(slug))) {
-            return response.status(400).json({
-              apiKey: null,
-              error: "One or more selected workspaces do not exist.",
-            });
-          }
+        const { workspaceSlugs, error: scopeError } = resolveWorkspaceScope(
+          requestedWorkspaceSlugs,
+          workspaces.map((workspace) => workspace.slug)
+        );
+        if (scopeError) {
+          return response.status(400).json({ apiKey: null, error: scopeError });
         }
         const { apiKey, error } = await ApiKey.create(null, name, { workspaceSlugs });
         await EventLogs.logEvent(
