@@ -50,3 +50,12 @@
 - Compatibility note: unowned/legacy keys and keys created by non-admin users will receive HTTP 403 on these privileged routes. Create an API key while signed in as an active administrator to use them.
 - This narrows the administrative API exposure but does **not** implement workspace-scoped credentials, per-client quotas, or normalized usage accounting. API-key and tenant isolation remain incomplete.
 - Static code edits only; tests, lint, build, and runtime/deployment verification have not been run in this session.
+
+## Request validation hardening — 2026-10-16
+
+- Updated `server/endpoints/api/openai/index.js` to reject malformed OpenAI-compatible chat requests before workspace lookup: `model` must be a non-empty string and `messages` must be a non-empty array.
+- Invalid payloads receive HTTP 400 with a structured `invalid_request_error` response instead of falling through to workspace lookup or causing downstream exceptions.
+- Commit: `cac2ca8652f6c7f2ce5c3979377fca9ed9abb2ea`.
+- Remaining high-priority issue: API keys are not yet workspace-scoped. The current schema has no key scope/expiry/revocation fields, and broad tenant filtering is unsafe until API-key ownership and legacy-key behavior are defined.
+- Verification limitation: source change committed, but tests, lint, build, and live API checks have not been run.
+
