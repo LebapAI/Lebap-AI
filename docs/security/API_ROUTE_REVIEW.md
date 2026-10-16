@@ -50,3 +50,9 @@ Chat streaming and image generation call provider-backed operations. The inspect
 - Any runtime behavior, tests, load behavior, or deployment configuration.
 
 These unknowns must be inspected or tested before making production-readiness claims.
+
+### 6. Production environment-dump route lacks declared API-key middleware
+
+In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` is registered without `validApiKey`. Its handler calls `dumpENV()` when `NODE_ENV === "production"`. The exact contents and access controls of the generated artifact were not inspected here, so exposure impact needs confirmation; nevertheless, a production environment-dump action should not be anonymously invocable.
+
+**Priority: high.** Require authentication (and preferably an administrative scope) or remove/disable the route in production. A code update attempt through the GitHub connector was blocked, so this finding is documented but the route is **not yet fixed**.
