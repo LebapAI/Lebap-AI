@@ -49,3 +49,9 @@ Last updated: 2026-10-16
 
 ## Release status
 Still in development. Changes are committed to `lebap-ai/development`; tests/lint/build were not executed here, so no passing-test or production-readiness claim is made.
+
+## Security hardening update — 2026-10-16
+- Inspected the API router registration in `server/index.js` and `server/endpoints/api/index.js`. The developer API router is mounted at `/api`; OpenAI-compatible endpoints attach `validApiKey` per route rather than relying on one router-wide authentication middleware. This does not establish that every route across the entire application is protected; other endpoint families still need separate review.
+- Updated `server/endpoints/api/openai/index.js` (commit `b4a065c27c5212ea95f03c63a5fff449449cde4e`): image-generation failures are now logged server-side and return a generic client error instead of echoing raw provider/SDK exception text. Client-visible response is `Image generation failed. Check server logs for details.`
+- This is a targeted error-disclosure reduction, not a substitute for structured error classification or usage metering. Tests, lint, and build remain unexecuted in this connector-only session.
+
