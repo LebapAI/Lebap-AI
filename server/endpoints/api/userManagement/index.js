@@ -101,6 +101,23 @@ function apiUserManagementEndpoints(app) {
     }
       */
       try {
+        // Issuing a Simple SSO token is a privileged operation. Require a
+        // key explicitly associated with an administrator; legacy/unowned keys
+        // must not implicitly grant administrator privileges.
+        const apiKeyOwnerId = response.locals?.apiKey?.createdBy;
+        if (!apiKeyOwnerId) {
+          return response.status(403).json({
+            error: "Administrator-owned API key required.",
+          });
+        }
+
+        const apiKeyOwner = await User.get({ id: Number(apiKeyOwnerId) });
+        if (!apiKeyOwner || apiKeyOwner.role !== "admin" || apiKeyOwner.suspended) {
+          return response.status(403).json({
+            error: "Administrator privileges required.",
+          });
+        }
+
         const { id: userId } = request.params;
         const user = await User.get({ id: Number(userId) });
         if (!user)
