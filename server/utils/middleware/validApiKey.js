@@ -28,6 +28,14 @@ async function validApiKey(request, response, next) {
       });
     }
 
+    // Keep only non-secret identity metadata for downstream authorization.
+    // Never attach the bearer secret to request/response context.
+    response.locals.apiKey = {
+      id: apiKey.id,
+      createdBy: apiKey.createdBy ?? null,
+      name: apiKey.name ?? null,
+    };
+
     return next();
   } catch (error) {
     // Fail closed if authentication infrastructure is unavailable.
