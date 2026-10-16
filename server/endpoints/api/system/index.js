@@ -25,7 +25,7 @@ function sanitizeSettingValues(settings = {}) {
 function apiSystemEndpoints(app) {
   if (!app) return;
 
-  app.get("/v1/system/env-dump", [validApiKey], async (_, response) => {
+  app.get("/v1/system/env-dump", [validApiKey, apiKeyOwnerIsAdmin], async (_, response) => {
     /*
    #swagger.tags = ['System Settings']
    #swagger.description = 'Dump all settings to file storage'
@@ -48,7 +48,7 @@ function apiSystemEndpoints(app) {
     }
   });
 
-  app.get("/v1/system", [validApiKey], async (_, response) => {
+  app.get("/v1/system", [validApiKey, apiKeyOwnerIsAdmin], async (_, response) => {
     /*
     #swagger.tags = ['System Settings']
     #swagger.description = 'Get all current system settings that are defined.'
@@ -85,7 +85,7 @@ function apiSystemEndpoints(app) {
     }
   });
 
-  app.get("/v1/system/vector-count", [validApiKey], async (_, response) => {
+  app.get("/v1/system/vector-count", [validApiKey, apiKeyOwnerIsAdmin], async (_, response) => {
     /*
     #swagger.tags = ['System Settings']
     #swagger.description = 'Number of all vectors in connected vector database'
