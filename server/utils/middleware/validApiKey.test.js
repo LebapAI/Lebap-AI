@@ -1,12 +1,17 @@
 const { ApiKey } = require("../../models/apiKeys");
 const { SystemSettings } = require("../../models/systemSettings");
 const { validApiKey, parseWorkspaceSlugs } = require("./validApiKey");
+const { consumeApiKeyRateLimit } = require("../apiKeyRateLimiter");
 
 jest.mock("../../models/apiKeys", () => ({
   ApiKey: {
     getForAuthentication: jest.fn(),
     markUsed: jest.fn(),
   },
+}));
+
+jest.mock("../apiKeyRateLimiter", () => ({
+  consumeApiKeyRateLimit: jest.fn(),
 }));
 
 jest.mock("../../models/systemSettings", () => ({
@@ -32,6 +37,7 @@ function makeResponse() {
     locals: {},
     status: jest.fn(),
     json: jest.fn(),
+    setHeader: jest.fn(),
   };
   response.status.mockReturnValue(response);
   response.json.mockReturnValue(response);
@@ -68,6 +74,7 @@ describe("validApiKey middleware", () => {
     SystemSettings.isMultiUserMode.mockResolvedValue(false);
     ApiKey.getForAuthentication.mockResolvedValue({ id: 1 });
     ApiKey.markUsed.mockResolvedValue(true);
+    consumeApiKeyRateLimit.mockResolvedValue({ allowed: true, limit: 120, remaining: 119, resetAt: Date.now() + 60000, retryAfterSeconds: 60 });
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -190,6 +197,42 @@ describe("validApiKey middleware", () => {
     expect(JSON.stringify(response.locals)).not.toContain("supplied-secret");
     expect(JSON.stringify(response.locals)).not.toContain("must-not-be-copied");
     expect(next).toHaveBeenCalledTimes(1);
+  });
+
+  test("returns 429 with Retry-After when the API key exceeds its rate limit", async () => {
+    consumeApiKeyRateLimit.mockResolvedValueOnce({
+      allowed: false,
+      limit: 120,
+      remaining: 0,
+      resetAt: Date.UTC(2026, 9, 17, 12, 35, 0),
+      retryAfterSeconds: 12,
+    });
+    const request = makeRequest("Bearer secret-value");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.setHeader).toHaveBeenCalledWith("Retry-After", "12");
+    expect(response.status).toHaveBeenCalledWith(429);
+    expect(response.json).toHaveBeenCalledWith({
+      error: "API rate limit exceeded.",
+      limit: 120,
+      resetAt: "2026-10-17T12:35:00.000Z",
+    });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test("fails closed when the shared rate-limit store is unavailable", async () => {
+    consumeApiKeyRateLimit.mockRejectedValueOnce(new Error("private database detail"));
+    const request = makeRequest("Bearer secret-value");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(503);
+    expect(response.json).toHaveBeenCalledWith({ error: "API access temporarily unavailable." });
+    expect(JSON.stringify(response.json.mock.calls)).not.toContain("private database detail");
+    expect(next).not.toHaveBeenCalled();
   });
 
   test("enforces explicit workspace scopes before a protected route runs", async () => {

@@ -162,3 +162,10 @@ Recent implementation adds a nullable `api_keys.lastUsedAt` field and SQLite mig
 Verification status: the main backend workflow had passed on the prior CI configuration commit, and the development-branch rerun for commit `46dd69f8120945e539cfc3ef1f4e8fb8069bec62` completed successfully on attempt 2. CI runs for the new last-use/scope changes are still in progress at the time of this update. Do not mark this work production-verified until the latest backend and frontend workflows pass and the migration is applied to a controlled database.
 
 Still open: first-class tenant/client identity; operation-level scopes; rate and concurrency limits; concurrency-safe budget reservation; verified provider pricing; billing; broader API route authorization audit; end-to-end migration/runtime tests; and production database selection. Usage metering remains observe-only and does not enforce quotas.
+
+
+## API request rate limiting — 2026-10-17
+
+The API-key authentication path now includes a database-backed fixed-window limiter. By default, each API key is limited to 120 requests per 60-second UTC window; configure `API_KEY_RATE_LIMIT_PER_MINUTE` to an integer from 1 to 100000. Counters use an atomic Prisma upsert and are shared across app instances, rather than relying on per-process memory. Requests beyond the limit receive HTTP 429 with `Retry-After` and `X-RateLimit-*` headers. If the shared counter store cannot verify the limit, the middleware fails closed with HTTP 503. Old windows are cleaned up on a best-effort basis.
+
+This is request-rate protection, not a daily quota, concurrency cap, token budget, or spend limit. Those remain separate work items. The new migration and rate-limiter tests must pass CI before rollout; apply the migration and validate on a controlled database before deploying.
