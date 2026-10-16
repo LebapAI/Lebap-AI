@@ -205,3 +205,11 @@
 - OpenAI-compatible `GET /v1/openai/models` returns only allowlisted workspaces for scoped keys; chat completion checks the requested workspace before running the chat.
 - Scope is enforced for OpenAI-compatible model listing and chat completion; the shared administrator guard denies workspace-scoped keys on other privileged routes, including key management and image generation. Existing keys with NULL scope remain unrestricted by design until owners configure and rotate them.
 - Added endpoint tests for allowlist validation/storage and unknown workspace rejection; updated middleware metadata expectations. Tests, lint, build, migrations, and runtime checks have not been run.
+
+
+## Least-privilege default for newly issued credentials — 2026-10-16
+
+- The administrator API-key creation endpoint now requires an explicit non-empty workspace allowlist referencing existing workspaces. Newly issued API credentials cannot accidentally default to unrestricted workspace access through this endpoint.
+- Existing keys with NULL allowlists remain compatible and unrestricted until explicitly rotated/configured. This is a compatibility exception, not the recommended setting.
+- Workspace-scoped keys are limited to OpenAI-compatible model listing and chat completion; the shared admin guard denies them on other privileged operations. Chat requests are checked against the key's allowlist before provider execution.
+- The schema migration and automated tests are committed but remain unexecuted in this environment. Apply migrations and run the full server test/lint/build pipeline before deployment.
