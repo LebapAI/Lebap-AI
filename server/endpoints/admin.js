@@ -8,6 +8,7 @@ const { User } = require("../models/user");
 const { DocumentVectors } = require("../models/vectors");
 const { Workspace } = require("../models/workspace");
 const { resolveWorkspaceScope } = require("../utils/apiKeyScopes");
+const { resolveWorkspaceScope } = require("../utils/apiKeyScopes");
 const { WorkspaceChats } = require("../models/workspaceChats");
 const {
   getVectorDbClass,
