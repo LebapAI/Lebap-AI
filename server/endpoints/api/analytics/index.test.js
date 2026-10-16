@@ -13,13 +13,13 @@ jest.mock("../../../utils/middleware/validatedRequest", () => ({
   validatedRequest: jest.fn(),
 }));
 jest.mock("../../../utils/middleware/multiUserProtected", () => ({
-  strictMultiUserRoleValid: jest.fn(() => mockAdminOnlyMiddleware),
+  flexUserRoleValid: jest.fn(() => mockAdminOnlyMiddleware),
   ROLES: { admin: "admin" },
 }));
 
 const prisma = require("../../../utils/prisma");
 const { validatedRequest } = require("../../../utils/middleware/validatedRequest");
-const { strictMultiUserRoleValid } = require("../../../utils/middleware/multiUserProtected");
+const { flexUserRoleValid } = require("../../../utils/middleware/multiUserProtected");
 const { businessAnalyticsEndpoints } = require("./index");
 
 function setup() {
@@ -80,7 +80,7 @@ describe("business analytics endpoint", () => {
   test("is protected by API-key authentication and administrator authorization", () => {
     const { route } = setup();
     expect(route.middleware).toEqual([validatedRequest, mockAdminOnlyMiddleware]);
-    expect(strictMultiUserRoleValid).toHaveBeenCalledWith(["admin"]);
+    expect(flexUserRoleValid).toHaveBeenCalledWith(["admin"]);
   });
 
   test("rejects invalid date ranges before querying the database", async () => {
