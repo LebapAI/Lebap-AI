@@ -9,25 +9,25 @@
 :root {
   /* Default theme */
   --theme-loader: #ffffff;
-  --theme-bg-primary: #0e0f0f;
-  --theme-bg-secondary: #1b1b1e;
-  --theme-bg-sidebar: #0e0f0f;
-  --theme-bg-container: #0e0f0f;
-  --theme-bg-chat: #1b1b1e;
-  --theme-bg-chat-input: #27282a;
+  --theme-bg-primary: #050914;
+  --theme-bg-secondary: #0b1222;
+  --theme-bg-sidebar: #060b16;
+  --theme-bg-container: #070d19;
+  --theme-bg-chat: #0b1222;
+  --theme-bg-chat-input: #0d172b;
   --theme-text-primary: #ffffff;
   --theme-text-secondary: rgba(255, 255, 255, 0.6);
   --theme-placeholder: #57585a;
   --theme-sidebar-item-default: rgba(255, 255, 255, 0.1);
-  --theme-sidebar-item-selected: rgba(255, 255, 255, 0.3);
-  --theme-sidebar-item-hover: #3f3f42;
+  --theme-sidebar-item-selected: rgba(0, 102, 255, 0.24);
+  --theme-sidebar-item-hover: #111f38;
   --theme-sidebar-subitem-default: rgba(255, 255, 255, 0.05);
   --theme-sidebar-subitem-selected: rgba(255, 255, 255, 0.05);
   --theme-sidebar-thread-selected: rgba(255, 255, 255, 0.05);
   --theme-popup-menu-bg: #000000;
 
   --theme-sidebar-subitem-hover: rgba(255, 255, 255, 0.05);
-  --theme-sidebar-border: rgba(255, 255, 255, 0.1);
+  --theme-sidebar-border: rgba(51, 119, 255, 0.22);
   --theme-sidebar-item-workspace-active: #ffffff;
   --theme-sidebar-item-workspace-inactive: #ffffff;
 
@@ -44,10 +44,10 @@
   --theme-settings-input-text: #ffffff;
   --theme-modal-border: #3f3f42;
 
-  --theme-button-primary: #46c8ff;
-  --theme-button-primary-hover: #434343;
+  --theme-button-primary: #0066ff;
+  --theme-button-primary-hover: #0040cc;
 
-  --theme-button-cta: #7cd4fd;
+  --theme-button-cta: #22d3ee;
 
   --theme-file-row-even: #0e0f0f;
   --theme-file-row-odd: #1b1b1e;
@@ -57,11 +57,11 @@
 
   --theme-home-text: #ffffff;
   --theme-home-text-secondary: #9f9fa0;
-  --theme-home-bg-card: #1a1b1b;
+  --theme-home-bg-card: #0b1222;
   --theme-home-bg-button: #252626;
-  --theme-home-border: rgba(255, 255, 255, 0.2);
-  --theme-home-button-primary: #36bffa;
-  --theme-home-button-primary-hover: rgba(54, 191, 250, 0.9);
+  --theme-home-border: rgba(51, 119, 255, 0.24);
+  --theme-home-button-primary: #0066ff;
+  --theme-home-button-primary-hover: #0040cc;
   --theme-home-button-secondary: #27282a;
   --theme-home-button-secondary-hover: rgba(54, 191, 250, 0.1);
   --theme-home-button-secondary-text: #ffffff;
