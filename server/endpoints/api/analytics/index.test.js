@@ -54,6 +54,17 @@ function mockSuccessfulQueries() {
     .mockResolvedValueOnce([
       { provider: "provider-a", _count: { _all: 5 } },
     ]);
+  prisma.$queryRawUnsafe.mockResolvedValueOnce([
+    {
+      date: "2026-10-15",
+      requests: 5n,
+      completed: 4n,
+      failed: 1n,
+      totalTokens: 30n,
+      knownCostEvents: 2n,
+      knownCostUsd: 0.12,
+    },
+  ]);
   prisma.users.count.mockResolvedValueOnce(7).mockResolvedValueOnce(6);
   prisma.workspaces.count.mockResolvedValueOnce(3);
   prisma.api_keys.count.mockResolvedValueOnce(4);
@@ -98,6 +109,22 @@ describe("business analytics endpoint", () => {
       eventsWithKnownCost: 2,
       coveragePercent: 40,
     });
+    expect(response.body.dailyTrend).toEqual([
+      {
+        date: "2026-10-15",
+        requests: 5,
+        completed: 4,
+        failed: 1,
+        totalTokens: 30,
+        knownCostEvents: 2,
+        knownCostUsd: 0.12,
+      },
+    ]);
+    expect(prisma.$queryRawUnsafe).toHaveBeenCalledWith(
+      expect.stringContaining('GROUP BY strftime'),
+      expect.any(String),
+      expect.any(String)
+    );
     expect(response.body.financials).toMatchObject({ revenue: null, profit: null });
     expect(response.body.platform).toEqual({
       totalUsers: 7,
