@@ -184,3 +184,13 @@ A defensive edge case was found in expiry enforcement: a non-null expiry value t
 - Image generation/editing records operation type and observed completion/failure/abort status. Embeddings records model and outcome. Metering errors are swallowed so observability cannot interrupt provider requests.
 - Prompts, embedding inputs, image bytes, bearer credentials, and raw provider errors are not written to the ledger. Image and embedding costs/tokens remain unknown; do not infer a zero cost.
 - Migration and Prisma Client generation have not been applied/verified; tests, lint, build, and runtime checks remain outstanding. The feature flag must remain disabled until the migration and client are validated in a controlled environment.
+
+
+## API key lifecycle hardening follow-up — 2026-10-16
+
+- The standard session-authenticated admin and single-user API-key list routes now project safe metadata only; raw secret and secretHash values are not returned by listing endpoints.
+- New keys created through those legacy UI endpoints are scoped to the set of workspaces that exist at creation time, rather than inheriting a NULL/unrestricted scope. Newly created keys remain compatible with the one-time secret display flow.
+- The standard delete actions now soft-revoke keys through ApiKey.revoke() and emit api_key_revoked audit events instead of hard-deleting records.
+- The API-key table now displays status, workspace scope, and expiry metadata; it no longer renders or copies secrets from list responses.
+- Added model tests for public key projection, secret/verifier redaction, malformed scope fail-closed behavior, and revoked/expired status.
+- These changes are source-level only until the latest GitHub Actions run completes. Database migrations and generated Prisma Client remain pending validation; legacy NULL-scope keys remain unrestricted for compatibility and must be rotated or explicitly remediated.
