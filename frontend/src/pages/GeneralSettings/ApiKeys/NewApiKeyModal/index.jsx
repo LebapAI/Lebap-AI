@@ -129,8 +129,8 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
                 </p>
               ) : workspaces.length === 0 ? (
                 <p className="text-xs text-red-400">
-                  No workspaces are available. Create a workspace before
-                  issuing an API key.
+                  No workspaces are available. Create a workspace before issuing
+                  an API key.
                 </p>
               ) : (
                 <div className="max-h-48 overflow-y-auto rounded-lg border border-white/10 p-3 flex flex-col gap-y-3">
@@ -141,7 +141,9 @@ export default function NewApiKeyModal({ closeModal, onSuccess }) {
                     >
                       <input
                         type="checkbox"
-                        checked={selectedWorkspaceSlugs.includes(workspace.slug)}
+                        checked={selectedWorkspaceSlugs.includes(
+                        workspace.slug
+                      )}
                         onChange={() => toggleWorkspace(workspace.slug)}
                         className="mt-1 accent-blue-500"
                       />
