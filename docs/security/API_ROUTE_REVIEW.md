@@ -131,3 +131,12 @@ The developer API now registers `server/endpoints/api/apiKeys/index.js` with the
 - Creation/revocation attempts are recorded through the existing event log. Audit-write failure is best-effort so a successful credential mutation is not reported as an ambiguous failure.
 
 A Jest test file was added for route guard registration, secret redaction, name validation, creation, self-revocation prevention, and revocation auditing. These tests have **not** been run. The feature does not add expiration, scopes, tenant/workspace binding, hashing-at-rest, usage accounting, or quotas. Do not treat this incremental change as production-ready credential governance.
+
+
+## API credential lifecycle follow-up — expiry and soft revocation (2026-10-16)
+
+- Added nullable `expiresAt` and `revokedAt` fields to the Prisma SQLite schema and a forward migration at `server/prisma/migrations/20261016150000_api_key_lifecycle/migration.sql`. Existing keys retain null values and remain valid after the migration.
+- The key creation endpoint validates optional future ISO-8601 expiry dates; list responses show active/expired/revoked status without revealing secrets.
+- `validApiKey` rejects credentials with `revokedAt` set or an expiry timestamp at/before the current time. The admin revocation route sets `revokedAt` instead of deleting the credential record.
+- Tests were added for expiry validation and authentication rejection of expired/revoked keys. They have not been executed.
+- The migration has not been applied and Prisma client generation has not been run. Do not assume the deployed database contains the new columns. Scopes, workspace/client binding, key hashing, rate limits and usage metering remain unimplemented.
