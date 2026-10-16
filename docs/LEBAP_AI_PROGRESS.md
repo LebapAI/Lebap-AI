@@ -161,3 +161,17 @@
 - Static verification: fetched the updated source files and confirmed the expected middleware ordering. Tests, lint, build, provider calls, and runtime API checks have not been executed.
 
 - Updated `docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md` to reflect the expanded route-level authorization coverage and to keep tenant-scoping, credential lifecycle, metering, quotas, and runtime validation explicitly open. Commit: `43b5b66bdd57f525bade5675403beb13f2d94575`.
+
+
+## API Hub credential operations — 2026-10-16
+
+- Added `server/endpoints/api/apiKeys/index.js` and registered the route group in `server/endpoints/api/index.js`.
+- Added administrator-guarded endpoints:
+  - `GET /v1/admin/api-keys`: lists key metadata without returning stored secrets.
+  - `POST /v1/admin/api-keys`: validates a 1–100 character name, creates a key owned by the authenticated active administrator, and returns the secret only in the creation response.
+  - `DELETE /v1/admin/api-keys/:id`: validates the identifier, checks existence, revokes by deleting the key, and prevents the credential used for the request from revoking itself.
+- Key creation and revocation emit audit events. Audit-storage failure is handled as best-effort so a completed credential operation does not become an ambiguous failed response.
+- Added `server/endpoints/api/apiKeys/index.test.js` covering secret redaction, route guards, list/create validation, self-revocation prevention, and revocation audit events.
+- Commits: `79645228f25a07837f4a7e1b748eaf7b7e29aa7f`, `c9590668d83f61b5f3964b534b81d19406734d27`, `9a2cd0c06ee7928761ba4d71652d6469f5b95b3f`, `3846faf828ae9ff420b1918f7286c8bdb291e93c`.
+- Important limitations: this is an initial admin API for key listing/creation/revocation, not full credential governance. Expiration, scopes, client/tenant binding, usage quotas, and rate limits are not implemented by this change. Secrets are still stored according to the existing API-key model.
+- Verification is source-level only. The test suite, lint, build, migration checks, runtime API tests, and deployment have **not** been run.
