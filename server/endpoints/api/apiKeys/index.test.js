@@ -250,4 +250,14 @@ describe("API key management endpoints", () => {
     expect(response.statusCode).toBe(201);
   });
 
+
+  test("rejects non-ISO expiry strings", async () => {
+    const routes = setup();
+    reqBody.mockReturnValue({ name: "short-lived", expiresAt: "tomorrow" });
+    const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
+    await routes["POST /v1/admin/api-keys"].handler({}, response);
+    expect(response.statusCode).toBe(400);
+    expect(ApiKey.create).not.toHaveBeenCalled();
+  });
+
 });
