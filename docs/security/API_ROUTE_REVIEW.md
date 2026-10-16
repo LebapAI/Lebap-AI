@@ -55,4 +55,4 @@ These unknowns must be inspected or tested before making production-readiness cl
 
 In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` is registered without `validApiKey`. Its handler calls `dumpENV()` when `NODE_ENV === "production"`. The exact contents and access controls of the generated artifact were not inspected here, so exposure impact needs confirmation; nevertheless, a production environment-dump action should not be anonymously invocable.
 
-**Priority: high.** Require authentication (and preferably an administrative scope) or remove/disable the route in production. A code update attempt through the GitHub connector was blocked, so this finding is documented but the route is **not yet fixed**.
+**Priority: high — remediation committed.** The route now includes `validApiKey` middleware. This enforces API-key authentication, but the existing key model has no administrative scopes; a dedicated admin scope and review of the artifact contents remain follow-up work.
