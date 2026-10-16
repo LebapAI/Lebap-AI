@@ -42,6 +42,7 @@ const {
 } = require("../utils/files/logo");
 const { Telemetry } = require("../models/telemetry");
 const { ApiKey, publicApiKey } = require("../models/apiKeys");
+const { Workspace } = require("../models/workspace");
 const { getCustomModels } = require("../utils/helpers/customModels");
 const { WorkspaceChats } = require("../models/workspaceChats");
 const { WorkspaceThread } = require("../models/workspaceThread");
@@ -1065,7 +1066,7 @@ function systemEndpoints(app) {
         }
 
         const { name = null } = reqBody(request) || {};
-        const workspaces = await require("../models/workspace").Workspace.where();
+        const workspaces = await Workspace.where();
         const workspaceSlugs = workspaces.map((workspace) => workspace.slug);
         const { apiKey, error } = await ApiKey.create(null, name, { workspaceSlugs });
         await EventLogs.logEvent(
