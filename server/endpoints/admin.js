@@ -1,4 +1,4 @@
-const { ApiKey } = require("../models/apiKeys");
+const { ApiKey, publicApiKey } = require("../models/apiKeys");
 const { BrowserExtensionApiKey } = require("../models/browserExtensionApiKey");
 const { Document } = require("../models/documents");
 const { EventLogs } = require("../models/eventLogs");
@@ -506,9 +506,9 @@ function adminEndpoints(app) {
     [validatedRequest, strictMultiUserRoleValid([ROLES.admin])],
     async (_request, response) => {
       try {
-        const apiKeys = await ApiKey.whereWithUser({});
+        const apiKeys = await ApiKey.whereWithUser({}, 500);
         return response.status(200).json({
-          apiKeys,
+          apiKeys: apiKeys.map(publicApiKey),
           error: null,
         });
       } catch (error) {
@@ -527,8 +527,10 @@ function adminEndpoints(app) {
     async (request, response) => {
       try {
         const user = await userFromSession(request, response);
-        const { name = null } = reqBody(request);
-        const { apiKey, error } = await ApiKey.create(user.id, name);
+        const { name = null } = reqBody(request) || {};
+        const workspaces = await Workspace.where();
+        const workspaceSlugs = workspaces.map((workspace) => workspace.slug);
+        const { apiKey, error } = await ApiKey.create(user.id, name, { workspaceSlugs });
         await EventLogs.logEvent(
           "api_key_created",
           { createdBy: user?.username, name: apiKey?.name },
@@ -552,14 +554,20 @@ function adminEndpoints(app) {
       try {
         const { id } = request.params;
         if (!id || isNaN(Number(id))) return response.sendStatus(400).end();
-        await ApiKey.delete({ id: Number(id) });
+        const revoked = await ApiKey.revoke(Number(id));
+        if (!revoked) {
+          return response.status(409).json({
+            success: false,
+            error: "API key was already revoked or could not be revoked.",
+          });
+        }
 
         await EventLogs.logEvent(
-          "api_key_deleted",
-          { deletedBy: response.locals?.user?.username },
+          "api_key_revoked",
+          { apiKeyId: Number(id), revokedBy: response.locals?.user?.username },
           response?.locals?.user?.id
         );
-        return response.status(200).end();
+        return response.status(200).json({ success: true, revokedId: Number(id) });
       } catch (e) {
         console.error(e);
         response.sendStatus(500).end();
