@@ -7,6 +7,7 @@ const { reqBody } = require("../../../utils/http");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
 const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
 const { EventLogs } = require("../../../models/eventLogs");
+const { ApiUsage } = require("../../../models/apiUsage");
 const {
   OpenAICompatibleChat,
 } = require("../../../utils/chats/openaiCompatible");
@@ -17,6 +18,36 @@ const { handleImageGenUpload } = require("../../../utils/files/multer");
 function isWorkspaceAllowed(response, workspaceSlug) {
   const allowlist = response.locals?.apiKey?.workspaceSlugs;
   return allowlist === null || allowlist === undefined || allowlist.includes(workspaceSlug);
+}
+
+function usageMeteringEnabled() {
+  return process.env.ENABLE_API_USAGE_METERING === "true";
+}
+
+function usageMetricsFromChatResult(chatResult) {
+  const usage = chatResult?.usage ?? {};
+  const pickCount = (...keys) => {
+    for (const key of keys) {
+      const value = usage[key];
+      if (Number.isSafeInteger(value) && value >= 0) return value;
+    }
+    return undefined;
+  };
+  return {
+    inputTokens: pickCount("prompt_tokens", "promptTokens", "input_tokens", "inputTokens"),
+    outputTokens: pickCount("completion_tokens", "completionTokens", "output_tokens", "outputTokens"),
+    totalTokens: pickCount("total_tokens", "totalTokens"),
+    costSource: "unknown",
+  };
+}
+
+async function finalizeUsageSafely(payload) {
+  try {
+    await ApiUsage.finalize(payload);
+  } catch (_error) {
+    // Observe-only rollout: metering failures must not break a completed chat.
+    console.error("API usage event finalization failed.");
+  }
 }
 
 function apiOpenAICompatibleEndpoints(app) {
@@ -87,6 +118,8 @@ function apiOpenAICompatibleEndpoints(app) {
     "/v1/openai/chat/completions",
     [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
+      let usageEvent = null;
+      const usageStartedAt = Date.now();
       /*
       #swagger.tags = ['OpenAI Compatible Endpoints']
       #swagger.description = 'Execute a chat with a workspace with OpenAI compatibility. Supports streaming as well. Model must be a workspace slug from /models.'
@@ -169,6 +202,26 @@ function apiOpenAICompatibleEndpoints(app) {
           ) ?? null;
         const history = messages.filter((chat) => chat.role !== "system") ?? [];
 
+        // Feature-flagged, observe-only usage capture. Use a server-generated
+        // ledger ID so caller-supplied request IDs cannot collide with it.
+        if (usageMeteringEnabled()) {
+          try {
+            usageEvent = {
+              requestId: uuidv4(),
+              apiKeyId: response.locals?.apiKey?.id ?? null,
+              route: "/v1/openai/chat/completions",
+              operation: stream ? "chat.completion.stream" : "chat.completion",
+              provider: workspace.chatProvider ?? process.env.LLM_PROVIDER ?? null,
+              model: workspace.chatModel ?? workspace.slug,
+              workspaceSlug: workspace.slug,
+            };
+            await ApiUsage.createStarted(usageEvent);
+          } catch (_error) {
+            usageEvent = null;
+            console.error("API usage event creation failed; chat will continue.");
+          }
+        }
+
         if (!stream) {
           const chatResult = await OpenAICompatibleChat.chatSync({
             workspace,
@@ -190,6 +243,14 @@ function apiOpenAICompatibleEndpoints(app) {
             workspaceName: workspace?.name,
             chatModel: workspace?.chatModel || "System Default",
           });
+          if (usageEvent) {
+            await finalizeUsageSafely({
+              requestId: usageEvent.requestId,
+              status: "completed",
+              latencyMs: Math.max(0, Date.now() - usageStartedAt),
+              ...usageMetricsFromChatResult(chatResult),
+            });
+          }
           return response.status(200).json(chatResult);
         }
 
@@ -220,9 +281,27 @@ function apiOpenAICompatibleEndpoints(app) {
           chatModel: workspace?.chatModel || "System Default",
         });
         response.end();
+        if (usageEvent) {
+          await finalizeUsageSafely({
+            requestId: usageEvent.requestId,
+            status: "completed",
+            latencyMs: Math.max(0, Date.now() - usageStartedAt),
+            costSource: "unknown",
+          });
+        }
       } catch (e) {
+        if (usageEvent) {
+          await finalizeUsageSafely({
+            requestId: usageEvent.requestId,
+            status: response.headersSent ? "aborted" : "failed",
+            latencyMs: Math.max(0, Date.now() - usageStartedAt),
+            errorCategory: "provider_or_chat_error",
+            costSource: "unknown",
+          });
+        }
         console.error(e.message, e);
-        response.status(500).end();
+        if (response.headersSent) return response.end();
+        return response.status(500).end();
       }
     }
   );
