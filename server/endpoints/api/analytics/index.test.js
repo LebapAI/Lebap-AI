@@ -8,16 +8,18 @@ jest.mock("../../../utils/prisma", () => ({
   workspaces: { count: jest.fn() },
   api_keys: { count: jest.fn() },
 }));
-jest.mock("../../../utils/middleware/validApiKey", () => ({
-  validApiKey: jest.fn(),
+const mockAdminOnlyMiddleware = jest.fn();
+jest.mock("../../../utils/middleware/validatedRequest", () => ({
+  validatedRequest: jest.fn(),
 }));
-jest.mock("../../../utils/middleware/apiKeyOwnerIsAdmin", () => ({
-  apiKeyOwnerIsAdmin: jest.fn(),
+jest.mock("../../../utils/middleware/multiUserProtected", () => ({
+  strictMultiUserRoleValid: jest.fn(() => mockAdminOnlyMiddleware),
+  ROLES: { admin: "admin" },
 }));
 
 const prisma = require("../../../utils/prisma");
-const { validApiKey } = require("../../../utils/middleware/validApiKey");
-const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
+const { validatedRequest } = require("../../../utils/middleware/validatedRequest");
+const { strictMultiUserRoleValid } = require("../../../utils/middleware/multiUserProtected");
 const { businessAnalyticsEndpoints } = require("./index");
 
 function setup() {
@@ -30,7 +32,7 @@ function setup() {
     status: jest.fn(function (code) { this.statusCode = code; return this; }),
     json: jest.fn(function (body) { this.body = body; return this; }),
   };
-  return { route: routes.get("/v1/admin/business-analytics"), response };
+  return { route: routes.get("/admin/business-analytics"), response };
 }
 
 function mockSuccessfulQueries() {
@@ -77,7 +79,8 @@ describe("business analytics endpoint", () => {
 
   test("is protected by API-key authentication and administrator authorization", () => {
     const { route } = setup();
-    expect(route.middleware).toEqual([validApiKey, apiKeyOwnerIsAdmin]);
+    expect(route.middleware).toEqual([validatedRequest, mockAdminOnlyMiddleware]);
+    expect(strictMultiUserRoleValid).toHaveBeenCalledWith(["admin"]);
   });
 
   test("rejects invalid date ranges before querying the database", async () => {
