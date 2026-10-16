@@ -39,6 +39,22 @@ async function startUsageSafely(payload) {
   }
 }
 
+async function recordChatSideEffectsSafely({ telemetryPayload, eventPayload }) {
+  // Telemetry and audit logging are secondary effects. Their outages must not
+  // turn a successful provider response into an HTTP 500 or a failed usage event.
+  try {
+    await Telemetry.sendTelemetry("sent_chat", telemetryPayload);
+  } catch (_error) {
+    console.error("Chat telemetry recording failed.");
+  }
+
+  try {
+    await EventLogs.logEvent("api_sent_chat", eventPayload);
+  } catch (_error) {
+    console.error("Chat event logging failed.");
+  }
+}
+
 function apiOpenAICompatibleEndpoints(app) {
   if (!app) return;
 
@@ -225,17 +241,6 @@ function apiOpenAICompatibleEndpoints(app) {
             temperature,
           });
 
-          await Telemetry.sendTelemetry("sent_chat", {
-            LLMSelection:
-              workspace.chatProvider ?? process.env.LLM_PROVIDER ?? "openai",
-            Embedder: process.env.EMBEDDING_ENGINE || "inherit",
-            VectorDbSelection: process.env.VECTOR_DB || "lancedb",
-            TTSSelection: process.env.TTS_PROVIDER || "native",
-          });
-          await EventLogs.logEvent("api_sent_chat", {
-            workspaceName: workspace?.name,
-            chatModel: workspace?.chatModel || "System Default",
-          });
           if (usageEvent) {
             await finalizeUsageSafely({
               requestId: usageEvent.requestId,
@@ -244,6 +249,19 @@ function apiOpenAICompatibleEndpoints(app) {
               ...usageMetricsFromChatResult(chatResult),
             });
           }
+          await recordChatSideEffectsSafely({
+            telemetryPayload: {
+              LLMSelection:
+                workspace.chatProvider ?? process.env.LLM_PROVIDER ?? "openai",
+              Embedder: process.env.EMBEDDING_ENGINE || "inherit",
+              VectorDbSelection: process.env.VECTOR_DB || "lancedb",
+              TTSSelection: process.env.TTS_PROVIDER || "native",
+            },
+            eventPayload: {
+              workspaceName: workspace?.name,
+              chatModel: workspace?.chatModel || "System Default",
+            },
+          });
           return response.status(200).json(chatResult);
         }
 
@@ -262,18 +280,6 @@ function apiOpenAICompatibleEndpoints(app) {
           temperature,
           response,
         });
-        await Telemetry.sendTelemetry("sent_chat", {
-          LLMSelection: process.env.LLM_PROVIDER || "openai",
-          Embedder: process.env.EMBEDDING_ENGINE || "inherit",
-          VectorDbSelection: process.env.VECTOR_DB || "lancedb",
-          TTSSelection: process.env.TTS_PROVIDER || "native",
-          LLMModel: getModelTag(),
-        });
-        await EventLogs.logEvent("api_sent_chat", {
-          workspaceName: workspace?.name,
-          chatModel: workspace?.chatModel || "System Default",
-        });
-        response.end();
         if (usageEvent) {
           await finalizeUsageSafely({
             requestId: usageEvent.requestId,
@@ -282,6 +288,20 @@ function apiOpenAICompatibleEndpoints(app) {
             costSource: "unknown",
           });
         }
+        await recordChatSideEffectsSafely({
+          telemetryPayload: {
+            LLMSelection: process.env.LLM_PROVIDER || "openai",
+            Embedder: process.env.EMBEDDING_ENGINE || "inherit",
+            VectorDbSelection: process.env.VECTOR_DB || "lancedb",
+            TTSSelection: process.env.TTS_PROVIDER || "native",
+            LLMModel: getModelTag(),
+          },
+          eventPayload: {
+            workspaceName: workspace?.name,
+            chatModel: workspace?.chatModel || "System Default",
+          },
+        });
+        response.end();
       } catch (e) {
         if (usageEvent) {
           await finalizeUsageSafely({
