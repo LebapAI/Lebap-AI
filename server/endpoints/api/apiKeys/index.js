@@ -72,7 +72,7 @@ function apiKeyManagementEndpoints(app) {
           });
         }
 
-        const { apiKey, error } = await ApiKey.create(ownerId, name);
+        const { apiKey } = await ApiKey.create(ownerId, name);
         if (!apiKey) {
           console.error("API key creation failed.");
           return response.status(500).json({
