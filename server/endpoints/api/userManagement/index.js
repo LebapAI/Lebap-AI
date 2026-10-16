@@ -5,11 +5,12 @@ const {
   simpleSSOEnabled,
 } = require("../../../utils/middleware/simpleSSOEnabled");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
+const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
 
 function apiUserManagementEndpoints(app) {
   if (!app) return;
 
-  app.get("/v1/users", [validApiKey], async (request, response) => {
+  app.get("/v1/users", [validApiKey, apiKeyOwnerIsAdmin], async (request, response) => {
     /*
       #swagger.tags = ['User Management']
       #swagger.description = 'List all users'
