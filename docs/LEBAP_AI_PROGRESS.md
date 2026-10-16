@@ -357,3 +357,10 @@ A source review caught an integration issue before runtime validation: the brows
 - Added `.github/workflows/frontend-build.yaml`, triggered by frontend, root dependency-manifest, or workflow changes on `lebap-ai/development` and pull requests.
 - The workflow installs the frontend dependencies from its lockfile, runs the production Vite build, and runs the frontend ESLint check.
 - The workflow file is committed; its first run and the current API-key UI build have not yet been confirmed.
+
+## Centralized workspace-scope enforcement — 2026-10-16
+
+- Extracted persisted workspace allowlist parsing and authorization checks into `server/utils/apiKeyScopes.js`; both the API-key authentication middleware and OpenAI-compatible chat endpoint now use the shared policy.
+- Added tests for legacy NULL behavior, malformed JSON, empty lists, duplicate slugs, whitespace normalization, and explicit allow/deny decisions. Invalid stored scope fails closed; only NULL/undefined preserves legacy unrestricted behavior.
+- Verified JavaScript syntax for the shared helper, its tests, authentication middleware, OpenAI-compatible endpoints, and API-key model/tests.
+- Backend CI run for commit `6400ead9a70520de7b6304eb83feadfff9247c1a` is pending at the time of this update; test execution and frontend build remain unconfirmed.
