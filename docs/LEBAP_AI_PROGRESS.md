@@ -169,9 +169,19 @@
 - Added administrator-guarded endpoints:
   - `GET /v1/admin/api-keys`: lists key metadata without returning stored secrets.
   - `POST /v1/admin/api-keys`: validates a 1–100 character name, creates a key owned by the authenticated active administrator, and returns the secret only in the creation response.
-  - `DELETE /v1/admin/api-keys/:id`: validates the identifier, checks existence, revokes by deleting the key, and prevents the credential used for the request from revoking itself.
+  - `DELETE /v1/admin/api-keys/:id`: validates the identifier, checks existence, performs a soft revocation, and prevents the credential used for the request from revoking itself.
 - Key creation and revocation emit audit events. Audit-storage failure is handled as best-effort so a completed credential operation does not become an ambiguous failed response.
-- Added `server/endpoints/api/apiKeys/index.test.js` covering secret redaction, route guards, list/create validation, self-revocation prevention, revocation audit events, malformed IDs, missing keys, and audit-store failure handling.
+- Added `server/endpoints/api/apiKeys/index.test.js` covering secret redaction, route guards, list/create validation, self-revocation prevention, revocation audit events, malformed IDs, missing keys, expiry validation, and audit-store failure handling.
 - Commits: `79645228f25a07837f4a7e1b748eaf7b7e29aa7f`, `c9590668d83f61b5f3964b534b81d19406734d27`, `9a2cd0c06ee7928761ba4d71652d6469f5b95b3f`, `3846faf828ae9ff420b1918f7286c8bdb291e93c`, `093b60df6b8a45b35bb6d4bd7bb5c97a10b3fb68`, and `6018b1cc4302c45bcffc02f1b86630d4ec4ee8db`.
-- Important limitations: this is an initial admin API for key listing/creation/revocation, not full credential governance. Expiration, scopes, client/tenant binding, usage quotas, and rate limits are not implemented by this change. Secrets are still stored according to the existing API-key model.
+- Added nullable SQLite migration `server/prisma/migrations/20261016150000_api_key_lifecycle/migration.sql` and schema fields `expiresAt`/`revokedAt`. Newly created keys may receive an optional future ISO-8601 expiry; authentication rejects expired and revoked keys; revocation preserves a record for lifecycle/audit references. Existing keys remain valid after migration because both fields are nullable. Secrets are still stored according to the existing API-key model.
 - Verification is source-level only. The test suite, lint, build, migration checks, runtime API tests, and deployment have **not** been run.
+
+
+## API key lifecycle follow-up — expiry and soft revocation
+
+- Added nullable `expiresAt` and `revokedAt` fields to the Prisma SQLite schema with migration `20261016150000_api_key_lifecycle`.
+- API key creation accepts an optional future ISO-8601 `expiresAt`; invalid or past values return HTTP 400. Listing reports active/expired/revoked status without revealing secrets.
+- Authentication now rejects revoked and expired credentials. Administrative revocation records `revokedAt` rather than physically deleting the key.
+- Added middleware tests for expired/revoked credentials and endpoint tests for expiry validation.
+- Commits: `dd8a0b2d38add415271afbcb5c7756629eb0c195` (schema), `c10626733bcb8062989d9f018f52a18b9de0fd6b` (migration), `244f2addf4999e84551b0667b06e1f3352c45aea` (model), `1dfd943a1f7a486614dc8a8c9623c29d6aa27f82` (authentication), `f011f81ee14628c79de7a88f988d7f9c7d00615d` (API), `10d771a6350b82eed98caa768a137d756f83359c`, `e733f86317a8ff935f10c45bc0c5202a49f47440`, and `2b288b614615c495ae7160dd397c9cfcadfa8a97` (tests).
+- Not run: Prisma migration application, Prisma client generation, Jest, lint, build, runtime API checks, or deployment. Do not assume the live database has the new columns until the migration is applied.
