@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import LebapAILogo from "./media/logo/lebap-ai.svg";
 import LebapAILogoLight from "./media/logo/lebap-ai-light.svg";
-import DefaultLoginLogoLight from "./media/illustrations/login-logo.svg";
-import DefaultLoginLogoDark from "./media/illustrations/login-logo-light.svg";
+import DefaultLoginLogoLight from "./media/logo/lebap-ai.svg";
+import DefaultLoginLogoDark from "./media/logo/lebap-ai-light.svg";
 import System from "./models/system";
 
 export const REFETCH_LOGO_EVENT = "refetch-logo";
