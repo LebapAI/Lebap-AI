@@ -1,6 +1,51 @@
 const crypto = require("crypto");
 const prisma = require("../utils/prisma");
 
+
+function publicApiKey(apiKey = {}) {
+  const expiryTime =
+    apiKey.expiresAt === null || apiKey.expiresAt === undefined
+      ? null
+      : new Date(apiKey.expiresAt).getTime();
+  let workspaceSlugs = null;
+  if (apiKey.workspaceSlugs !== null && apiKey.workspaceSlugs !== undefined) {
+    try {
+      const parsed = JSON.parse(apiKey.workspaceSlugs);
+      workspaceSlugs =
+        Array.isArray(parsed) &&
+        parsed.length > 0 &&
+        parsed.every((slug) => typeof slug === "string" && slug.trim().length > 0)
+          ? [...new Set(parsed.map((slug) => slug.trim()))]
+          : [];
+    } catch (_error) {
+      workspaceSlugs = [];
+    }
+  }
+  return {
+    id: apiKey.id,
+    name: apiKey.name || null,
+    createdBy:
+      apiKey.createdBy && typeof apiKey.createdBy === "object"
+        ? {
+            id: apiKey.createdBy.id,
+            username: apiKey.createdBy.username,
+            role: apiKey.createdBy.role,
+          }
+        : apiKey.createdBy || null,
+    createdAt: apiKey.createdAt || null,
+    lastUpdatedAt: apiKey.lastUpdatedAt || null,
+    expiresAt: apiKey.expiresAt || null,
+    revokedAt: apiKey.revokedAt || null,
+    workspaceSlugs,
+    status: apiKey.revokedAt
+      ? "revoked"
+      : expiryTime !== null &&
+          (!Number.isFinite(expiryTime) || expiryTime <= Date.now())
+        ? "expired"
+        : "active",
+  };
+}
+
 const ApiKey = {
   hashSecret: (secret) =>
     crypto.createHash("sha256").update(String(secret), "utf8").digest("hex"),
@@ -141,4 +186,4 @@ const ApiKey = {
   },
 };
 
-module.exports = { ApiKey };
+module.exports = { ApiKey, publicApiKey };
