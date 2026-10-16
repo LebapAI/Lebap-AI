@@ -3,6 +3,7 @@ name: Frontend build
 on:
   push:
     branches:
+      - main
       - lebap-ai/development
     paths:
       - "frontend/**"
