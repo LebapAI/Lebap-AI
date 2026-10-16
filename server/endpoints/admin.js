@@ -559,7 +559,7 @@ function adminEndpoints(app) {
           {
             createdBy: user?.username,
             name: apiKey?.name,
-            workspaceSlugs: apiKey?.workspaceSlugs ?? JSON.stringify(workspaceSlugs),
+            workspaceSlugs,
           },
           user?.id
         );
