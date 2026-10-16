@@ -1,6 +1,7 @@
 const { ApiKey } = require("../../../models/apiKeys");
 const { EventLogs } = require("../../../models/eventLogs");
 const { reqBody } = require("../../../utils/http");
+const { Workspace } = require("../../../models/workspace");
 const {
   apiKeyManagementEndpoints,
   publicApiKey,
@@ -14,6 +15,10 @@ jest.mock("../../../models/apiKeys", () => ({
     delete: jest.fn(),
     revoke: jest.fn(),
   },
+}));
+
+jest.mock("../../../models/workspace", () => ({
+  Workspace: { get: jest.fn() },
 }));
 
 jest.mock("../../../models/eventLogs", () => ({
@@ -33,6 +38,7 @@ jest.mock("../../../utils/middleware/apiKeyOwnerIsAdmin", () => ({
 }));
 
 function setup() {
+  Workspace.get.mockResolvedValue({ slug: "workspace-a" });
   const routes = {};
   const app = {
     get: jest.fn((path, middleware, handler) => {
@@ -254,6 +260,36 @@ describe("API key management endpoints", () => {
   test("rejects non-ISO expiry strings", async () => {
     const routes = setup();
     reqBody.mockReturnValue({ name: "short-lived", expiresAt: "tomorrow" });
+    const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
+    await routes["POST /v1/admin/api-keys"].handler({}, response);
+    expect(response.statusCode).toBe(400);
+    expect(ApiKey.create).not.toHaveBeenCalled();
+  });
+
+
+  test("validates and stores workspace allowlists when creating keys", async () => {
+    const routes = setup();
+    reqBody.mockReturnValue({ name: "scoped-key", workspaceSlugs: ["workspace-a"] });
+    ApiKey.create.mockResolvedValue({
+      apiKey: {
+        id: 22, name: "scoped-key", secret: "scoped-secret", createdBy: 7,
+        workspaceSlugs: JSON.stringify(["workspace-a"]),
+      },
+      error: null,
+    });
+    const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
+    await routes["POST /v1/admin/api-keys"].handler({}, response);
+    expect(ApiKey.create).toHaveBeenCalledWith(7, "scoped-key", {
+      expiresAt: null, workspaceSlugs: ["workspace-a"],
+    });
+    expect(response.statusCode).toBe(201);
+    expect(response.payload.apiKey.workspaceSlugs).toEqual(["workspace-a"]);
+  });
+
+  test("rejects an allowlist that references an unknown workspace", async () => {
+    const routes = setup();
+    Workspace.get.mockResolvedValue(null);
+    reqBody.mockReturnValue({ name: "scoped-key", workspaceSlugs: ["missing-workspace"] });
     const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
     await routes["POST /v1/admin/api-keys"].handler({}, response);
     expect(response.statusCode).toBe(400);
