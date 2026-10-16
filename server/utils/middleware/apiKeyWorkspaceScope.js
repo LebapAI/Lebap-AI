@@ -11,17 +11,19 @@ function deny(response) {
   });
 }
 
-function requestedWorkspaceSlug(request) {
-  // Route parameters are the canonical form. Accept body/query variants too,
-  // because some API clients pass the workspace selector outside the path.
-  const candidates = [
+function requestedWorkspaceSlugs(request) {
+  // Check every supplied selector, not just the first one. If a request
+  // contains conflicting path/body/query selectors, a denied selector must
+  // never be hidden by an allowed selector earlier in the precedence list.
+  return [
     request.params?.slug,
     request.params?.workspaceSlug,
     request.body?.workspaceSlug,
     request.query?.workspaceSlug,
     request.query?.workspace_slug,
-  ];
-  return candidates.find((value) => typeof value === "string" && value.trim().length > 0)?.trim() ?? null;
+  ]
+    .filter((value) => typeof value === "string" && value.trim().length > 0)
+    .map((value) => value.trim());
 }
 
 /**
@@ -54,9 +56,8 @@ function apiKeyWorkspaceScope(request, response, next) {
     return deny(response);
   }
 
-  const slug = requestedWorkspaceSlug(request);
-  const hasWorkspaceSlug = typeof slug === "string" && slug.length > 0;
-  if (hasWorkspaceSlug && !isWorkspaceAllowed(scopes, slug)) {
+  const workspaceSlugs = requestedWorkspaceSlugs(request);
+  if (workspaceSlugs.some((slug) => !isWorkspaceAllowed(scopes, slug))) {
     return deny(response);
   }
 
@@ -82,7 +83,7 @@ function apiKeyWorkspaceScope(request, response, next) {
     }
     return next();
   }
-  if (hasWorkspaceSlug) return next();
+  if (workspaceSlugs.length > 0) return next();
 
   // These routes return static capability metadata and do not expose tenant data.
   if (method === "GET" && SAFE_DOCUMENT_METADATA_PATHS.has(path)) return next();
@@ -95,4 +96,4 @@ function apiKeyWorkspaceScope(request, response, next) {
   return next();
 }
 
-module.exports = { apiKeyWorkspaceScope, requestedWorkspaceSlug };
+module.exports = { apiKeyWorkspaceScope, requestedWorkspaceSlugs };
