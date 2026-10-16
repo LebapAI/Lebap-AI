@@ -311,3 +311,8 @@ Started the first implementation layer for durable API usage accounting:
 - Updated `.github/workflows/run-tests.yaml` so backend tests can run on pushes to `lebap-ai/development`, including server JavaScript and Prisma schema/migration changes, rather than being limited to pull requests.
 - Added an explicit regression case with an in-progress request to ensure it is excluded from the terminal completion-rate denominator.
 - Workflow source and test syntax were inspected, but no completed CI run is visible yet. Do not treat the test suite as passed.
+
+
+## Business analytics authorization correction — 2026-10-16
+
+A source review caught an integration issue before runtime validation: the browser admin page sends the session token from local storage, while the initial analytics route required a developer API key. Corrected the route to `GET /admin/business-analytics`, registered it with the normal admin endpoint group, and applied `validatedRequest` plus `flexUserRoleValid([ROLES.admin])`. The frontend now calls that session-authenticated route. The earlier `/v1/admin/business-analytics` API-key description above records the initial implementation and is superseded by this correction. Tests remain unexecuted.
