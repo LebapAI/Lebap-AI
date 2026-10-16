@@ -28,12 +28,23 @@ async function validApiKey(request, response, next) {
       });
     }
 
+    const now = Date.now();
+    const expired =
+      apiKey.expiresAt && new Date(apiKey.expiresAt).getTime() <= now;
+    if (apiKey.revokedAt || expired) {
+      return response.status(403).json({
+        error: "No valid api key found.",
+      });
+    }
+
     // Keep only non-secret identity metadata for downstream authorization.
     // Never attach the bearer secret to request/response context.
     response.locals.apiKey = {
       id: apiKey.id,
       createdBy: apiKey.createdBy ?? null,
       name: apiKey.name ?? null,
+      expiresAt: apiKey.expiresAt ?? null,
+      revokedAt: apiKey.revokedAt ?? null,
     };
 
     return next();
