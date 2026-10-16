@@ -143,6 +143,7 @@ describe("validApiKey middleware", () => {
       createdBy: 7,
       name: "automation",
       secret: "must-not-be-copied",
+      workspaceSlugs: JSON.stringify(["allowed-workspace"]),
     });
     const request = makeRequest("Bearer supplied-secret");
     const response = makeResponse();
@@ -155,6 +156,7 @@ describe("validApiKey middleware", () => {
       name: "automation",
       expiresAt: null,
       revokedAt: null,
+      workspaceSlugs: ["allowed-workspace"],
     });
     expect(JSON.stringify(response.locals)).not.toContain("supplied-secret");
     expect(JSON.stringify(response.locals)).not.toContain("must-not-be-copied");
