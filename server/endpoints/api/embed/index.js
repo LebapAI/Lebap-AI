@@ -8,7 +8,7 @@ const { Workspace } = require("../../../models/workspace");
 function apiEmbedEndpoints(app) {
   if (!app) return;
 
-  app.get("/v1/embed", [validApiKey], async (request, response) => {
+  app.get("/v1/embed", [validApiKey, apiKeyOwnerIsAdmin], async (request, response) => {
     /*
       #swagger.tags = ['Embed']
       #swagger.description = 'List all active embeds'
@@ -199,7 +199,7 @@ function apiEmbedEndpoints(app) {
     }
   );
 
-  app.post("/v1/embed/new", [validApiKey], async (request, response) => {
+  app.post("/v1/embed/new", [validApiKey, apiKeyOwnerIsAdmin], async (request, response) => {
     /*
       #swagger.tags = ['Embed']
       #swagger.description = 'Create a new embed configuration'
@@ -285,7 +285,7 @@ function apiEmbedEndpoints(app) {
     }
   });
 
-  app.post("/v1/embed/:embedUuid", [validApiKey], async (request, response) => {
+  app.post("/v1/embed/:embedUuid", [validApiKey, apiKeyOwnerIsAdmin], async (request, response) => {
     /*
       #swagger.tags = ['Embed']
       #swagger.description = 'Update an existing embed configuration'
@@ -357,7 +357,7 @@ function apiEmbedEndpoints(app) {
 
   app.delete(
     "/v1/embed/:embedUuid",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Embed']
