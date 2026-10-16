@@ -10,7 +10,7 @@ Provide a durable foundation for per-client usage analytics, enforceable quotas,
 
 ## Constraints observed in the current source
 
-- `api_keys` currently contains `id`, `name`, nullable unique `secret`, nullable `createdBy`, nullable `expiresAt`/`revokedAt`, and timestamps.
+- `api_keys` contains `id`, `name`, nullable unique legacy `secret`, nullable unique `secretHash` for newly issued keys, nullable `createdBy`, nullable `expiresAt`/`revokedAt`, and timestamps. Existing raw-secret records are retained during the compatibility rollout.
 - The active Prisma datasource is SQLite. PostgreSQL configuration is commented out. A production database migration must be an explicit infrastructure decision, not an assumed configuration.
 - OpenAI-compatible chat, embedding, image generation, and vector-store routes use existing workspace/provider code. Their behavior should remain compatible while a shared metering layer is introduced.
 - The API-key record now has nullable expiry and revocation timestamps, enforced by API-key authentication after the migration is applied. It still has no scopes, tenant ID, workspace allowlist, rate-limit, or spend-limit fields.
