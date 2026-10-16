@@ -36,7 +36,7 @@ function setup() {
 function mockSuccessfulQueries() {
   prisma.api_usage_events.aggregate
     .mockResolvedValueOnce({
-      _count: { _all: 5 },
+      _count: { _all: 6 },
       _sum: { inputTokens: 10, outputTokens: 20, totalTokens: 30 },
       _avg: { latencyMs: 125.4 },
     })
@@ -48,12 +48,13 @@ function mockSuccessfulQueries() {
     .mockResolvedValueOnce([
       { status: "completed", _count: { _all: 4 } },
       { status: "failed", _count: { _all: 1 } },
+      { status: "started", _count: { _all: 1 } },
     ])
     .mockResolvedValueOnce([
-      { model: "model-a", _count: { _all: 5 }, _sum: { inputTokens: 10, outputTokens: 20, totalTokens: 30 } },
+      { model: "model-a", _count: { _all: 6 }, _sum: { inputTokens: 10, outputTokens: 20, totalTokens: 30 } },
     ])
     .mockResolvedValueOnce([
-      { provider: "provider-a", _count: { _all: 5 } },
+      { provider: "provider-a", _count: { _all: 6 } },
     ]);
   prisma.$queryRawUnsafe.mockResolvedValueOnce([
     {
@@ -98,7 +99,7 @@ describe("business analytics endpoint", () => {
     await route.handler({ query: {} }, response);
     expect(response.status).toHaveBeenCalledWith(200);
     expect(response.body.activity).toMatchObject({
-      requests: 5,
+      requests: 6,
       completed: 4,
       failed: 1,
       successRate: 80,
@@ -108,7 +109,7 @@ describe("business analytics endpoint", () => {
     expect(response.body.estimatedCosts).toMatchObject({
       total: 0.12,
       eventsWithKnownCost: 2,
-      coveragePercent: 40,
+      coveragePercent: 33.33,
     });
     expect(response.body.dailyTrend).toEqual([
       {
