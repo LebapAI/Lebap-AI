@@ -5,6 +5,17 @@ const { validApiKey } = require("../../../utils/middleware/validApiKey");
 const {
   apiKeyOwnerIsAdmin,
 } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
+const { Workspace } = require("../../../models/workspace");
+
+function parseWorkspaceSlugs(value) {
+  if (value === null || value === undefined || value === "") return null;
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (_error) {
+    return [];
+  }
+}
 
 function publicApiKey(apiKey) {
   return {
@@ -22,6 +33,7 @@ function publicApiKey(apiKey) {
     lastUpdatedAt: apiKey.lastUpdatedAt || null,
     expiresAt: apiKey.expiresAt || null,
     revokedAt: apiKey.revokedAt || null,
+    workspaceSlugs: parseWorkspaceSlugs(apiKey.workspaceSlugs),
     status: apiKey.revokedAt
       ? "revoked"
       : apiKey.expiresAt && new Date(apiKey.expiresAt).getTime() <= Date.now()
@@ -79,6 +91,36 @@ function apiKeyManagementEndpoints(app) {
           });
         }
 
+        let workspaceSlugs = null;
+        if (body.workspaceSlugs !== undefined && body.workspaceSlugs !== null) {
+          if (
+            !Array.isArray(body.workspaceSlugs) ||
+            body.workspaceSlugs.length === 0 ||
+            body.workspaceSlugs.length > 100 ||
+            !body.workspaceSlugs.every(
+              (slug) => typeof slug === "string" && /^[a-z0-9][a-z0-9-]{0,99}$/.test(slug)
+            )
+          ) {
+            return response.status(400).json({
+              error: "workspaceSlugs must be a non-empty array of valid workspace slugs (maximum 100).",
+            });
+          }
+          workspaceSlugs = [...new Set(body.workspaceSlugs)];
+          if (workspaceSlugs.length !== body.workspaceSlugs.length) {
+            return response.status(400).json({
+              error: "workspaceSlugs must not contain duplicates.",
+            });
+          }
+          const existingWorkspaces = await Promise.all(
+            workspaceSlugs.map((slug) => Workspace.get({ slug }))
+          );
+          if (existingWorkspaces.some((workspace) => !workspace)) {
+            return response.status(400).json({
+              error: "Every workspaceSlugs entry must reference an existing workspace.",
+            });
+          }
+        }
+
         let expiresAt = null;
         if (body.expiresAt !== undefined && body.expiresAt !== null && body.expiresAt !== "") {
           if (typeof body.expiresAt !== "string") {
@@ -102,7 +144,10 @@ function apiKeyManagementEndpoints(app) {
           expiresAt = parsedExpiry;
         }
 
-        const { apiKey } = await ApiKey.create(ownerId, name, { expiresAt });
+        const { apiKey } = await ApiKey.create(ownerId, name, {
+          expiresAt,
+          workspaceSlugs,
+        });
         if (!apiKey) {
           console.error("API key creation failed.");
           return response.status(500).json({
@@ -114,6 +159,7 @@ function apiKeyManagementEndpoints(app) {
           apiKeyId: apiKey.id,
           name: apiKey.name,
           createdBy: ownerId,
+          workspaceSlugs,
         });
 
         // This is the only response that includes the raw credential.
