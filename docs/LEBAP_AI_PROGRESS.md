@@ -3,12 +3,13 @@
 ## Current focus — API key ownership and tenant isolation
 
 - Re-checked current source on `lebap-ai/development` before continuing.
-- API-key authentication now attaches safe identity metadata and an optional parsed `workspaceSlugs` allowlist. Newly issued credentials store a SHA-256 verifier; expiry and revocation are checked in source.
-- OpenAI-compatible model listing and chat completion enforce explicitly configured workspace allowlists. NULL scope remains backward-compatible and unrestricted, so this is not yet complete tenant isolation.
-- The remaining authorization gap covers other API route families, operation scopes, client/tenant identity, and image/provider operations. Legacy raw-secret credentials also remain compatible until rotated.
-- These are source-level changes only; migration application, Prisma Client generation, automated tests, lint, build, and runtime checks remain outstanding.
+- API-key authentication attaches safe identity metadata and parses the optional `workspaceSlugs` allowlist. Newly issued credentials store a SHA-256 verifier; expiry and revocation are checked in source.
+- OpenAI-compatible model listing and chat completion enforce explicitly configured workspace allowlists. SQL NULL scope remains backward-compatible and unrestricted, so this is not yet complete tenant isolation.
+- **Security fix (2026-10-16):** an empty string or malformed stored workspace scope previously parsed like a legacy NULL scope, which could turn corrupted scope data into unrestricted access. `validApiKey` now treats only SQL NULL/undefined as legacy-unrestricted; empty strings, invalid JSON, empty arrays, and malformed entries fail closed to an empty allowlist. Added regression tests for null compatibility, malformed values, normalization, and middleware behavior.
+- Latest commits: `68bc30f7f7116d85eef4d56122215728c07784be` (middleware) and `4d145ce7d862a92b9e07f1df892f6e720a37f581` (tests).
+- Remaining authorization gaps include other API route families, operation scopes, client/tenant identity, provider-operation limits, and usage accounting. Legacy raw-secret credentials remain supported until rotated.
+- These are source-level changes only; migrations are unapplied, Prisma Client generation is outstanding, and automated tests, lint, build, and runtime checks have not been run.
 - Security review details are recorded in `docs/security/API_ROUTE_REVIEW.md`.
-- Tests, lint, build, and runtime verification have not been run in this session.
 
 ## Previously completed static hardening
 
@@ -33,7 +34,6 @@
 - This is a narrow targeted remediation. It does not yet establish authorization for every administrative API route or solve workspace tenant isolation. Existing deployments relying on unowned API keys for SSO token issuance may need to create an administrator-owned key.
 - Tests, lint, build, and runtime verification have not been run; do not treat this as production sign-off.
 
-
 ## Router mounting verification — 2026-10-16
 
 - Inspected `server/index.js` on `lebap-ai/development`: `/api` mounts an Express router, and `developerEndpoints(app, apiRouter)` registers the developer API groups on that router. The mount itself does not add `validApiKey` or session-role middleware globally.
@@ -41,7 +41,6 @@
 - The current API key schema has only `id`, `name`, `secret`, `createdBy`, and timestamps; it has no scopes, expiry, or revocation-state field. Workspace memberships exist for user sessions, but the inspected API-key chat/model routes do not use those memberships to restrict a key to a workspace.
 - No broad authorization rewrite was made because current API keys may be shared application-level credentials and a rushed change could lock out existing deployments. The next safe code change requires defining service-key vs user-key semantics and adding regression tests for admin authorization and workspace isolation.
 - Status remains **not production signed off**: static inspection only; no tests, lint, build, runtime, or deployment verification has been run here.
-
 
 ## Privileged API authorization hardening — 2026-10-16
 
@@ -66,8 +65,6 @@
 - A broader validation rewrite was not applied because the update operation was blocked; no claims are made that malformed message objects are fully validated.
 - Workspace-level authorization, API-key lifecycle fields, quota/usage tracking, and automated tests remain open. No test/build/runtime verification has been run.
 
-
-
 ## Product rebrand — 2026-10-16
 
 - Updated the root README's user-facing product branding to Lebap AI and removed the upstream AnythingLLM logo image from the README header.
@@ -76,7 +73,6 @@
 - This is a scoped first pass, not a claim that every occurrence across frontend, desktop, Docker, translations, and internal compatibility identifiers has been changed. Those areas still require a repository-wide inventory and compatibility review.
 - No tests, lint, build, or runtime verification were run as part of these documentation/metadata edits.
 
-
 ## Follow-up changes — 2026-10-16
 
 - Updated `frontend/index.html` to remove remaining upstream AnythingLLM social metadata, use Lebap AI repository/image references consistently, improve the product description, and consolidate favicon declarations. Commit: `e2a570b87dc416e14187117c7e33e3d7fb5fa442`.
@@ -84,7 +80,6 @@
 - Both changes were committed directly to `lebap-ai/development`; no other branch was changed.
 - Verification is source-level only. Automated tests, lint, build, and browser/runtime checks have not been run, so these commits are not production sign-off.
 - Next priority remains reviewing API key creation/rotation and workspace membership semantics, then implementing workspace authorization without silently breaking existing shared/service keys.
-
 
 ## Sensitive system route hardening — 2026-10-16
 
@@ -112,14 +107,12 @@
 - Remaining finding: the API still lacks tenant/client-bound credentials and workspace allowlists. Admin-owned keys remain broad instance-level credentials; this is not tenant isolation. Other document mutations, workspace threads, and embed configuration routes need a full authorization matrix and tests before a client-scoped API can be considered safe.
 - Source changes were committed and will be source-verified. Tests, lint, build, migration checks, and runtime/API checks have not been run; no production sign-off is implied.
 
-
 ## Authorization regression tests added — 2026-10-16
 
 - Added `server/utils/middleware/apiKeyOwnerIsAdmin.test.js` with Jest coverage for an active admin key, missing/invalid key ownership, non-admin owner, suspended admin, missing owner record, and an owner-lookup exception.
 - Commit: `e215abc9fd61e3d835689fdb241311de2e6379c1`.
 - These are authored regression tests, not a passing test result: the connector session cannot execute the repository's Jest suite, so the tests still need to run in CI or a local checkout.
 - Follow-up completed in commits `77e30bcd0a2047b959bccf2592f9c8ea17bb8ff5`, `3cfff3ebf6ca3fc23dc31d5d21dbf3fbc4060413`, and `e43fd146ba0dbd5342824799b20338930d6a3e6d`: added `User.getForAuthorization()`, which propagates database lookup errors, wired the admin-key middleware to it, and updated the regression test mock. This allows infrastructure failures to reach the middleware's generic HTTP 500 path instead of being mistaken for a missing owner (403).
-
 
 ## Authorization lookup error handling — 2026-10-16
 
@@ -131,85 +124,4 @@
 
 ## Product implementation program and API foundation — 2026-10-16
 
-- Added `docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md` to map all 15 requested product capabilities to current evidence, completion gates, and a dependency-ordered delivery plan. It explicitly distinguishes inherited functionality, partial work, and unverified capabilities.
-- Added `apiRequestId` middleware and registered it before developer API route groups. A valid short correlation ID is preserved; missing or unsafe IDs are replaced with a server-generated UUID and returned in the `X-Request-Id` response header.
-- Added Jest coverage for accepted, missing, and invalid correlation IDs.
-- Commits: `6b4563bf6362925acc7a71b2633412cfec5d99c9` (matrix), `c0797b0fdc1b4f85606b59dc4fe8629eae6aee06` (API registration), `e283e71ec74968304d581318983d85948d31a199` (middleware), `7b41e9eb237cee03170b7d583c47d90771e25771` (tests).
-- Verification limitation: source files were committed, but the Jest test, lint, build, and runtime behavior have not been executed in this session. This is a first small API Hub foundation, not a completed API Hub.
-
-## API-key authentication regression coverage — 2026-10-16
-
-- Extended `server/utils/middleware/validApiKey.test.js` to assert that successful authentication passes only key ID, owner ID, and name to downstream authorization; the bearer secret and stored secret are not copied into `response.locals`.
-- Commit: `ffce0e170aa8b46dc39ae1fb61beb42b75002a99`.
-- Existing tests cover malformed/missing Bearer headers, unknown keys, authentication storage failures, and multi-user settings failures. This additional test is authored but **has not been executed**; no claim is made that the suite passes.
-
-## Thread and embed management API guard — 2026-10-16
-
-- Added `apiKeyOwnerIsAdmin` after `validApiKey` to all six workspace-thread API routes (create, rename, delete, read chat history, and other thread operations in that route module).
-- Added the same administrator-key guard to all six embed management/list/history routes in the developer API module. This closes the currently visible gap where a valid but non-admin API key could manage workspace threads or enumerate/create/update/delete embed configurations.
-- Commits: `5ed71739714d170d4714cb2a1558330375569372` (workspace threads) and `bb80c04a659bca1f37d9803af850d2ca80a95f04` (embed API).
-- Compatibility impact: integrations using legacy/unowned keys or keys owned by non-admin users will now receive HTTP 403 on these routes. This is a conservative temporary control, not tenant-scoped authorization; proper client/workspace scopes remain required.
-- Verification: fetched both updated files from `lebap-ai/development` and confirmed all 12 route declarations use both middleware functions. Tests, lint, build, and runtime requests have not been run.
-
-## Document mutations, workspace deletion, and image-generation authorization — 2026-10-16
-
-- Added administrator-key authorization to all document API routes in `server/endpoints/api/document/index.js`, including upload, URL/raw-text ingestion, document/folder listing and reads, folder creation/removal, file moves, and generated-file downloads. For multipart uploads, the admin guard runs before the upload handler so unauthorized callers are rejected before file-processing middleware.
-- Added administrator-key authorization to workspace deletion before the existing deletion-protection middleware.
-- Added administrator-key authorization to OpenAI-compatible image generation before upload/provider work, limiting unauthorised provider-cost exposure while client-scoped quotas are not implemented.
-- Commits: `d85c20830eb2d5e1f54a1a467aeec0147aa81bf0` (document routes), `c9f8181ec6314b2de62f1069309abf4c09ec71a8` (workspace deletion), and `0f0f2a9570c8e79aea38f5ea6bf283e0d423fb55` (image generation).
-- Compatibility impact is intentionally broad: these API routes now require an active administrator-owned key. This is an interim containment measure, not the final product permission model; external agents need scoped credentials and explicit workspace permissions before non-admin access can safely be enabled.
-- Static verification: fetched the updated source files and confirmed the expected middleware ordering. Tests, lint, build, provider calls, and runtime API checks have not been executed.
-
-- Updated `docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md` to reflect the expanded route-level authorization coverage and to keep tenant-scoping, credential lifecycle, metering, quotas, and runtime validation explicitly open. Commit: `43b5b66bdd57f525bade5675403beb13f2d94575`.
-
-
-## API Hub credential operations — 2026-10-16
-
-- Added `server/endpoints/api/apiKeys/index.js` and registered the route group in `server/endpoints/api/index.js`.
-- Added administrator-guarded endpoints:
-  - `GET /v1/admin/api-keys`: lists key metadata without returning stored secrets.
-  - `POST /v1/admin/api-keys`: validates a 1–100 character name, creates a key owned by the authenticated active administrator, and returns the secret only in the creation response.
-  - `DELETE /v1/admin/api-keys/:id`: validates the identifier, checks existence, performs a soft revocation, and prevents the credential used for the request from revoking itself.
-- Key creation and revocation emit audit events. Audit-storage failure is handled as best-effort so a completed credential operation does not become an ambiguous failed response.
-- Added `server/endpoints/api/apiKeys/index.test.js` covering secret redaction, route guards, list/create validation, self-revocation prevention, revocation audit events, malformed IDs, missing keys, expiry validation, and audit-store failure handling.
-- Commits: `79645228f25a07837f4a7e1b748eaf7b7e29aa7f`, `c9590668d83f61b5f3964b534b81d19406734d27`, `9a2cd0c06ee7928761ba4d71652d6469f5b95b3f`, `3846faf828ae9ff420b1918f7286c8bdb291e93c`, `093b60df6b8a45b35bb6d4bd7bb5c97a10b3fb68`, and `6018b1cc4302c45bcffc02f1b86630d4ec4ee8db`.
-- Added nullable SQLite migration `server/prisma/migrations/20261016150000_api_key_lifecycle/migration.sql` and schema fields `expiresAt`/`revokedAt`. Newly created keys may receive an optional future ISO-8601 expiry; authentication rejects expired and revoked keys; revocation preserves a record for lifecycle/audit references. Existing keys remain valid after migration because both fields are nullable. Secrets are still stored according to the existing API-key model.
-- Verification is source-level only. The test suite, lint, build, migration checks, runtime API tests, and deployment have **not** been run.
-
-
-## API key lifecycle follow-up — expiry and soft revocation
-
-- Added nullable `expiresAt` and `revokedAt` fields to the Prisma SQLite schema with migration `20261016150000_api_key_lifecycle`.
-- API key creation accepts an optional future ISO-8601 `expiresAt`; invalid or past values return HTTP 400. Listing reports active/expired/revoked status without revealing secrets.
-- Authentication now rejects revoked and expired credentials. Administrative revocation records `revokedAt` rather than physically deleting the key.
-- Added middleware tests for expired/revoked credentials and endpoint tests for expiry validation.
-- Commits: `dd8a0b2d38add415271afbcb5c7756629eb0c195` (schema), `c10626733bcb8062989d9f018f52a18b9de0fd6b` (migration), `244f2addf4999e84551b0667b06e1f3352c45aea` (model), `1dfd943a1f7a486614dc8a8c9623c29d6aa27f82` (authentication), `f011f81ee14628c79de7a88f988d7f9c7d00615d` (API), `10d771a6350b82eed98caa768a137d756f83359c`, `e733f86317a8ff935f10c45bc0c5202a49f47440`, `2b288b614615c495ae7160dd397c9cfcadfa8a97`, `de5648b94a2c2c84553d218e917415a1ded06f29`, and `1ed0b1389d597ab7e7b2edc8c26f6540ce0724e5` (validation and tests).
-- Not run: Prisma migration application, Prisma client generation, Jest, lint, build, runtime API checks, or deployment. Do not assume the live database has the new columns until the migration is applied.
-
-
-## API credential storage hardening — 2026-10-16
-
-- New API credentials are now stored as SHA-256 verifiers in `secretHash`; the raw secret is returned only in the one-time creation response and is not written to the database.
-- Authentication checks the verifier for newly created keys and retains a compatibility lookup for existing legacy records with raw `secret` values. This is a transition design, not full legacy-secret eradication: old records remain raw until explicitly rotated/reissued.
-- Added a nullable unique `secretHash` field to the Prisma schema and a separate SQLite migration, preserving existing rows. The migration has not been applied and Prisma Client has not been regenerated.
-- Added model-level tests for hashed storage, one-time secret return, hashed lookup, and legacy lookup.
-- Security note: SHA-256 is used as a deterministic verifier because API keys are high-entropy random credentials; never use this scheme for human passwords. A later rotation/migration should remove legacy raw secrets once all existing keys have been reissued.
-- Verification remains source-only: Jest, lint, build, migration execution, and runtime API checks have not been run.
-
-
-## Workspace-scoped API credentials — 2026-10-16
-
-- Added nullable `api_keys.workspaceSlugs` JSON storage and a separate SQLite migration. Existing keys remain unrestricted for backward compatibility; newly created keys may opt into a non-empty allowlist of existing workspace slugs.
-- API-key creation validates the allowlist format, rejects duplicates and unknown workspaces, and includes the scope in audit metadata and secret-redacted key listings.
-- API-key authentication parses the stored allowlist. Malformed stored scope fails closed as an empty allowlist rather than silently granting access.
-- OpenAI-compatible `GET /v1/openai/models` returns only allowlisted workspaces for scoped keys; chat completion checks the requested workspace before running the chat.
-- Scope is enforced for OpenAI-compatible model listing and chat completion; the shared administrator guard denies workspace-scoped keys on other privileged routes, including key management and image generation. Existing keys with NULL scope remain unrestricted by design until owners configure and rotate them.
-- Added endpoint tests for allowlist validation/storage and unknown workspace rejection; updated middleware metadata expectations. Tests, lint, build, migrations, and runtime checks have not been run.
-
-
-## Least-privilege default for newly issued credentials — 2026-10-16
-
-- The administrator API-key creation endpoint now requires an explicit non-empty workspace allowlist referencing existing workspaces. Newly issued API credentials cannot accidentally default to unrestricted workspace access through this endpoint.
-- Existing keys with NULL allowlists remain compatible and unrestricted until explicitly rotated/configured. This is a compatibility exception, not the recommended setting.
-- Workspace-scoped keys are limited to OpenAI-compatible model listing and chat completion; the shared admin guard denies them on other privileged operations. Chat requests are checked against the key's allowlist before provider execution.
-- The schema migration and automated tests are committed but remain unexecuted in this environment. Apply migrations and run the full server test/lint/build pipeline before deployment.
+- Added `docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md` to map all 15 requested product capabilities to current evidence, …
