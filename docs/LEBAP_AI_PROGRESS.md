@@ -25,6 +25,7 @@ Last updated: 2026-10-16
 ## Security caveat requiring follow-up
 - `server/models/apiKeys.js` currently catches database lookup exceptions in `ApiKey.get()` and returns `null`.
 - The middleware therefore cannot distinguish an invalid key from a failed API-key database lookup; both can become HTTP 403.
+- Added `docs/security/API_SECURITY_REVIEW.md` in commit `0a8327bba4d3aef68390c683085f389ebbfeed22`, documenting the confirmed authentication, API-key schema, and SQLite/PostgreSQL configuration findings.
 - A proposed compatibility-preserving fix is to add a separate strict lookup method for authentication that allows database errors to propagate, use that method only in `validApiKey`, and add a test for database lookup failure. The existing `get()` behavior should remain unchanged for other callers.
 - An attempt to commit this code change was blocked by the GitHub write tool; no change to `server/models/apiKeys.js` was made.
 
