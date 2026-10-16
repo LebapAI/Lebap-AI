@@ -1,6 +1,6 @@
 jest.mock("../../models/user", () => ({
   User: {
-    get: jest.fn(),
+    getForAuthorization: jest.fn(),
   },
 }));
 
@@ -24,7 +24,7 @@ describe("apiKeyOwnerIsAdmin", () => {
   });
 
   test("allows an active administrator-owned API key", async () => {
-    User.get.mockResolvedValue({
+    User.getForAuthorization.mockResolvedValue({
       id: 7,
       role: "admin",
       suspended: 0,
@@ -34,7 +34,7 @@ describe("apiKeyOwnerIsAdmin", () => {
 
     await apiKeyOwnerIsAdmin({}, response, next);
 
-    expect(User.get).toHaveBeenCalledWith({ id: 7 });
+    expect(User.getForAuthorization).toHaveBeenCalledWith({ id: 7 });
     expect(next).toHaveBeenCalledTimes(1);
     expect(response.status).not.toHaveBeenCalled();
   });
@@ -47,7 +47,7 @@ describe("apiKeyOwnerIsAdmin", () => {
 
       await apiKeyOwnerIsAdmin({}, response, next);
 
-      expect(User.get).not.toHaveBeenCalled();
+      expect(User.getForAuthorization).not.toHaveBeenCalled();
       expect(response.status).toHaveBeenCalledWith(403);
       expect(response.json).toHaveBeenCalledWith({
         error: "Administrator-owned API key required.",
@@ -75,7 +75,7 @@ describe("apiKeyOwnerIsAdmin", () => {
   });
 
   test("fails closed when the owner lookup throws", async () => {
-    User.get.mockRejectedValue(new Error("database failure"));
+    User.getForAuthorization.mockRejectedValue(new Error("database failure"));
     const response = makeResponse({ createdBy: 7 });
     const next = jest.fn();
     const originalError = console.error;
