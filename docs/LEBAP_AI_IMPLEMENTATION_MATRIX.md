@@ -115,3 +115,8 @@ The business-analytics endpoint now returns a bounded daily trend using a databa
 ## Business analytics authorization correction — 2026-10-16
 
 The initial developer-API-key route was superseded after source review showed the admin UI authenticates with the browser session token. The live source now registers `GET /admin/business-analytics` through the standard admin endpoint group with `validatedRequest` and `flexUserRoleValid([ROLES.admin])`. This resolves the known authentication mismatch at source level; runtime validation remains outstanding.
+
+
+## 2026-10-16 — Usage accounting increment
+
+The feature-flagged usage ledger now has source hooks for OpenAI-compatible chat completions, image generation/editing, and embeddings. It records request outcomes and latency where supported; token and cost values remain unknown unless supplied by a trusted source. This improves observability but does not implement budgets, quotas, rate limiting, verified pricing, billing, or complete metering across all API routes. Migration/client generation and automated verification remain outstanding; no capability gate is closed by this increment.
