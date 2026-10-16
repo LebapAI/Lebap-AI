@@ -67,6 +67,15 @@ const router = createBrowserRouter([
       },
       // Admin routes
       {
+        path: "/settings/business-analytics",
+        lazy: async () => {
+          const { default: BusinessAnalytics } = await import(
+            "@/pages/Admin/BusinessAnalytics"
+          );
+          return { element: <AdminRoute Component={BusinessAnalytics} /> };
+        },
+      },
+      {
         path: "/settings/llm-preference",
         lazy: async () => {
           const { default: GeneralLLMPreference } = await import(
