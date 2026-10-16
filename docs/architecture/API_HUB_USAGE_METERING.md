@@ -110,7 +110,7 @@ If the metering store fails, the policy must be explicit. For routes that can in
 
 ## Not yet implemented or verified
 
-This document is a design specification only. No database schema migration, metering model, quota middleware, or admin UI is added by this document. Runtime behavior, provider billing fields, parent-router protections, and production database selection remain to be verified.
+This document is a design specification only. This document began as a design specification. The repository now contains an `api_usage_events` Prisma model and SQLite migration, the `ApiUsage` persistence model, feature-flagged event capture for chat/image/embedding routes, and an admin business-analytics API/UI. The migration has not been applied to a real deployment database and the generated Prisma Client/runtime path still require controlled validation. Quota middleware, concurrency enforcement, verified provider pricing, billing, and production database selection remain unimplemented.
 
 
 ## Implementation update — 2026-10-16
