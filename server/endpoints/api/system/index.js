@@ -6,7 +6,7 @@ const {
   exportChatsAsType,
   validExportTypes,
 } = require("../../../utils/helpers/chat/convertTo");
-const { dumpENV, updateENV } = require("../../../utils/helpers/updateENV");
+const { updateENV } = require("../../../utils/helpers/updateENV");
 const { reqBody } = require("../../../utils/http");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
 
@@ -24,9 +24,11 @@ function apiSystemEndpoints(app) {
    }
    */
     try {
-      if (process.env.NODE_ENV !== "production")
-        return response.sendStatus(200).end();
-      dumpENV();
+      // updateENV() already persists production environment settings. Do not
+      // expose a separate endpoint that can rewrite the secret-bearing .env file.
+      if (process.env.NODE_ENV === "production")
+        return response.sendStatus(404).end();
+
       response.sendStatus(200).end();
     } catch (e) {
       console.error(e.message, e);
