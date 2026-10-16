@@ -116,3 +116,8 @@ This document is a design specification only. No database schema migration, mete
 ## Implementation update — 2026-10-16
 
 The source now includes nullable API-key `expiresAt` and `revokedAt` fields, an SQLite migration, optional expiry validation at creation, authentication rejection of expired/revoked credentials, and soft revocation. The migration, Prisma client generation, tests, and runtime behavior have not been verified. All tenant/client scoping, workspace allowlists, hashed-secret migration, usage events, quotas, and rate/concurrency enforcement described above remain design work.
+
+
+## API credential storage update — 2026-10-16
+
+New credentials are now designed to store a one-way SHA-256 verifier in `secretHash`; the raw secret is returned once at creation. Authentication retains a legacy raw-secret fallback so existing credentials do not immediately break. This is an intermediate rollout state: rotate/reissue legacy keys before removing the raw `secret` field or its compatibility lookup. The new migration and generated Prisma client have not been applied/verified, and tenant/workspace scopes, usage events, quotas, and rate/concurrency enforcement remain unimplemented.
