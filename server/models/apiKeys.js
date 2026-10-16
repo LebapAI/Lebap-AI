@@ -9,7 +9,7 @@ const ApiKey = {
     return uuidAPIKey.create().apiKey;
   },
 
-  create: async function (createdByUserId = null, name = null) {
+  create: async function (createdByUserId = null, name = null, options = {}) {
     try {
       const normalizedName =
         typeof name === "string" && name.trim().length > 0 ? name.trim() : null;
@@ -18,6 +18,7 @@ const ApiKey = {
           name: normalizedName,
           secret: this.makeSecret(),
           createdBy: createdByUserId,
+          expiresAt: options.expiresAt || null,
         },
       });
 
@@ -54,6 +55,21 @@ const ApiKey = {
     }
   },
 
+  // Revoke without deleting the record so lifecycle and audit references remain available.
+  revoke: async function (id) {
+    try {
+      const result = await prisma.api_keys.updateMany({
+        where: { id, revokedAt: null },
+        data: { revokedAt: new Date(), lastUpdatedAt: new Date() },
+      });
+      return result.count === 1;
+    } catch (error) {
+      console.error("FAILED TO REVOKE API KEY.", error.message);
+      return false;
+    }
+  },
+
+  // Kept for legacy internal callers; administrative revocation uses revoke().
   delete: async function (clause = {}) {
     try {
       await prisma.api_keys.deleteMany({ where: clause });
