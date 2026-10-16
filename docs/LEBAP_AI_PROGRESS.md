@@ -349,3 +349,5 @@ A source review caught an integration issue before runtime validation: the brows
 - Both server creation routes validate explicit scope lists against existing workspaces, reject empty/malformed lists and unknown workspace slugs, and persist a deduplicated allowlist. Older clients that omit the field retain the prior default of all workspaces for compatibility; new UI requests always send an explicit selection.
 - This improves new-key least privilege but does not retroactively restrict existing keys. Legacy NULL-scope keys remain unrestricted until rotated or configured.
 - Frontend build and new CI verification are pending.
+
+- Follow-up: extracted explicit workspace-scope normalization into `server/utils/apiKeyScopes.js` and added `server/utils/apiKeyScopes.test.js`. The helper deduplicates valid slugs, rejects malformed/empty/unknown explicit scopes, and preserves the omitted-scope compatibility behavior. Both standard admin and single-user creation routes now use the helper and include the selected allowlist in the audit event.
