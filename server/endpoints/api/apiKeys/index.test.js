@@ -97,6 +97,7 @@ describe("API key management endpoints", () => {
       lastUpdatedAt: null,
       expiresAt: null,
       revokedAt: null,
+      workspaceSlugs: null,
       status: "active",
     });
   });
@@ -158,7 +159,7 @@ describe("API key management endpoints", () => {
     });
     const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
     await routes["POST /v1/admin/api-keys"].handler({}, response);
-    expect(ApiKey.create).toHaveBeenCalledWith(7, "nightly automation", { expiresAt: null });
+    expect(ApiKey.create).toHaveBeenCalledWith(7, "nightly automation", { expiresAt: null, workspaceSlugs: null });
     expect(response.statusCode).toBe(201);
     expect(response.payload.apiKey.secret).toBe("new-secret");
     expect(response.payload.warning).toMatch(/not be shown again/i);
@@ -252,7 +253,7 @@ describe("API key management endpoints", () => {
     });
     const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
     await routes["POST /v1/admin/api-keys"].handler({}, response);
-    expect(ApiKey.create).toHaveBeenCalledWith(7, "short-lived", { expiresAt: new Date(expiry) });
+    expect(ApiKey.create).toHaveBeenCalledWith(7, "short-lived", { expiresAt: new Date(expiry), workspaceSlugs: null });
     expect(response.statusCode).toBe(201);
   });
 
