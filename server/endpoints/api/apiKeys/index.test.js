@@ -269,6 +269,16 @@ describe("API key management endpoints", () => {
   });
 
 
+  test("requires an explicit workspace allowlist for new keys", async () => {
+    const routes = setup();
+    reqBody.mockReturnValue({ name: "unscoped-key" });
+    const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
+    await routes["POST /v1/admin/api-keys"].handler({}, response);
+    expect(response.statusCode).toBe(400);
+    expect(response.payload.error).toMatch(/workspaceSlugs is required/i);
+    expect(ApiKey.create).not.toHaveBeenCalled();
+  });
+
   test("validates and stores workspace allowlists when creating keys", async () => {
     const routes = setup();
     reqBody.mockReturnValue({ name: "scoped-key", workspaceSlugs: ["workspace-a"] });
