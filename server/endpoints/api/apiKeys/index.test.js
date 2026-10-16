@@ -131,6 +131,7 @@ describe("API key management endpoints", () => {
       lastUpdatedAt: null,
       expiresAt: null,
       revokedAt: null,
+      workspaceSlugs: null,
       status: "active",
     });
     expect(JSON.stringify(response.payload)).not.toContain("secret-value");
