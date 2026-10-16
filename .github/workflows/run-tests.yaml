@@ -1,8 +1,10 @@
 name: Run backend tests
 
+# Keep each commit's result available. A newer push must not cancel the
+# verification of an earlier commit that is still running.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: false
 
 on:
   push:
@@ -32,9 +34,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Cache root dependencies
+        id: cache-root
         uses: actions/cache@v3
         with:
           path: |
@@ -45,6 +48,7 @@ jobs:
             ${{ runner.os }}-yarn-root-
 
       - name: Cache server dependencies
+        id: cache-server
         uses: actions/cache@v3
         with:
           path: |
@@ -55,6 +59,7 @@ jobs:
             ${{ runner.os }}-yarn-server-
 
       - name: Cache collector dependencies
+        id: cache-collector
         uses: actions/cache@v3
         with:
           path: |
@@ -84,7 +89,6 @@ jobs:
 
       - name: Run test suites
         run: yarn test
-
 
       - name: Fail job on error
         if: failure()
