@@ -24,6 +24,9 @@ const ApiKey = {
           // The raw secret is returned once and is never persisted.
           secret: null,
           secretHash: this.hashSecret(secret),
+          workspaceSlugs: Array.isArray(options.workspaceSlugs)
+            ? JSON.stringify([...new Set(options.workspaceSlugs)])
+            : null,
           createdBy: createdByUserId,
           expiresAt: options.expiresAt || null,
         },
