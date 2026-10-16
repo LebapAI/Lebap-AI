@@ -152,6 +152,7 @@ describe("API key management endpoints", () => {
       lastUpdatedAt: null,
       expiresAt: null,
       revokedAt: null,
+      lastUsedAt: null,
       workspaceSlugs: null,
       status: "active",
     });
