@@ -149,11 +149,6 @@ describe("apiKeyWorkspaceScope middleware", () => {
 
   test("filters workspace list responses to the allowlist", () => {
     const ctx = makeContext({ scopes: ["research"], method: "GET", path: "/v1/workspaces" });
-    const originalJson = ctx.response.json.bind(ctx.response);
-    ctx.response.json = (payload) => {
-      const filtered = filterWorkspacesByApiKeyScope(payload.workspaces, ctx.response.locals.apiKey.workspaceSlugs);
-      return originalJson({ ...payload, workspaces: filtered });
-    };
     apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
     expect(ctx.next).toHaveBeenCalledTimes(1);
     ctx.response.json({ workspaces: [{ slug: "research" }, { slug: "billing" }] });
