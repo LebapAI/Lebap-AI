@@ -20,6 +20,13 @@ function publicApiKey(apiKey) {
         : apiKey.createdBy || null,
     createdAt: apiKey.createdAt || null,
     lastUpdatedAt: apiKey.lastUpdatedAt || null,
+    expiresAt: apiKey.expiresAt || null,
+    revokedAt: apiKey.revokedAt || null,
+    status: apiKey.revokedAt
+      ? "revoked"
+      : apiKey.expiresAt && new Date(apiKey.expiresAt).getTime() <= Date.now()
+        ? "expired"
+        : "active",
   };
 }
 
@@ -72,7 +79,26 @@ function apiKeyManagementEndpoints(app) {
           });
         }
 
-        const { apiKey } = await ApiKey.create(ownerId, name);
+        let expiresAt = null;
+        if (body.expiresAt !== undefined && body.expiresAt !== null && body.expiresAt !== "") {
+          if (typeof body.expiresAt !== "string") {
+            return response.status(400).json({
+              error: "expiresAt must be an ISO-8601 date string.",
+            });
+          }
+          const parsedExpiry = new Date(body.expiresAt);
+          if (
+            Number.isNaN(parsedExpiry.getTime()) ||
+            parsedExpiry.getTime() <= Date.now()
+          ) {
+            return response.status(400).json({
+              error: "expiresAt must be a valid future date.",
+            });
+          }
+          expiresAt = parsedExpiry;
+        }
+
+        const { apiKey } = await ApiKey.create(ownerId, name, { expiresAt });
         if (!apiKey) {
           console.error("API key creation failed.");
           return response.status(500).json({
@@ -124,9 +150,11 @@ function apiKeyManagementEndpoints(app) {
           return response.status(404).json({ error: "API key not found." });
         }
 
-        const deleted = await ApiKey.delete({ id });
-        if (!deleted) {
-          return response.status(500).json({ error: "API key could not be revoked." });
+        const revoked = await ApiKey.revoke(id);
+        if (!revoked) {
+          return response.status(409).json({
+            error: "API key is already revoked or could not be revoked.",
+          });
         }
 
         await recordAudit("api_key_revoked", {
