@@ -128,3 +128,12 @@
 - Updated the regression test to mock the new method.
 - Commits: `77e30bcd0a2047b959bccf2592f9c8ea17bb8ff5`, `3cfff3ebf6ca3fc23dc31d5d21dbf3fbc4060413`, `e43fd146ba0dbd5342824799b20338930d6a3e6d`.
 - Source changes are verified in GitHub. Tests/lint/build/runtime checks remain unexecuted.
+
+## Product implementation program and API foundation — 2026-10-16
+
+- Added `docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md` to map all 15 requested product capabilities to current evidence, completion gates, and a dependency-ordered delivery plan. It explicitly distinguishes inherited functionality, partial work, and unverified capabilities.
+- Added `apiRequestId` middleware and registered it before developer API route groups. A valid short correlation ID is preserved; missing or unsafe IDs are replaced with a server-generated UUID and returned in the `X-Request-Id` response header.
+- Added Jest coverage for accepted, missing, and invalid correlation IDs.
+- Commits: `6b4563bf6362925acc7a71b2633412cfec5d99c9` (matrix), `c0797b0fdc1b4f85606b59dc4fe8629eae6aee06` (API registration), `e283e71ec74968304d581318983d85948d31a199` (middleware), `7b41e9eb237cee03170b7d583c47d90771e25771` (tests).
+- Verification limitation: source files were committed, but the Jest test, lint, build, and runtime behavior have not been executed in this session. This is a first small API Hub foundation, not a completed API Hub.
+
