@@ -221,3 +221,12 @@
 - Added regression cases in `server/utils/middleware/validApiKey.test.js` for NULL compatibility, malformed scopes, normalization/deduplication, and the empty-scope middleware path.
 - Commits: `68bc30f7f7116d85eef4d56122215728c07784be` (middleware) and `4d145ce7d862a92b9e07f1df892f6e720a37f581` (tests).
 - These tests have been authored but not executed. Migrations remain unapplied; Prisma Client generation, lint, build, and runtime checks are still outstanding.
+
+
+## Security follow-up — align API key scope display and enforcement (2026-10-16)
+
+- Updated `publicApiKey()` in `server/endpoints/api/apiKeys/index.js` so empty strings and malformed persisted workspace scopes display as an empty restricted allowlist, matching the authentication middleware. Only SQL NULL/undefined displays as the legacy unrestricted value.
+- Added endpoint-level regression tests for empty scope, malformed JSON, non-array JSON, empty arrays, duplicate scope entries, and NULL compatibility.
+- Commits: `2d211d1340af05e2cd22ddeb742ece0b83415143` (endpoint) and `a355a5d068339195bcea161a643652fee256954c` (tests).
+- Reconciled `docs/security/API_SECURITY_REVIEW.md` with the current implementation and remaining risks, including legacy unrestricted keys, legacy plaintext secrets, incomplete route coverage, missing usage/spend limits, and unexecuted verification (commit `256f26c38f52dd992e0098d716d8a651deab5b36`).
+- No tests or build were executed. The code and tests are committed, but remain unverified at runtime.
