@@ -1,0 +1,35 @@
+const { useSwagger } = require("../../swagger/utils");
+const { apiAdminEndpoints } = require("./admin");
+const { apiAuthEndpoints } = require("./auth");
+const { apiDocumentEndpoints } = require("./document");
+const { apiSystemEndpoints } = require("./system");
+const { apiWorkspaceEndpoints } = require("./workspace");
+const { apiWorkspaceThreadEndpoints } = require("./workspaceThread");
+const { apiUserManagementEndpoints } = require("./userManagement");
+const { apiOpenAICompatibleEndpoints } = require("./openai");
+const { apiEmbedEndpoints } = require("./embed");
+const { apiKeyManagementEndpoints } = require("./apiKeys");
+const { apiRequestId } = require("../../utils/middleware/apiRequestId");
+
+// All endpoints must be documented and pass through the validApiKey Middleware.
+// How to JSDoc an endpoint
+// https://www.npmjs.com/package/swagger-autogen#openapi-3x
+function developerEndpoints(app, router) {
+  if (!router) return;
+  useSwagger(app);
+  // Establish a correlation ID before registering API routes so clients can
+  // reference failures without exposing internal exception details.
+  router.use(apiRequestId);
+  apiAuthEndpoints(router);
+  apiAdminEndpoints(router);
+  apiSystemEndpoints(router);
+  apiWorkspaceEndpoints(router);
+  apiDocumentEndpoints(router);
+  apiWorkspaceThreadEndpoints(router);
+  apiUserManagementEndpoints(router);
+  apiOpenAICompatibleEndpoints(router);
+  apiEmbedEndpoints(router);
+  apiKeyManagementEndpoints(router);
+}
+
+module.exports = { developerEndpoints };

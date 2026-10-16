@@ -1,0 +1,48 @@
+name: Frontend build
+
+on:
+  push:
+    branches:
+      - lebap-ai/development
+    paths:
+      - "frontend/**"
+      - "package.json"
+      - "yarn.lock"
+      - ".github/workflows/frontend-build.yaml"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "frontend/**"
+      - "package.json"
+      - "yarn.lock"
+      - ".github/workflows/frontend-build.yaml"
+
+concurrency:
+  group: frontend-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: yarn
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: yarn install --frozen-lockfile
+
+      - name: Build frontend
+        working-directory: frontend
+        run: yarn build
+
+      - name: Check frontend lint
+        working-directory: frontend
+        run: yarn lint:check

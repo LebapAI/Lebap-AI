@@ -1,0 +1,13 @@
+{
+  "name": "Lebap AI",
+  "short_name": "Lebap AI",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "any"
+    }
+  ]
+}
