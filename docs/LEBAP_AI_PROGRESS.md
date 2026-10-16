@@ -336,3 +336,9 @@ A source review caught an integration issue before runtime validation: the brows
 - Standard delete actions now perform soft revocation and record api_key_revoked audit events, preserving lifecycle records.
 - Added model-level regression coverage for safe public projections, malformed scopes, and expired/revoked states.
 - Latest backend CI before this block passed on commit 7477fb17e21ac2ffc5d2ed50adaeefea3e3ba88c; newer commits are awaiting their own CI result. No frontend build, deployed database migration, or live runtime test has been completed.
+
+## CI regression fix — embedding validator export — 2026-10-16
+
+- The backend CI run for commit `189ded0b90671f24948aa31b85d9b8d576ba4bc3` failed: 94 suites passed, 1 suite failed, 2,111 tests passed, and 10 embedding-validator tests failed because `normalizeEmbeddingInput` was not exported from `server/endpoints/api/openai/helpers.js`.
+- Fixed the module export and added the intended validation helper in commit `a4407be9135c36232f0b3311857232ff53e94d7a`. The validator accepts a non-empty string or an array of non-empty strings and returns a structured validation error for malformed inputs.
+- A new completed CI run for the fix has not yet been confirmed. Do not treat the fix as verified until the workflow reruns and passes.
