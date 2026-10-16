@@ -5,7 +5,7 @@ const { Workspace } = require("../../../models/workspace");
 const { getEmbeddingEngineSelection } = require("../../../utils/helpers");
 const { reqBody } = require("../../../utils/http");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
-const { isWorkspaceAllowed } = require("../../../utils/apiKeyScopes");
+const { isWorkspaceAllowed, filterWorkspacesByApiKeyScope } = require("../../../utils/apiKeyScopes");
 const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
 const { EventLogs } = require("../../../models/eventLogs");
 const { ApiUsage } = require("../../../models/apiUsage");
@@ -574,8 +574,12 @@ function apiOpenAICompatibleEndpoints(app) {
         const data = [];
         const VectorDBProvider = process.env.VECTOR_DB || "lancedb";
         const workspaces = await Workspace.where();
+        const visibleWorkspaces = filterWorkspacesByApiKeyScope(
+          workspaces,
+          response.locals?.apiKey?.workspaceSlugs
+        );
 
-        for (const workspace of workspaces) {
+        for (const workspace of visibleWorkspaces) {
           data.push({
             id: workspace.slug,
             object: "vector_store",
