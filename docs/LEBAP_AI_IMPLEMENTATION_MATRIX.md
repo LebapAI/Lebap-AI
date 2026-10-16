@@ -105,3 +105,8 @@ Optional API-key workspace allowlists are now accepted during key creation and e
 ## Business analytics implementation note — 2026-10-16
 
 Added `GET /v1/admin/business-analytics` guarded by API-key validation and active administrator ownership, plus the admin-only `/settings/business-analytics` page. The dashboard displays recorded request outcomes, completion rate, token counts, average latency, top models/providers, user/workspace/API-key counts, and coverage-qualified AI cost. It intentionally displays revenue and profit as unavailable until billing and operating-cost sources exist; unknown-cost usage is not treated as free. Date ranges are validated and limited to 366 days. SQLite migration and Prisma Client generation are still pending; tests, lint, frontend build, and runtime checks have not been executed.
+
+
+## Business analytics trend follow-up — 2026-10-16
+
+The business-analytics endpoint now returns a bounded daily trend using a database-side SQLite aggregation instead of loading every usage event into application memory. The dashboard renders the latest 14 dates with recorded activity. The completion-rate denominator now excludes in-progress events and includes only terminal outcomes (completed, failed, aborted). Tests were updated to cover daily trend output, but have not been executed. Migration, Prisma Client generation, frontend build, and runtime checks remain outstanding.
