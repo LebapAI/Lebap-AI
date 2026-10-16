@@ -9,7 +9,6 @@ const { apiUserManagementEndpoints } = require("./userManagement");
 const { apiOpenAICompatibleEndpoints } = require("./openai");
 const { apiEmbedEndpoints } = require("./embed");
 const { apiKeyManagementEndpoints } = require("./apiKeys");
-const { businessAnalyticsEndpoints } = require("./analytics");
 const { apiRequestId } = require("../../utils/middleware/apiRequestId");
 
 // All endpoints must be documented and pass through the validApiKey Middleware.
@@ -31,7 +30,6 @@ function developerEndpoints(app, router) {
   apiOpenAICompatibleEndpoints(router);
   apiEmbedEndpoints(router);
   apiKeyManagementEndpoints(router);
-  businessAnalyticsEndpoints(router);
 }
 
 module.exports = { developerEndpoints };
