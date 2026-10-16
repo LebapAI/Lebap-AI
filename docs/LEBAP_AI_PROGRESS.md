@@ -203,5 +203,5 @@
 - API-key creation validates the allowlist format, rejects duplicates and unknown workspaces, and includes the scope in audit metadata and secret-redacted key listings.
 - API-key authentication parses the stored allowlist. Malformed stored scope fails closed as an empty allowlist rather than silently granting access.
 - OpenAI-compatible `GET /v1/openai/models` returns only allowlisted workspaces for scoped keys; chat completion checks the requested workspace before running the chat.
-- Scope is currently enforced only for OpenAI-compatible model listing and chat completion. Other API route families and image generation still need their own resource/operation authorization. Existing keys with NULL scope remain unrestricted by design until owners configure and rotate them.
+- Scope is enforced for OpenAI-compatible model listing and chat completion; the shared administrator guard denies workspace-scoped keys on other privileged routes, including key management and image generation. Existing keys with NULL scope remain unrestricted by design until owners configure and rotate them.
 - Added endpoint tests for allowlist validation/storage and unknown workspace rejection; updated middleware metadata expectations. Tests, lint, build, migrations, and runtime checks have not been run.
