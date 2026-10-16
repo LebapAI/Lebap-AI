@@ -26,8 +26,8 @@ Last updated: 2026-10-16
 - `server/models/apiKeys.js` currently catches database lookup exceptions in `ApiKey.get()` and returns `null`.
 - The middleware therefore cannot distinguish an invalid key from a failed API-key database lookup; both can become HTTP 403.
 - Added `docs/security/API_SECURITY_REVIEW.md` in commit `0a8327bba4d3aef68390c683085f389ebbfeed22`, documenting the confirmed authentication, API-key schema, and SQLite/PostgreSQL configuration findings.
-- A proposed compatibility-preserving fix is to add a separate strict lookup method for authentication that allows database errors to propagate, use that method only in `validApiKey`, and add a test for database lookup failure. The existing `get()` behavior should remain unchanged for other callers.
-- An attempt to commit this code change was blocked by the GitHub write tool; no change to `server/models/apiKeys.js` was made.
+- Implemented the compatibility-preserving fix on `lebap-ai/development`: `ApiKey.getForAuthentication()` lets database errors propagate, while the existing `ApiKey.get()` contract remains unchanged. The auth middleware uses the strict method and returns a generic HTTP 500 on lookup infrastructure failures.
+- Added a middleware test for API-key storage outage handling; the response is checked not to expose the internal database error.
 
 ## Latest verified inspection
 - Branch list includes `lebap-ai/development`, `main`, and `migration/anythingllm-upstream`.
@@ -35,11 +35,15 @@ Last updated: 2026-10-16
 - No local build, Jest run, or lint run was performed; this session had GitHub file access but no configured checkout execution path.
 
 ## Exact next actions
-1. Apply the strict authentication lookup fix in `server/models/apiKeys.js` and `validApiKey.js`, preserving the existing `ApiKey.get()` contract for all other call sites.
-2. Extend middleware tests to cover a rejected strict database lookup and ensure the middleware returns HTTP 500 without exposing the exception or credential.
-3. Check formatting against the server ESLint/Prettier configuration.
-4. Run focused tests and lint from a real checkout when an execution environment is available; record exact command output.
-5. Only after this authentication work is verified, review API routes and Prisma schema for request usage tracking and quotas. Do not add schema migrations before that review.
+1. Review the committed authentication lookup change and test diff for correctness.
+2. Run focused Jest tests and lint from a real checkout when an execution environment is available; record exact command output. They have not been run through this connector-only session.
+3. Review API routes and Prisma schema for request usage tracking and quotas. Do not add schema migrations before that review.
+
+## Latest implementation update — 2026-10-16
+- `server/models/apiKeys.js`: added `getForAuthentication()` using Prisma lookup without swallowing exceptions.
+- `server/utils/middleware/validApiKey.js`: authentication uses the strict lookup; internal failures return the generic `Authentication service unavailable.` response.
+- `server/utils/middleware/validApiKey.test.js`: mock and assertions updated for the strict method; added rejected-lookup coverage.
+- Commits: `346bcfef70ff0641196362b9417d4e535c6f574b`, `e080266039279cd1e9d2801fdec524f7f38cd358`, `f485ec02f8382efd888810619c11185d25c71c25`.
 
 ## Release status
-In development. Authentication tests exist but are unexecuted; the strict database-error path is not yet implemented. No production-readiness claim is made.
+Still in development. Changes are committed to `lebap-ai/development`; tests/lint/build were not executed here, so no passing-test or production-readiness claim is made.
