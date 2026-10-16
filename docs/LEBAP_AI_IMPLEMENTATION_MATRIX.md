@@ -125,3 +125,10 @@ The feature-flagged usage ledger now has source hooks for OpenAI-compatible chat
 ## API key administration hardening — 2026-10-16
 
 The standard admin and single-user API-key management paths now redact secret/verifier fields from listing responses, display status/scope/expiry in the UI, scope newly issued keys to currently existing workspaces, and soft-revoke credentials with audit events. Legacy NULL-scope keys remain unrestricted to avoid silently breaking existing integrations; rotation/remediation is still required. The latest changes require a fresh CI pass and migration/runtime validation.
+
+### API key least-privilege UX follow-up — 2026-10-16
+
+- [x] API key creation UI lets the administrator select allowed workspaces.
+- [x] Backend validates explicit workspace scopes against the current workspace inventory and rejects unknown or empty selections.
+- [ ] Automated route tests and frontend build/CI validation for the latest changes.
+- [ ] Rotation/migration plan for legacy unrestricted API keys.
