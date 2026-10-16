@@ -247,3 +247,11 @@
 - Source-level scan found the expected auth-verification route uses `validApiKey` alone; it does not expose privileged data. All inspected administrative/workspace/document/embed/OpenAI routes declare the shared administrator guard. The three system information routes that did not are now guarded (see the remediation entry above).
 - This is a declaration-level scan, not proof that every route behaves correctly at runtime or that every mounted API path is included in this inventory. The new system route tests and API-key scope tests are authored but unexecuted.
 - Minor lint hygiene: renamed an unused authentication catch binding to `_error` (commit `abf10598744c3d4610d1de21ebacb80f23b9637f`).
+
+
+## Security follow-up — fail-closed API key expiry validation (2026-10-16)
+
+A defensive edge case was found in expiry enforcement: a non-null expiry value that could not be parsed produced `NaN`, and the previous comparison did not classify it as expired. Authentication now rejects invalid expiry values as well as expired/revoked keys. The public key metadata status also reports malformed expiry as `expired` rather than `active`.
+- Added regression tests in `server/utils/middleware/validApiKey.test.js` and `server/endpoints/api/apiKeys/index.test.js`.
+- Commits: `bd62229e4a4c1ad9222cc6ead45427a744f8cd61` (authentication), `3a69cb4d1a4a5053d485642ebd077a503794a4c7` (middleware test), `e86fc35a728b7a28313922a695807f5a1e921034` (safe metadata), `05da24af16857f79f4f27e099a4032114d604a73` (endpoint test).
+- Static source review only; tests, lint, build, migrations, and runtime verification remain outstanding.
