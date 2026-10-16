@@ -90,6 +90,12 @@ describe("API key management endpoints", () => {
     expect(publicApiKey({ id: 9, workspaceSlugs: storedScope }).workspaceSlugs).toEqual(expectedScope);
   });
 
+  test("publicApiKey marks an invalid stored expiry as expired", () => {
+    expect(
+      publicApiKey({ id: 11, expiresAt: "not-a-date" }).status
+    ).toBe("expired");
+  });
+
   test("publicApiKey preserves NULL as the legacy unrestricted representation", () => {
     expect(publicApiKey({ id: 10, workspaceSlugs: null }).workspaceSlugs).toBeNull();
   });
