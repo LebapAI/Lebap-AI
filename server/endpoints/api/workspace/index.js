@@ -228,7 +228,7 @@ function apiWorkspaceEndpoints(app) {
 
   app.delete(
     "/v1/workspace/:slug",
-    [validApiKey, workspaceDeletionProtection],
+    [validApiKey, apiKeyOwnerIsAdmin, workspaceDeletionProtection],
     async (request, response) => {
       /*
     #swagger.tags = ['Workspaces']
