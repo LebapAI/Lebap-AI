@@ -101,7 +101,7 @@ export default function BusinessAnalytics() {
         to: new Date(to + "T23:59:59.999Z").toISOString(),
       });
       const response = await fetch(
-        `${fullApiUrl()}/v1/admin/business-analytics?${params.toString()}`,
+        `${fullApiUrl()}/admin/business-analytics?${params.toString()}`,
         { headers: baseHeaders() }
       );
       const result = await response.json().catch(() => ({}));
