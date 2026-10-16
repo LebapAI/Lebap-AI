@@ -23,6 +23,35 @@ function MetricCard({ label, value, detail = null }) {
   );
 }
 
+function DailyTrend({ rows }) {
+  const visibleRows = (rows || []).slice(-14);
+  const maxRequests = Math.max(1, ...visibleRows.map((row) => Number(row.requests) || 0));
+
+  return (
+    <section className="mt-6 rounded-xl border border-white/10 bg-theme-bg-primary p-5 min-w-0">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-4">
+        <h2 className="text-base font-semibold text-theme-text-primary">Daily activity trend</h2>
+        <p className="text-xs text-theme-text-secondary">Latest {visibleRows.length} days with recorded activity</p>
+      </div>
+      {!visibleRows.length ? (
+        <p className="text-sm text-theme-text-secondary">No daily activity has been recorded for this period.</p>
+      ) : (
+        <div className="space-y-3">
+          {visibleRows.map((row) => (
+            <div key={row.date} className="grid grid-cols-[84px_minmax(0,1fr)_84px] sm:grid-cols-[110px_minmax(0,1fr)_120px] items-center gap-3">
+              <span className="text-xs text-theme-text-secondary">{row.date}</span>
+              <div className="h-3 rounded-full bg-white/5 overflow-hidden" aria-label={`${row.requests} requests on ${row.date}`}>
+                <div className="h-full rounded-full bg-[#0066FF]" style={{ width: `${Math.max(0, Math.min(100, (Number(row.requests) / maxRequests) * 100))}%` }} />
+              </div>
+              <span className="text-right text-xs text-theme-text-primary">{formatNumber(row.requests)} req.</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 function BreakdownTable({ title, rows, nameKey, showTokens = false }) {
   return (
     <section className="rounded-xl border border-white/10 bg-theme-bg-primary p-5 min-w-0">
@@ -151,6 +180,8 @@ export default function BusinessAnalytics() {
                 <MetricCard label="Workspaces" value={formatNumber(platform?.totalWorkspaces)} />
                 <MetricCard label="API keys" value={formatNumber(platform?.totalApiKeys)} detail="Total stored keys, including revoked and legacy records" />
               </div>
+
+              <DailyTrend rows={data.dailyTrend} />
 
               <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-4">
                 <BreakdownTable title="Top models" rows={data.topModels} nameKey="model" showTokens />
