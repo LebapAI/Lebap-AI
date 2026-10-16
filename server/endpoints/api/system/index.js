@@ -9,6 +9,7 @@ const {
 const { updateENV } = require("../../../utils/helpers/updateENV");
 const { reqBody } = require("../../../utils/http");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
+const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
 
 function sanitizeSettingValues(settings = {}) {
   return Object.fromEntries(
@@ -118,7 +119,7 @@ function apiSystemEndpoints(app) {
 
   app.post(
     "/v1/system/update-env",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['System Settings']
@@ -170,7 +171,7 @@ function apiSystemEndpoints(app) {
 
   app.get(
     "/v1/system/export-chats",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
     #swagger.tags = ['System Settings']
@@ -232,7 +233,7 @@ function apiSystemEndpoints(app) {
   );
   app.delete(
     "/v1/system/remove-documents",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['System Settings']
