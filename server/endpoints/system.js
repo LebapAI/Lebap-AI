@@ -1096,7 +1096,7 @@ function systemEndpoints(app) {
           "api_key_created",
           {
             name: apiKey?.name,
-            workspaceSlugs: apiKey?.workspaceSlugs ?? JSON.stringify(workspaceSlugs),
+            workspaceSlugs,
           },
           response?.locals?.user?.id
         );
