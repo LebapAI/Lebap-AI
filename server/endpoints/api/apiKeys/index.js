@@ -8,13 +8,21 @@ const {
 const { Workspace } = require("../../../models/workspace");
 
 function parseWorkspaceSlugs(value) {
-  if (value === null || value === undefined || value === "") return null;
+  // NULL is the legacy unrestricted representation. Any persisted but
+  // malformed value must display as restricted, matching authentication.
+  if (value === null || value === undefined) return null;
+  if (typeof value !== "string" || value.length === 0) return [];
   try {
     const parsed = JSON.parse(value);
-    return Array.isArray(parsed) ? parsed : [];
+    if (
+      Array.isArray(parsed) &&
+      parsed.length > 0 &&
+      parsed.every((slug) => typeof slug === "string" && slug.trim().length > 0)
+    ) return [...new Set(parsed.map((slug) => slug.trim()))];
   } catch (_error) {
     return [];
   }
+  return [];
 }
 
 function publicApiKey(apiKey) {
