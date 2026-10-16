@@ -1,4 +1,4 @@
-const { resolveWorkspaceScope, parseWorkspaceSlugs, isWorkspaceAllowed } = require("./apiKeyScopes");
+const { resolveWorkspaceScope, parseWorkspaceSlugs, isWorkspaceAllowed, filterWorkspacesByApiKeyScope } = require("./apiKeyScopes");
 
 describe("resolveWorkspaceScope", () => {
   const available = ["research", "support", "billing"];
@@ -76,5 +76,31 @@ describe("isWorkspaceAllowed", () => {
 
   test("fails closed for invalid non-array scopes", () => {
     expect(isWorkspaceAllowed("support", "support")).toBe(false);
+  });
+});
+
+
+describe("filterWorkspacesByApiKeyScope", () => {
+  const workspaces = [
+    { slug: "research", name: "Research" },
+    { slug: "billing", name: "Billing" },
+    { slug: "support", name: "Support" },
+  ];
+
+  test("returns only explicitly allowed workspace records", () => {
+    expect(filterWorkspacesByApiKeyScope(workspaces, ["support", "research"])).toEqual([
+      workspaces[0],
+      workspaces[2],
+    ]);
+  });
+
+  test("keeps legacy unrestricted keys backward-compatible", () => {
+    expect(filterWorkspacesByApiKeyScope(workspaces, null)).toEqual(workspaces);
+  });
+
+  test("fails closed for empty or malformed scopes", () => {
+    expect(filterWorkspacesByApiKeyScope(workspaces, [])).toEqual([]);
+    expect(filterWorkspacesByApiKeyScope(workspaces, "support")).toEqual([]);
+    expect(filterWorkspacesByApiKeyScope(null, ["support"])).toEqual([]);
   });
 });
