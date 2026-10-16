@@ -136,4 +136,27 @@ describe("validApiKey middleware", () => {
       "API key authentication failed due to an internal error."
     );
   });
+
+  test("stores only non-secret API key metadata for downstream authorization", async () => {
+    ApiKey.getForAuthentication.mockResolvedValue({
+      id: 12,
+      createdBy: 7,
+      name: "automation",
+      secret: "must-not-be-copied",
+    });
+    const request = makeRequest("Bearer supplied-secret");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.locals.apiKey).toEqual({
+      id: 12,
+      createdBy: 7,
+      name: "automation",
+    });
+    expect(JSON.stringify(response.locals)).not.toContain("supplied-secret");
+    expect(JSON.stringify(response.locals)).not.toContain("must-not-be-copied");
+    expect(next).toHaveBeenCalledTimes(1);
+  });
+
 });
