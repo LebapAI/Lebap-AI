@@ -91,7 +91,7 @@ export default function AdminApiKeys() {
                       {t("api.table.name")}
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      {t("api.table.key")}
+                      Status & scope
                     </th>
                     <th scope="col" className="px-6 py-3">
                       {t("api.table.by")}
