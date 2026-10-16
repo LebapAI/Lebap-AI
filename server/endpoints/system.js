@@ -43,6 +43,7 @@ const {
 const { Telemetry } = require("../models/telemetry");
 const { ApiKey, publicApiKey } = require("../models/apiKeys");
 const { Workspace } = require("../models/workspace");
+const { resolveWorkspaceScope } = require("../utils/apiKeyScopes");
 const { getCustomModels } = require("../utils/helpers/customModels");
 const { WorkspaceChats } = require("../models/workspaceChats");
 const { WorkspaceThread } = require("../models/workspaceThread");
