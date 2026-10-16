@@ -103,3 +103,12 @@
 - This is **not** tenant isolation: the current API-key schema still has no tenant/workspace allowlist or scopes. Administrator-owned keys can still access all workspaces. The next implementation should introduce explicit service-client/workspace scopes and regression tests before relaxing this guard.
 - Verification performed: source edits committed through GitHub. Automated tests, lint, build, migration checks, and live runtime/API verification have **not** been run; this is not production sign-off.
 
+## Sensitive document and embed-history reads — 2026-10-16
+
+- Added `apiKeyOwnerIsAdmin` to three document read/list routes: `GET /v1/documents`, `GET /v1/documents/folder/:folderName`, and `GET /v1/document/:docName`. This reduces exposure of stored document inventory/content to any valid API key.
+- Added the same guard to two embed chat-history routes: `GET /v1/embed/:embedUuid/chats` and `GET /v1/embed/:embedUuid/chats/:sessionUuid`, which return potentially sensitive conversation history.
+- Commits: `3ce4905889261f76de44ba7aa4290b89acd97efc` (document reads) and `1d9b2696aafc57ae3b36d133d1d6f2b2bef9e2e0` (embed history).
+- Compatibility impact: integrations using unowned/legacy API keys or keys owned by non-admin users will receive HTTP 403 on these five routes. This interim guard is intentionally conservative.
+- Remaining finding: the API still lacks tenant/client-bound credentials and workspace allowlists. Admin-owned keys remain broad instance-level credentials; this is not tenant isolation. Other document mutations, workspace threads, and embed configuration routes need a full authorization matrix and tests before a client-scoped API can be considered safe.
+- Source changes were committed and will be source-verified. Tests, lint, build, migration checks, and runtime/API checks have not been run; no production sign-off is implied.
+
