@@ -137,3 +137,8 @@
 - Commits: `6b4563bf6362925acc7a71b2633412cfec5d99c9` (matrix), `c0797b0fdc1b4f85606b59dc4fe8629eae6aee06` (API registration), `e283e71ec74968304d581318983d85948d31a199` (middleware), `7b41e9eb237cee03170b7d583c47d90771e25771` (tests).
 - Verification limitation: source files were committed, but the Jest test, lint, build, and runtime behavior have not been executed in this session. This is a first small API Hub foundation, not a completed API Hub.
 
+## API-key authentication regression coverage — 2026-10-16
+
+- Extended `server/utils/middleware/validApiKey.test.js` to assert that successful authentication passes only key ID, owner ID, and name to downstream authorization; the bearer secret and stored secret are not copied into `response.locals`.
+- Commit: `ffce0e170aa8b46dc39ae1fb61beb42b75002a99`.
+- Existing tests cover malformed/missing Bearer headers, unknown keys, authentication storage failures, and multi-user settings failures. This additional test is authored but **has not been executed**; no claim is made that the suite passes.
