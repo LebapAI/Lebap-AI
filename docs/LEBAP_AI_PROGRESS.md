@@ -239,3 +239,11 @@
 - Added `server/endpoints/api/system/index.test.js` to assert that all six system routes use both authentication and administrator authorization.
 - Commits: `3242794ecd9b6d42e6570a630a1362af0852956d` (route guards) and `c5c1ad25cc48e679541e4034b640a73a75494c7d` (regression tests).
 - Source changes are committed but tests have not been executed. Continue auditing all API route groups for routes that omit the shared guard; this finding shows that route-by-route verification is still necessary.
+
+
+## API route declaration audit — 2026-10-16
+
+- Re-inspected the registered route groups in `server/endpoints/api/index.js` and route declarations for auth, admin, system, workspace, document, workspace-thread, user-management, OpenAI-compatible, embed, and API-key management endpoints.
+- Source-level scan found the expected auth-verification route uses `validApiKey` alone; it does not expose privileged data. All inspected administrative/workspace/document/embed/OpenAI routes declare the shared administrator guard. The three system information routes that did not are now guarded (see the remediation entry above).
+- This is a declaration-level scan, not proof that every route behaves correctly at runtime or that every mounted API path is included in this inventory. The new system route tests and API-key scope tests are authored but unexecuted.
+- Minor lint hygiene: renamed an unused authentication catch binding to `_error` (commit `abf10598744c3d4610d1de21ebacb80f23b9637f`).
