@@ -66,8 +66,8 @@ In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` had a produ
 
 ## Follow-up finding — API key ownership and tenant isolation
 
-- The API-key model stores `createdBy` and `name`; `getForAuthentication()` retrieves the matching key record. The current `validApiKey` middleware validates the bearer secret but does not put the authenticated key identity into request context.
-- The inspected admin routes manage users and workspace membership, but the inspected OpenAI-compatible routes do not visibly intersect the authenticated key with workspace permissions. The key model also has no visible scope, expiry, or revocation-state fields in the inspected model.
+- The API-key model stores `createdBy`, `name`, workspace allowlist, expiry, and revocation state; `getForAuthentication()` retrieves the matching key record. The current `validApiKey` middleware validates the bearer secret and attaches non-secret key identity and parsed scope metadata to request context.
+- Follow-up remediation now intersects OpenAI-compatible chat/model/vector-store routes with the key's workspace allowlist. Legacy NULL scopes remain unrestricted for backward compatibility; malformed explicit scopes fail closed.
 - This does **not** establish whether parent middleware or other runtime controls add protection; those paths remain to be inspected. It does establish that tenant authorization is not visible in the reviewed endpoint implementation.
 - Do not add an ownership restriction based only on `createdBy` until legacy-key behavior, key-creation semantics, and admin/service-key expectations are confirmed. A rushed filter could break existing installations or grant misleading partial isolation.
 - Next implementation gate: trace where API keys are created/deleted and how workspace permissions are enforced; then add explicit credential scope/tenant authorization plus regression tests before enabling third-party tenants.
@@ -80,9 +80,9 @@ The route `GET /v1/users/:id/issue-auth-token` was updated to require a key whos
 ## Follow-up — parent router and API key schema confirmed
 
 - `server/index.js` mounts `apiRouter` at `/api` without a global API-key or role middleware. `developerEndpoints(app, apiRouter)` registers API groups on the router; therefore route-level middleware is the relevant control unless another route-specific layer is present.
-- The Prisma `api_keys` model contains `id`, `name`, `secret`, nullable `createdBy`, and timestamps only. There are no first-class scopes, expiry, or revocation-state fields in this schema.
-- Workspace membership data is stored in `workspace_users`, but the reviewed API-key OpenAI-compatible routes do not visibly bind the key to those memberships.
-- This strengthens the static finding that the current API is not yet demonstrably tenant-isolated. It does not establish external exploitability or rule out infrastructure-level network restrictions.
+- The current Prisma `api_keys` model includes `secretHash`, `workspaceSlugs`, `expiresAt`, and `revokedAt` in addition to owner/name/timestamps. The original observation above is superseded by the lifecycle migration and follow-up implementation.
+- OpenAI-compatible chat/model/vector-store routes now enforce the explicit workspace allowlist. This is credential-scoped workspace isolation, not a complete tenant/customer identity system.
+- Legacy NULL workspace scopes remain unrestricted for compatibility. External tenant rollout still requires explicit migration/rotation of legacy keys, quotas, cost controls, and runtime verification.
 - Do not describe this branch as production-ready for untrusted multi-tenant API customers until credential semantics, authorization, quotas, and regression tests are implemented and verified.
 
 
@@ -92,7 +92,7 @@ The route `GET /v1/users/:id/issue-auth-token` was updated to require a key whos
 - Applied the middleware to every route declared in `server/endpoints/api/admin/index.js` (13 route declarations) and to `GET /v1/users`. The Simple SSO token issuance route retains its equivalent targeted owner/admin check.
 - Compatibility impact is intentional: legacy keys with no owner and keys owned by non-admins cannot call these privileged routes. Use an API key created by an active administrator.
 - Static source verification confirms the admin module has no remaining route middleware declaration consisting only of `[validApiKey]`. This is not a runtime test.
-- Still unresolved: workspace-level authorization for ordinary API keys, API-key scopes/expiry/revocation, per-key rate/concurrency/spend quotas, and normalized usage accounting. Do not enable untrusted multi-tenant customers until these are implemented and tested.
+- Still unresolved: per-key rate/concurrency/spend quotas, reliable provider-cost attribution, and complete tenant/customer identity. API key scopes, expiry, and revocation are implemented in the current branch; legacy NULL scopes remain unrestricted until rotated or explicitly scoped. Do not enable untrusted multi-tenant customers until the remaining controls are implemented and tested.
 
 
 ## Sensitive system operations — targeted authorization hardening
