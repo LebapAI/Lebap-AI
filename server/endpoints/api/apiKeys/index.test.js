@@ -152,7 +152,7 @@ describe("API key management endpoints", () => {
     });
     const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
     await routes["POST /v1/admin/api-keys"].handler({}, response);
-    expect(ApiKey.create).toHaveBeenCalledWith(7, "nightly automation");
+    expect(ApiKey.create).toHaveBeenCalledWith(7, "nightly automation", { expiresAt: null });
     expect(response.statusCode).toBe(201);
     expect(response.payload.apiKey.secret).toBe("new-secret");
     expect(response.payload.warning).toMatch(/not be shown again/i);
@@ -223,7 +223,7 @@ describe("API key management endpoints", () => {
       response
     );
     expect(response.statusCode).toBe(404);
-    expect(ApiKey.delete).not.toHaveBeenCalled();
+    expect(ApiKey.revoke).not.toHaveBeenCalled();
   });
 
 
