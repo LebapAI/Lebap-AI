@@ -23,6 +23,15 @@ function publicApiKey(apiKey) {
   };
 }
 
+async function recordAudit(event, metadata) {
+  try {
+    await EventLogs.logEvent(event, metadata);
+  } catch (_error) {
+    // Credential operations must not become ambiguous if audit storage is down.
+    console.error("API key audit event could not be recorded.");
+  }
+}
+
 function apiKeyManagementEndpoints(app) {
   if (!app) return;
 
@@ -71,7 +80,7 @@ function apiKeyManagementEndpoints(app) {
           });
         }
 
-        await EventLogs.logEvent("api_key_created", {
+        await recordAudit("api_key_created", {
           apiKeyId: apiKey.id,
           name: apiKey.name,
           createdBy: ownerId,
@@ -120,7 +129,7 @@ function apiKeyManagementEndpoints(app) {
           return response.status(500).json({ error: "API key could not be revoked." });
         }
 
-        await EventLogs.logEvent("api_key_revoked", {
+        await recordAudit("api_key_revoked", {
           apiKeyId: id,
           createdBy: existing.createdBy || null,
         });
