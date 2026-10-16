@@ -281,8 +281,10 @@ function apiOpenAICompatibleEndpoints(app) {
       } catch (e) {
         const { isAbortError } = require("../../../utils/helpers/abortSignals");
         if (isAbortError(e)) return response.end();
-        console.error(e.message, e);
-        return response.status(500).json({ error: e.message });
+        console.error("OpenAI-compatible image generation failed.", e);
+        return response.status(500).json({
+          error: "Image generation failed. Check server logs for details.",
+        });
       }
     }
   );
