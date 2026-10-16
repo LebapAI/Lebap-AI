@@ -207,3 +207,11 @@ The historical findings above describe the state at the time of each inspection.
 - A NULL legacy scope is still intentionally treated as unrestricted for compatibility. Malformed/empty persisted scopes fail closed. Therefore, not every existing credential is tenant-isolated yet; legacy keys must be migrated or rotated before relying on strict tenant boundaries.
 - Privileged routes still use an interim active-admin-owned-key policy. This is not a substitute for customer/tenant identity, per-operation scopes, rate/concurrency controls, or hard spend quotas.
 - Backend CI previously passed for commit `d1ed57dd2731fdc738b45c840a7a5cff8a6bb248`, and frontend build/lint passed for commit `4459d53e53709473f14ef560435d175e82be8b17`. These commits predate the current expiry-selector and vector-store filtering changes; the newest combined tree must pass fresh CI and runtime/database checks before production sign-off.
+
+
+## Workspace-scope remediation update — 2026-10-16
+
+- OpenAI-compatible chat completion now rejects requests whose workspace slug is outside the authenticated key's allowlist with HTTP 403.
+- Both `GET /v1/openai/models` and `GET /v1/openai/vector_stores` now filter workspace inventories through the same shared fail-closed scope helper. This keeps list endpoints consistent with chat authorization and prevents listing out-of-scope workspaces.
+- Unit tests cover allowed, denied, legacy NULL, empty, malformed, and non-array scopes. Backend CI passed on commit `1357e667`; frontend build/lint passed on commit `2bcf2d94`. A new backend run is required for this latest change.
+- Remaining gate: scopes are an explicit workspace allowlist, not a complete customer/tenant identity system. Existing legacy keys with a NULL scope remain unrestricted for backward compatibility; rotate and assign scopes before using keys for external tenant isolation.
