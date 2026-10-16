@@ -64,3 +64,10 @@ In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` is register
 - Commit `9b86a9aa464f7d6da2bdf29fe43f1f5e3e5e5525` removes the direct `dumpENV()` call from `GET /v1/system/env-dump` and returns HTTP 404 for this endpoint in production. The non-production behavior remains a no-op success for compatibility.
 - Production environment persistence through the existing `updateENV()` path is unchanged; this change disables only the separate endpoint.
 - Static change only; runtime behavior and tests have not been executed in this session.
+
+
+### 2. System update endpoint response redaction
+
+- Static inspection found `POST /v1/system/update-env` returned `newValues` directly from `updateENV()`, which includes the submitted raw values. Secret values could therefore be reflected to API clients.
+- Commit `f65397f106221dba22104184892d9d7111bda464` sanitizes the response at the API boundary: keys whose names indicate keys, tokens, secrets, passwords, connection strings, or auth tokens return only a boolean indicating whether a value is set. Non-sensitive settings retain their returned value.
+- The underlying setting update behavior is unchanged. Static source verification only; no runtime tests performed.
