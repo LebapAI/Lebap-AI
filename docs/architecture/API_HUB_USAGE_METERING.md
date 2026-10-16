@@ -10,10 +10,10 @@ Provide a durable foundation for per-client usage analytics, enforceable quotas,
 
 ## Constraints observed in the current source
 
-- `api_keys` currently contains `id`, `name`, nullable unique `secret`, nullable `createdBy`, and timestamps.
+- `api_keys` currently contains `id`, `name`, nullable unique `secret`, nullable `createdBy`, nullable `expiresAt`/`revokedAt`, and timestamps.
 - The active Prisma datasource is SQLite. PostgreSQL configuration is commented out. A production database migration must be an explicit infrastructure decision, not an assumed configuration.
 - OpenAI-compatible chat, embedding, image generation, and vector-store routes use existing workspace/provider code. Their behavior should remain compatible while a shared metering layer is introduced.
-- The current API-key record has no explicit status, expiry, scope, tenant ID, rate-limit, or spend-limit fields.
+- The API-key record now has nullable expiry and revocation timestamps, enforced by API-key authentication after the migration is applied. It still has no scopes, tenant ID, workspace allowlist, rate-limit, or spend-limit fields.
 
 ## Recommended data model
 
@@ -31,7 +31,7 @@ Do not assume `createdBy` is a tenant boundary. It is a user reference and is cu
 
 ### API credential
 
-Extend or replace the current API-key model only through a reviewed migration. Suggested fields:
+Extend or replace the current API-key model only through a reviewed migration. Suggested fields (in addition to the implemented nullable expiry/revocation timestamps):
 - stable credential ID;
 - tenant/client ID;
 - name;
@@ -111,3 +111,8 @@ If the metering store fails, the policy must be explicit. For routes that can in
 ## Not yet implemented or verified
 
 This document is a design specification only. No database schema migration, metering model, quota middleware, or admin UI is added by this document. Runtime behavior, provider billing fields, parent-router protections, and production database selection remain to be verified.
+
+
+## Implementation update — 2026-10-16
+
+The source now includes nullable API-key `expiresAt` and `revokedAt` fields, an SQLite migration, optional expiry validation at creation, authentication rejection of expired/revoked credentials, and soft revocation. The migration, Prisma client generation, tests, and runtime behavior have not been verified. All tenant/client scoping, workspace allowlists, hashed-secret migration, usage events, quotas, and rate/concurrency enforcement described above remain design work.
