@@ -150,3 +150,12 @@
 - Commits: `5ed71739714d170d4714cb2a1558330375569372` (workspace threads) and `bb80c04a659bca1f37d9803af850d2ca80a95f04` (embed API).
 - Compatibility impact: integrations using legacy/unowned keys or keys owned by non-admin users will now receive HTTP 403 on these routes. This is a conservative temporary control, not tenant-scoped authorization; proper client/workspace scopes remain required.
 - Verification: fetched both updated files from `lebap-ai/development` and confirmed all 12 route declarations use both middleware functions. Tests, lint, build, and runtime requests have not been run.
+
+## Document mutations, workspace deletion, and image-generation authorization — 2026-10-16
+
+- Added administrator-key authorization to all document API routes in `server/endpoints/api/document/index.js`, including upload, URL/raw-text ingestion, document/folder listing and reads, folder creation/removal, file moves, and generated-file downloads. For multipart uploads, the admin guard runs before the upload handler so unauthorized callers are rejected before file-processing middleware.
+- Added administrator-key authorization to workspace deletion before the existing deletion-protection middleware.
+- Added administrator-key authorization to OpenAI-compatible image generation before upload/provider work, limiting unauthorised provider-cost exposure while client-scoped quotas are not implemented.
+- Commits: `d85c20830eb2d5e1f54a1a467aeec0147aa81bf0` (document routes), `c9f8181ec6314b2de62f1069309abf4c09ec71a8` (workspace deletion), and `0f0f2a9570c8e79aea38f5ea6bf283e0d423fb55` (image generation).
+- Compatibility impact is intentionally broad: these API routes now require an active administrator-owned key. This is an interim containment measure, not the final product permission model; external agents need scoped credentials and explicit workspace permissions before non-admin access can safely be enabled.
+- Static verification: fetched the updated source files and confirmed the expected middleware ordering. Tests, lint, build, provider calls, and runtime API checks have not been executed.
