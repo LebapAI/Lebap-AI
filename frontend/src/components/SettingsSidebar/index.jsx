@@ -11,7 +11,6 @@ import {
   Nut,
   Toolbox,
   Plugs,
-  ChartLineUp,
 } from "@phosphor-icons/react";
 import AgentIcon from "@/media/animations/agent-static.png";
 import CommunityHubIcon from "@/media/illustrations/community-hub.png";
