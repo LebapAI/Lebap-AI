@@ -357,7 +357,8 @@ function apiOpenAICompatibleEndpoints(app) {
           apiKeyId: response.locals?.apiKey?.id ?? null,
           route: "/v1/openai/images/generations",
           operation: (request.files || []).length > 0 ? "image.edit" : "image.generate",
-          provider: process.env.IMAGE_GEN_PROVIDER ?? null,
+          // The configured image provider is selected internally; do not guess its identity here.
+          provider: null,
           model: null,
           workspaceSlug: null,
         });
