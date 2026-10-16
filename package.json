@@ -39,9 +39,13 @@
     "translations:prune": "cd frontend/src/locales && node findUnusedTranslations.mjs --delete && cd ../../../ && yarn translations:normalize",
     "translations:create": "cd extras/translator && node index.mjs --all && cd ../../frontend && yarn lint && cd ../.."
   },
-  "private": true,
+  "private": false,
   "devDependencies": {
     "concurrently": "^9.1.2",
     "jest": "^29.7.0"
+  },
+  "resolutions": {
+    "**/graphql-request/form-data": "3.0.4",
+    "form-data": "4.0.4"
   }
 }
