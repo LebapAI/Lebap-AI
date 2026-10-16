@@ -5,11 +5,20 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  push:
+    branches:
+      - lebap-ai/development
+    paths:
+      - "server/**/*.js"
+      - "server/prisma/**"
+      - "collector/**/*.js"
+      - ".github/workflows/run-tests.yaml"
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
-      - "server/**.js"
-      - "collector/**.js"
+      - "server/**/*.js"
+      - "server/prisma/**"
+      - "collector/**/*.js"
 
 jobs:
   run-script:
