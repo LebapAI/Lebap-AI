@@ -11,6 +11,7 @@ import {
   Nut,
   Toolbox,
   Plugs,
+  ChartLineUp,
 } from "@phosphor-icons/react";
 import AgentIcon from "@/media/animations/agent-static.png";
 import CommunityHubIcon from "@/media/illustrations/community-hub.png";
@@ -297,6 +298,11 @@ const SidebarOptions = ({ user = null, t }) => (
               btnText: t("settings.invites"),
               href: paths.settings.invites(),
               roles: ["admin", "manager"],
+            },
+            {
+              btnText: "Business Analytics",
+              href: paths.settings.businessAnalytics(),
+              roles: ["admin"],
             },
             {
               btnText: "Default System Prompt",
