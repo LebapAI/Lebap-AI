@@ -37,3 +37,8 @@ Branch: `lebap-ai/development`
 ## Verification boundary
 
 This document records source-level review only. It is not a penetration-test report, passing-CI claim, or production-readiness approval.
+
+
+## API usage accounting status — 2026-10-16
+
+A durable usage ledger schema and model have been committed, but request handlers do not yet write usage events. It must not be treated as active metering, billing, rate limiting, or spend enforcement. The SQLite migration and Prisma Client generation remain unapplied, and automated tests/build/lint are unverified. See `docs/architecture/API_HUB_USAGE_METERING.md` for the current design and staged rollout criteria.
