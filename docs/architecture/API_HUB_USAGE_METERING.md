@@ -121,3 +121,8 @@ The source now includes nullable API-key `expiresAt` and `revokedAt` fields, an 
 ## API credential storage update — 2026-10-16
 
 New credentials are now designed to store a one-way SHA-256 verifier in `secretHash`; the raw secret is returned once at creation. Authentication retains a legacy raw-secret fallback so existing credentials do not immediately break. This is an intermediate rollout state: rotate/reissue legacy keys before removing the raw `secret` field or its compatibility lookup. The new migration and generated Prisma client have not been applied/verified, and tenant/workspace scopes, usage events, quotas, and rate/concurrency enforcement remain unimplemented.
+
+
+## Workspace allowlist implementation update — 2026-10-16
+
+An optional workspace allowlist is stored in `api_keys.workspaceSlugs`. Key creation validates the supplied slugs against existing workspaces, and OpenAI-compatible model listing/chat completion enforce the allowlist. A NULL allowlist intentionally retains existing behavior; this is not complete tenant isolation because other route families and image generation still need explicit authorization. The SQLite migration, generated Prisma client, tests, lint, build, and runtime checks remain outstanding.
