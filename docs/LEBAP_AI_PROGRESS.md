@@ -1,12 +1,25 @@
 # Lebap AI — Development Progress
 
+## Current verified snapshot — 2026-10-16
+
+This snapshot supersedes older dated notes below wherever they conflict with the current implementation.
+
+- API keys support hashed secrets for newly issued keys, workspace allowlists, expiry, and soft revocation. Authentication checks expiry/revocation and attaches only non-secret key metadata.
+- Key issuance accepts validated expiry choices (30, 90, 365 days, or no expiry). The UI defaults to 90 days. Legacy clients omitting the field remain compatible and create non-expiring keys.
+- OpenAI-compatible `/models`, `/vector_stores`, and chat-completions paths enforce explicit workspace allowlists using shared helpers. Malformed explicit scopes fail closed. NULL legacy scope remains unrestricted for compatibility and must be addressed before untrusted multi-tenant rollout.
+- API usage metering is feature-flagged and observe-only. It records request/status/latency and available provider usage metadata; provider costs are not considered verified unless explicitly marked with a reliable source. Revenue and profit remain unavailable without billing data.
+- Verified CI: backend tests passed on commit `1357e667`; frontend build and lint passed on commit `2bcf2d94`. A newer backend run for the shared model-list scope helper is running for commit `e6494836`. The latest combined tree still needs a fresh full CI pass.
+- Not yet verified: applying all migrations to a real database, runtime integration with provider credentials, distributed rate/concurrency limits, reliable provider cost accounting, and deployment behavior. This branch is **not production signed off** for untrusted multi-tenant API customers.
+
+## Current focus — API key lifecycle, tenant isolation, and verification
+
 ## Current focus — API key lifecycle, tenant isolation, and verification
 
 - Re-checked current source on `lebap-ai/development` before continuing.
 - API-key authentication now attaches safe identity metadata and an optional parsed `workspaceSlugs` allowlist. Newly issued credentials store a SHA-256 verifier; expiry and revocation are checked in source.
 - OpenAI-compatible model listing and chat completion enforce explicitly configured workspace allowlists. NULL scope remains backward-compatible and unrestricted, so this is not yet complete tenant isolation.
 - The remaining authorization gap covers other API route families, operation scopes, client/tenant identity, and image/provider operations. Legacy raw-secret credentials also remain compatible until rotated.
-- CI verification on 2026-10-16: backend workflow passed for commit `d1ed57dd2731fdc738b45c840a7a5cff8a6bb248`; frontend build and lint workflow passed for commit `4459d53e53709473f14ef560435d175e82be8b17`. These are different commits, so the combined latest tree still needs a fresh full CI pass. Migration application, Prisma Client generation against a real database, and runtime integration checks remain outstanding.
+- Earlier CI checkpoints are superseded by the current verified snapshot above. Migration application, Prisma Client generation against a real database, and runtime integration checks remain outstanding.
 - Security review details are recorded in `docs/security/API_ROUTE_REVIEW.md`.
 - Latest verified CI outcomes are recorded above. Production runtime and migration verification are still outstanding.
 
