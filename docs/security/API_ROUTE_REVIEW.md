@@ -84,3 +84,12 @@ The route `GET /v1/users/:id/issue-auth-token` was updated to require a key whos
 - Workspace membership data is stored in `workspace_users`, but the reviewed API-key OpenAI-compatible routes do not visibly bind the key to those memberships.
 - This strengthens the static finding that the current API is not yet demonstrably tenant-isolated. It does not establish external exploitability or rule out infrastructure-level network restrictions.
 - Do not describe this branch as production-ready for untrusted multi-tenant API customers until credential semantics, authorization, quotas, and regression tests are implemented and verified.
+
+
+## Remediation — privileged API key owner checks (2026-10-16)
+
+- Added `server/utils/middleware/apiKeyOwnerIsAdmin.js`. After bearer authentication, it requires `response.locals.apiKey.createdBy` to resolve to an active user with role `admin`; missing owners and non-admin/suspended owners receive HTTP 403. Lookup errors fail closed with a generic HTTP 500 response and are not logged with credential data.
+- Applied the middleware to every route declared in `server/endpoints/api/admin/index.js` (13 route declarations) and to `GET /v1/users`. The Simple SSO token issuance route retains its equivalent targeted owner/admin check.
+- Compatibility impact is intentional: legacy keys with no owner and keys owned by non-admins cannot call these privileged routes. Use an API key created by an active administrator.
+- Static source verification confirms the admin module has no remaining route middleware declaration consisting only of `[validApiKey]`. This is not a runtime test.
+- Still unresolved: workspace-level authorization for ordinary API keys, API-key scopes/expiry/revocation, per-key rate/concurrency/spend quotas, and normalized usage accounting. Do not enable untrusted multi-tenant customers until these are implemented and tested.
