@@ -171,4 +171,28 @@ describe("apiKeyWorkspaceScope middleware", () => {
     apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
     expect(ctx.response.statusCode).toBe(403);
   });
+
+  test("checks all workspace targets even when the primary slug is allowed", () => {
+    const ctx = makeContext({
+      scopes: ["research"],
+      method: "POST",
+      path: "/v1/document/upload",
+      params: { slug: "research" },
+      body: { addToWorkspaces: "research,billing" },
+    });
+    apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
+    expect(ctx.response.statusCode).toBe(403);
+    expect(ctx.next).not.toHaveBeenCalled();
+  });
+
+  test("rejects empty entries in a workspace target list", () => {
+    const ctx = makeContext({
+      scopes: ["research"],
+      method: "POST",
+      path: "/v1/document/upload",
+      body: { addToWorkspaces: "research,,research" },
+    });
+    apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
+    expect(ctx.response.statusCode).toBe(403);
+  });
 });
