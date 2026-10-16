@@ -351,3 +351,9 @@ A source review caught an integration issue before runtime validation: the brows
 - Frontend build and new CI verification are pending.
 
 - Follow-up: extracted explicit workspace-scope normalization into `server/utils/apiKeyScopes.js` and added `server/utils/apiKeyScopes.test.js`. The helper deduplicates valid slugs, rejects malformed/empty/unknown explicit scopes, and preserves the omitted-scope compatibility behavior. Both standard admin and single-user creation routes now use the helper and include the selected allowlist in the audit event.
+
+## Frontend CI coverage — 2026-10-16
+
+- Added `.github/workflows/frontend-build.yaml`, triggered by frontend, root dependency-manifest, or workflow changes on `lebap-ai/development` and pull requests.
+- The workflow installs the frontend dependencies from its lockfile, runs the production Vite build, and runs the frontend ESLint check.
+- The workflow file is committed; its first run and the current API-key UI build have not yet been confirmed.
