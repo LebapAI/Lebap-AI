@@ -142,3 +142,11 @@
 - Extended `server/utils/middleware/validApiKey.test.js` to assert that successful authentication passes only key ID, owner ID, and name to downstream authorization; the bearer secret and stored secret are not copied into `response.locals`.
 - Commit: `ffce0e170aa8b46dc39ae1fb61beb42b75002a99`.
 - Existing tests cover malformed/missing Bearer headers, unknown keys, authentication storage failures, and multi-user settings failures. This additional test is authored but **has not been executed**; no claim is made that the suite passes.
+
+## Thread and embed management API guard — 2026-10-16
+
+- Added `apiKeyOwnerIsAdmin` after `validApiKey` to all six workspace-thread API routes (create, rename, delete, read chat history, and other thread operations in that route module).
+- Added the same administrator-key guard to all six embed management/list/history routes in the developer API module. This closes the currently visible gap where a valid but non-admin API key could manage workspace threads or enumerate/create/update/delete embed configurations.
+- Commits: `5ed71739714d170d4714cb2a1558330375569372` (workspace threads) and `bb80c04a659bca1f37d9803af850d2ca80a95f04` (embed API).
+- Compatibility impact: integrations using legacy/unowned keys or keys owned by non-admin users will now receive HTTP 403 on these routes. This is a conservative temporary control, not tenant-scoped authorization; proper client/workspace scopes remain required.
+- Verification: fetched both updated files from `lebap-ai/development` and confirmed all 12 route declarations use both middleware functions. Tests, lint, build, and runtime requests have not been run.
