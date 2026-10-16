@@ -148,7 +148,7 @@ describe("API key management endpoints", () => {
 
   test("creates a key for the authenticated administrator and returns its secret once", async () => {
     const routes = setup();
-    reqBody.mockReturnValue({ name: "  nightly automation  " });
+    reqBody.mockReturnValue({ name: "  nightly automation  ", workspaceSlugs: ["workspace-a"] });
     ApiKey.create.mockResolvedValue({
       apiKey: {
         id: 11,
@@ -160,7 +160,7 @@ describe("API key management endpoints", () => {
     });
     const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
     await routes["POST /v1/admin/api-keys"].handler({}, response);
-    expect(ApiKey.create).toHaveBeenCalledWith(7, "nightly automation", { expiresAt: null, workspaceSlugs: null });
+    expect(ApiKey.create).toHaveBeenCalledWith(7, "nightly automation", { expiresAt: null, workspaceSlugs: ["workspace-a"] });
     expect(response.statusCode).toBe(201);
     expect(response.payload.apiKey.secret).toBe("new-secret");
     expect(response.payload.warning).toMatch(/not be shown again/i);
@@ -197,7 +197,7 @@ describe("API key management endpoints", () => {
 
   test("returns the created secret even when audit storage is unavailable", async () => {
     const routes = setup();
-    reqBody.mockReturnValue({ name: "service integration" });
+    reqBody.mockReturnValue({ name: "service integration", workspaceSlugs: ["workspace-a"] });
     ApiKey.create.mockResolvedValue({
       apiKey: { id: 15, name: "service integration", secret: "one-time-secret", createdBy: 7 },
       error: null,
@@ -237,7 +237,7 @@ describe("API key management endpoints", () => {
 
   test("rejects a non-future expiry before creating a key", async () => {
     const routes = setup();
-    reqBody.mockReturnValue({ name: "short-lived", expiresAt: "2000-01-01T00:00:00.000Z" });
+    reqBody.mockReturnValue({ name: "short-lived", workspaceSlugs: ["workspace-a"], expiresAt: "2000-01-01T00:00:00.000Z" });
     const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
     await routes["POST /v1/admin/api-keys"].handler({}, response);
     expect(response.statusCode).toBe(400);
@@ -247,21 +247,21 @@ describe("API key management endpoints", () => {
   test("passes a validated expiry to the key model", async () => {
     const routes = setup();
     const expiry = new Date(Date.now() + 60 * 60 * 1000).toISOString();
-    reqBody.mockReturnValue({ name: "short-lived", expiresAt: expiry });
+    reqBody.mockReturnValue({ name: "short-lived", workspaceSlugs: ["workspace-a"], expiresAt: expiry });
     ApiKey.create.mockResolvedValue({
       apiKey: { id: 21, name: "short-lived", secret: "short-secret", createdBy: 7, expiresAt: new Date(expiry) },
       error: null,
     });
     const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
     await routes["POST /v1/admin/api-keys"].handler({}, response);
-    expect(ApiKey.create).toHaveBeenCalledWith(7, "short-lived", { expiresAt: new Date(expiry), workspaceSlugs: null });
+    expect(ApiKey.create).toHaveBeenCalledWith(7, "short-lived", { expiresAt: new Date(expiry), workspaceSlugs: ["workspace-a"] });
     expect(response.statusCode).toBe(201);
   });
 
 
   test("rejects non-ISO expiry strings", async () => {
     const routes = setup();
-    reqBody.mockReturnValue({ name: "short-lived", expiresAt: "tomorrow" });
+    reqBody.mockReturnValue({ name: "short-lived", workspaceSlugs: ["workspace-a"], expiresAt: "tomorrow" });
     const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
     await routes["POST /v1/admin/api-keys"].handler({}, response);
     expect(response.statusCode).toBe(400);
