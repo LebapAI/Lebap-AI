@@ -10,6 +10,17 @@ const { updateENV } = require("../../../utils/helpers/updateENV");
 const { reqBody } = require("../../../utils/http");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
 
+function sanitizeSettingValues(settings = {}) {
+  return Object.fromEntries(
+    Object.entries(settings).map(([key, value]) => [
+      key,
+      /(key|token|secret|password|connectionstring|connection_string|auth|credential|privatekey|private_key)/i.test(key)
+        ? Boolean(value)
+        : value,
+    ])
+  );
+}
+
 function apiSystemEndpoints(app) {
   if (!app) return;
 
@@ -66,7 +77,7 @@ function apiSystemEndpoints(app) {
     */
     try {
       const settings = await SystemSettings.currentSettings();
-      response.status(200).json({ settings });
+      response.status(200).json({ settings: sanitizeSettingValues(settings) });
     } catch (e) {
       console.error(e.message, e);
       response.sendStatus(500).end();
@@ -148,14 +159,7 @@ function apiSystemEndpoints(app) {
         const { newValues, error } = await updateENV(body);
         // Never echo secret material back to API clients after a settings update.
         // Keep the setting names but expose only whether a sensitive value is set.
-        const safeNewValues = Object.fromEntries(
-          Object.entries(newValues).map(([key, value]) => [
-            key,
-            /(key|token|secret|password|connectionstring|authtoken)/i.test(key)
-              ? Boolean(value)
-              : value,
-          ])
-        );
+        const safeNewValues = sanitizeSettingValues(newValues);
         response.status(200).json({ newValues: safeNewValues, error });
       } catch (e) {
         console.error(e.message, e);
