@@ -75,3 +75,12 @@
 - Updated server package metadata to Lebap AI.
 - This is a scoped first pass, not a claim that every occurrence across frontend, desktop, Docker, translations, and internal compatibility identifiers has been changed. Those areas still require a repository-wide inventory and compatibility review.
 - No tests, lint, build, or runtime verification were run as part of these documentation/metadata edits.
+
+
+## Follow-up changes — 2026-10-16
+
+- Updated `frontend/index.html` to remove remaining upstream AnythingLLM social metadata, use Lebap AI repository/image references consistently, improve the product description, and consolidate favicon declarations. Commit: `e2a570b87dc416e14187117c7e33e3d7fb5fa442`.
+- Updated `GET /v1/users/:id/issue-auth-token` to use the shared `apiKeyOwnerIsAdmin` middleware rather than duplicating the administrator-owner check inside the handler. This keeps privileged-route authorization consistent and easier to audit. Commit: `527494e82d077a512a4a7087eca410b60f6d341f`.
+- Both changes were committed directly to `lebap-ai/development`; no other branch was changed.
+- Verification is source-level only. Automated tests, lint, build, and browser/runtime checks have not been run, so these commits are not production sign-off.
+- Next priority remains reviewing API key creation/rotation and workspace membership semantics, then implementing workspace authorization without silently breaking existing shared/service keys.
