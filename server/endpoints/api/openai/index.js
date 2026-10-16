@@ -108,11 +108,29 @@ function apiOpenAICompatibleEndpoints(app) {
       try {
         const {
           model,
-          messages = [],
+          messages,
           temperature,
           stream = false,
         } = reqBody(request);
-        const workspace = await Workspace.get({ slug: String(model) });
+
+        // Validate the OpenAI-compatible request before workspace lookup or
+        // mutating the message list. Malformed payloads should fail as 400s,
+        // not turn into misleading 401s or runtime exceptions.
+        if (
+          typeof model !== "string" ||
+          model.trim().length === 0 ||
+          !Array.isArray(messages) ||
+          messages.length === 0
+        ) {
+          return response.status(400).json({
+            error: {
+              message: "A non-empty model string and non-empty messages array are required.",
+              type: "invalid_request_error",
+            },
+          });
+        }
+
+        const workspace = await Workspace.get({ slug: model.trim() });
         if (!workspace) return response.status(401).end();
 
         const userMessage = messages.pop();
