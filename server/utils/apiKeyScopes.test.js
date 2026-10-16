@@ -1,4 +1,5 @@
 const { resolveWorkspaceScope, parseWorkspaceSlugs, isWorkspaceAllowed, filterWorkspacesByApiKeyScope } = require("./apiKeyScopes");
+const { apiKeyWorkspaceScope } = require("./middleware/apiKeyWorkspaceScope");
 
 describe("resolveWorkspaceScope", () => {
   const available = ["research", "support", "billing"];
@@ -102,5 +103,77 @@ describe("filterWorkspacesByApiKeyScope", () => {
     expect(filterWorkspacesByApiKeyScope(workspaces, [])).toEqual([]);
     expect(filterWorkspacesByApiKeyScope(workspaces, "support")).toEqual([]);
     expect(filterWorkspacesByApiKeyScope(null, ["support"])).toEqual([]);
+  });
+});
+
+
+describe("apiKeyWorkspaceScope middleware", () => {
+  function makeContext({ scopes, method = "GET", path = "/v1/workspace/research", params = {}, body = {} } = {}) {
+    const request = { method, path, params, body };
+    const response = {
+      locals: { apiKey: { workspaceSlugs: scopes } },
+      statusCode: null,
+      payload: null,
+      status(code) { this.statusCode = code; return this; },
+      json(payload) { this.payload = payload; return this; },
+    };
+    const next = jest.fn();
+    return { request, response, next };
+  }
+
+  test("preserves legacy unrestricted keys", () => {
+    const ctx = makeContext({ scopes: null, params: { slug: "outside" } });
+    apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
+    expect(ctx.next).toHaveBeenCalledTimes(1);
+    expect(ctx.response.statusCode).toBeNull();
+  });
+
+  test("allows a workspace listed in the scope", () => {
+    const ctx = makeContext({ scopes: ["research"], params: { slug: "research" } });
+    apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
+    expect(ctx.next).toHaveBeenCalledTimes(1);
+  });
+
+  test("denies a workspace outside the scope", () => {
+    const ctx = makeContext({ scopes: ["research"], params: { slug: "billing" } });
+    apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
+    expect(ctx.response.statusCode).toBe(403);
+    expect(ctx.next).not.toHaveBeenCalled();
+  });
+
+  test("denies scoped keys from creating unscoped workspaces", () => {
+    const ctx = makeContext({ scopes: ["research"], method: "POST", path: "/v1/workspace/new" });
+    apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
+    expect(ctx.response.statusCode).toBe(403);
+  });
+
+  test("filters workspace list responses to the allowlist", () => {
+    const ctx = makeContext({ scopes: ["research"], method: "GET", path: "/v1/workspaces" });
+    const originalJson = ctx.response.json.bind(ctx.response);
+    ctx.response.json = (payload) => {
+      const filtered = filterWorkspacesByApiKeyScope(payload.workspaces, ctx.response.locals.apiKey.workspaceSlugs);
+      return originalJson({ ...payload, workspaces: filtered });
+    };
+    apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
+    expect(ctx.next).toHaveBeenCalledTimes(1);
+    ctx.response.json({ workspaces: [{ slug: "research" }, { slug: "billing" }] });
+    expect(ctx.response.payload.workspaces).toEqual([{ slug: "research" }]);
+  });
+
+  test("denies document operations that do not identify an allowed workspace", () => {
+    const ctx = makeContext({ scopes: ["research"], method: "POST", path: "/v1/document/remove-folder" });
+    apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
+    expect(ctx.response.statusCode).toBe(403);
+  });
+
+  test("denies document uploads targeting any unlisted workspace", () => {
+    const ctx = makeContext({
+      scopes: ["research"],
+      method: "POST",
+      path: "/v1/document/upload",
+      body: { addToWorkspaces: "research,billing" },
+    });
+    apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
+    expect(ctx.response.statusCode).toBe(403);
   });
 });
