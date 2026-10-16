@@ -1094,7 +1094,10 @@ function systemEndpoints(app) {
         const { apiKey, error } = await ApiKey.create(null, name, { workspaceSlugs });
         await EventLogs.logEvent(
           "api_key_created",
-          { name: apiKey?.name },
+          {
+            name: apiKey?.name,
+            workspaceSlugs: apiKey?.workspaceSlugs ?? JSON.stringify(workspaceSlugs),
+          },
           response?.locals?.user?.id
         );
         return response.status(200).json({
