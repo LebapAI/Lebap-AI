@@ -51,31 +51,23 @@ Chat streaming and image generation call provider-backed operations. The inspect
 
 These unknowns must be inspected or tested before making production-readiness claims.
 
-### 6. Production environment-dump route lacks declared API-key middleware
+### 6. Production environment-dump route lacked safe behavior
 
-In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` is registered without `validApiKey`. Its handler calls `dumpENV()` when `NODE_ENV === "production"`. The exact contents and access controls of the generated artifact were not inspected here, so exposure impact needs confirmation; nevertheless, a production environment-dump action should not be anonymously invocable.
+In `server/endpoints/api/system/index.js`, `GET /v1/system/env-dump` had a production path that called `dumpENV()`. Commit `9b86a9aa464f7d6da2bdf29fe43f1f5e3e5e5525` disables that direct action in production and returns HTTP 404.
 
-**Priority: high — remediation committed.** The route now includes `validApiKey` middleware. This enforces API-key authentication, but the existing key model has no administrative scopes; a dedicated admin scope and review of the artifact contents remain follow-up work.
+**Priority: high — targeted remediation committed.** Production environment persistence through the separate `updateENV()` path was not changed by this remediation.
 
+## Follow-up remediation — system response redaction
 
-## Follow-up remediation — production env-dump
+- Commit `f65397f106221dba22104184892d9d7111bda464` sanitizes likely secret fields returned by `POST /v1/system/update-env`.
+- Commit `448567fb7466fa18efad4efa5111f51d484d8195` applies the same response-boundary sanitizer to `GET /v1/system` and the update response. Fields with names matching key, token, secret, password, connection-string, auth, credential, or private-key patterns are replaced with boolean presence indicators.
+- Static source verification only; tests, lint, build, and runtime behavior have not been executed in this session.
+- The earlier image-generation error-response finding was remediated in the current route: detailed exceptions are logged server-side and a generic response is returned.
 
-- The endpoint was previously changed to require a valid API key, but any valid key could still trigger a write of selected process environment values—including credentials—to the server-side `.env` file.
-- Commit `9b86a9aa464f7d6da2bdf29fe43f1f5e3e5e5525` removes the direct `dumpENV()` call from `GET /v1/system/env-dump` and returns HTTP 404 for this endpoint in production. The non-production behavior remains a no-op success for compatibility.
-- Production environment persistence through the existing `updateENV()` path is unchanged; this change disables only the separate endpoint.
-- Static change only; runtime behavior and tests have not been executed in this session.
+## Follow-up finding — API key ownership and tenant isolation
 
-
-### 2. System update endpoint response redaction
-
-- Static inspection found `POST /v1/system/update-env` returned `newValues` directly from `updateENV()`, which includes the submitted raw values. Secret values could therefore be reflected to API clients.
-- Commit `f65397f106221dba22104184892d9d7111bda464` sanitizes the response at the API boundary: keys whose names indicate keys, tokens, secrets, passwords, connection strings, or auth tokens return only a boolean indicating whether a value is set. Non-sensitive settings retain their returned value.
-- The underlying setting update behavior is unchanged. Static source verification only; no runtime tests performed.
-
-
-## Follow-up finding — system settings response
-
-- `GET /v1/system` returned `SystemSettings.currentSettings()` directly. Some fields are already booleans, but the route had no centralized response-boundary redaction.
-- Commit `448567fb7466fa18efad4efa5111f51d484d8195` applies `sanitizeSettingValues()` to both `GET /v1/system` and `POST /v1/system/update-env`. Values for setting names matching key, token, secret, password, connection-string, auth, credential, or private-key patterns are replaced with boolean presence indicators.
-- Static inspection only; tests and runtime verification remain outstanding.
-- The older finding above that says image-generation errors return raw `e.message` was remediated earlier: the current route logs the detailed exception server-side and returns a generic error response.
+- The API-key model stores `createdBy` and `name`; `getForAuthentication()` retrieves the matching key record. The current `validApiKey` middleware validates the bearer secret but does not put the authenticated key identity into request context.
+- The inspected admin routes manage users and workspace membership, but the inspected OpenAI-compatible routes do not visibly intersect the authenticated key with workspace permissions. The key model also has no visible scope, expiry, or revocation-state fields in the inspected model.
+- This does **not** establish whether parent middleware or other runtime controls add protection; those paths remain to be inspected. It does establish that tenant authorization is not visible in the reviewed endpoint implementation.
+- Do not add an ownership restriction based only on `createdBy` until legacy-key behavior, key-creation semantics, and admin/service-key expectations are confirmed. A rushed filter could break existing installations or grant misleading partial isolation.
+- Next implementation gate: trace where API keys are created/deleted and how workspace permissions are enforced; then add explicit credential scope/tenant authorization plus regression tests before enabling third-party tenants.
