@@ -42,3 +42,10 @@ This document records source-level review only. It is not a penetration-test rep
 ## API usage accounting status — 2026-10-16
 
 A durable usage ledger schema and model have been committed, but request handlers do not yet write usage events. It must not be treated as active metering, billing, rate limiting, or spend enforcement. The SQLite migration and Prisma Client generation remain unapplied, and automated tests/build/lint are unverified. See `docs/architecture/API_HUB_USAGE_METERING.md` for the current design and staged rollout criteria.
+
+## API-key creation scope UX follow-up — 2026-10-16
+
+- The API-key creation dialog now requires selecting one or more workspaces and sends an explicit allowlist. Both multi-user admin and single-user routes validate the supplied slugs against existing workspaces.
+- Backward compatibility remains for older clients that omit the scope field; such calls still receive the legacy default of all currently existing workspaces. This compatibility path should be removed after all clients are upgraded.
+- Existing NULL-scope credentials are still unrestricted. Rotate them or explicitly migrate their scope before treating least-privilege as complete.
+- Frontend build and automated validation of the latest changes are pending.
