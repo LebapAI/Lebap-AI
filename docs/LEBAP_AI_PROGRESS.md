@@ -342,3 +342,10 @@ A source review caught an integration issue before runtime validation: the brows
 - The backend CI run for commit `189ded0b90671f24948aa31b85d9b8d576ba4bc3` failed: 94 suites passed, 1 suite failed, 2,111 tests passed, and 10 embedding-validator tests failed because `normalizeEmbeddingInput` was not exported from `server/endpoints/api/openai/helpers.js`.
 - Fixed the module export and added the intended validation helper in commit `a4407be9135c36232f0b3311857232ff53e94d7a`. The validator accepts a non-empty string or an array of non-empty strings and returns a structured validation error for malformed inputs.
 - A new completed CI run for the fix has not yet been confirmed. Do not treat the fix as verified until the workflow reruns and passes.
+
+## Least-privilege API key creation UI — 2026-10-16
+
+- Added a workspace selector to the API-key creation dialog for both multi-user administrator and single-user system modes. The dialog requires at least one selected workspace and submits only those slugs.
+- Both server creation routes validate explicit scope lists against existing workspaces, reject empty/malformed lists and unknown workspace slugs, and persist a deduplicated allowlist. Older clients that omit the field retain the prior default of all workspaces for compatibility; new UI requests always send an explicit selection.
+- This improves new-key least privilege but does not retroactively restrict existing keys. Legacy NULL-scope keys remain unrestricted until rotated or configured.
+- Frontend build and new CI verification are pending.
