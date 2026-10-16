@@ -86,8 +86,12 @@ function apiKeyManagementEndpoints(app) {
               error: "expiresAt must be an ISO-8601 date string.",
             });
           }
+          const isoDate =
+            /^\d{4}-\d{2}-\d{2}$/.test(body.expiresAt) ||
+            /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?(?:Z|[+-]\d{2}:\d{2})$/.test(body.expiresAt);
           const parsedExpiry = new Date(body.expiresAt);
           if (
+            !isoDate ||
             Number.isNaN(parsedExpiry.getTime()) ||
             parsedExpiry.getTime() <= Date.now()
           ) {
