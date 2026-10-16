@@ -1,5 +1,5 @@
 import Sidebar from "@/components/SettingsSidebar";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { ChartLineUp, ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
 import { fullApiUrl } from "@/utils/constants";
@@ -63,7 +63,7 @@ export default function BusinessAnalytics() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  async function loadAnalytics() {
+  const loadAnalytics = useCallback(async function loadAnalytics() {
     setLoading(true);
     setError(null);
     try {
@@ -83,9 +83,9 @@ export default function BusinessAnalytics() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [from, to]);
 
-  useEffect(() => { loadAnalytics(); }, []);
+  useEffect(() => { loadAnalytics(); }, [loadAnalytics]);
 
   const activity = data?.activity;
   const costs = data?.estimatedCosts;
