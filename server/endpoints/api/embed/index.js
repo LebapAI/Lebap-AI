@@ -1,6 +1,7 @@
 const { EmbedConfig } = require("../../../models/embedConfig");
 const { EmbedChats } = require("../../../models/embedChats");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
+const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
 const { reqBody } = require("../../../utils/http");
 const { Workspace } = require("../../../models/workspace");
 
@@ -77,7 +78,7 @@ function apiEmbedEndpoints(app) {
 
   app.get(
     "/v1/embed/:embedUuid/chats",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Embed']
@@ -139,7 +140,7 @@ function apiEmbedEndpoints(app) {
 
   app.get(
     "/v1/embed/:embedUuid/chats/:sessionUuid",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Embed']
