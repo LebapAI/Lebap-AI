@@ -93,3 +93,13 @@
 - Updated `docs/security/API_ROUTE_REVIEW.md` to document the change and compatibility impact (commit `b2c1d910929e95b438f418a2df63c1bae8c4f51a`).
 - Compatibility impact is intentional: unowned legacy keys and keys owned by non-admin users are denied on these three sensitive operations. Existing automations using them may need an administrator-owned key.
 - This does not complete the full API authorization audit or workspace tenant isolation. Tests, lint, build, and runtime checks have not been run.
+
+## Workspace API authorization hardening — 2026-10-16
+
+- Added the shared `apiKeyOwnerIsAdmin` authorization middleware to the workspace API route group and OpenAI-compatible API route group on `lebap-ai/development`.
+- This requires the API key to be associated with an existing, active administrator for workspace CRUD/read routes and OpenAI-compatible model/chat/image operations. Missing-owner and non-admin-owned keys receive HTTP 403; authorization lookup failures fail closed.
+- Commits: `5f1a82a22d3d294d5bd1bf218581e81c5c55161f` (workspace routes) and `12b2f43a096baf4f2cfc1bb3335d46201f35699a` (OpenAI-compatible routes).
+- Compatibility warning: this is intentionally restrictive and may block existing integrations using legacy/unowned keys or keys owned by non-admin users. Such integrations must use a key created by an active administrator until scoped service credentials are implemented.
+- This is **not** tenant isolation: the current API-key schema still has no tenant/workspace allowlist or scopes. Administrator-owned keys can still access all workspaces. The next implementation should introduce explicit service-client/workspace scopes and regression tests before relaxing this guard.
+- Verification performed: source edits committed through GitHub. Automated tests, lint, build, migration checks, and live runtime/API verification have **not** been run; this is not production sign-off.
+
