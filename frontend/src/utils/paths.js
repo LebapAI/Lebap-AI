@@ -104,6 +104,7 @@ export default {
     return `${API_BASE}/docs`;
   },
   settings: {
+    businessAnalytics: () => "/settings/business-analytics",
     users: () => {
       return `/settings/users`;
     },
