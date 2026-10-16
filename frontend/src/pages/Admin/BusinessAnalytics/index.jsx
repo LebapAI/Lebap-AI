@@ -149,7 +149,7 @@ export default function BusinessAnalytics() {
                 <MetricCard label="Estimated AI cost" value={costs?.total == null ? "Not available" : new Intl.NumberFormat(undefined, { style: "currency", currency: costs.currency || "USD" }).format(costs.total)} detail={`${costs?.coveragePercent ?? 0}% of recorded events have known cost`} />
                 <MetricCard label="Users" value={formatNumber(platform?.totalUsers)} detail={`${formatNumber(platform?.activeUsers)} not suspended`} />
                 <MetricCard label="Workspaces" value={formatNumber(platform?.totalWorkspaces)} />
-                <MetricCard label="API keys" value={formatNumber(platform?.totalApiKeys)} detail="Total stored keys; includes legacy records" />
+                <MetricCard label="API keys" value={formatNumber(platform?.totalApiKeys)} detail="Total stored keys, including revoked and legacy records" />
               </div>
 
               <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-4">
