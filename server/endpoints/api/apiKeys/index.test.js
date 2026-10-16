@@ -80,6 +80,20 @@ describe("API key management endpoints", () => {
 
   afterEach(() => jest.restoreAllMocks());
 
+  test.each([
+    ["", []],
+    ["not-json", []],
+    ["{}", []],
+    ["[]", []],
+    ['["workspace-a","workspace-a"]', ["workspace-a"]],
+  ])("publicApiKey fails closed when showing malformed scope %p", (storedScope, expectedScope) => {
+    expect(publicApiKey({ id: 9, workspaceSlugs: storedScope }).workspaceSlugs).toEqual(expectedScope);
+  });
+
+  test("publicApiKey preserves NULL as the legacy unrestricted representation", () => {
+    expect(publicApiKey({ id: 10, workspaceSlugs: null }).workspaceSlugs).toBeNull();
+  });
+
   test("publicApiKey never exposes the stored secret", () => {
     expect(
       publicApiKey({
