@@ -1,6 +1,6 @@
 const prisma = require("../../../utils/prisma");
-const { validApiKey } = require("../../../utils/middleware/validApiKey");
-const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
+const { validatedRequest } = require("../../../utils/middleware/validatedRequest");
+const { strictMultiUserRoleValid, ROLES } = require("../../../utils/middleware/multiUserProtected");
 
 const DEFAULT_RANGE_DAYS = 30;
 const MAX_RANGE_DAYS = 366;
@@ -16,8 +16,8 @@ function businessAnalyticsEndpoints(app) {
   if (!app) return;
 
   app.get(
-    "/v1/admin/business-analytics",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    "/admin/business-analytics",
+    [validatedRequest, strictMultiUserRoleValid([ROLES.admin])],
     async (request, response) => {
       const now = new Date();
       const defaultFrom = new Date(now.getTime() - DEFAULT_RANGE_DAYS * 24 * 60 * 60 * 1000);
