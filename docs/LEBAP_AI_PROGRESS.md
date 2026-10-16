@@ -372,3 +372,11 @@ A source review caught an integration issue before runtime validation: the brows
 - Both multi-user admin and single-user system API-key issuance routes now persist `expiresAt` and include it in the audit event.
 - The creation modal defaults to 90 days and lets an administrator select 30 days, 90 days, 365 days, or never. Existing API clients that omit `expiresInDays` remain backward-compatible and create non-expiring keys.
 - This implements expiry selection, not full rotation automation. Runtime verification and fresh combined CI are required before production sign-off.
+
+
+## Workspace-scope follow-up — 2026-10-16
+
+- Closed a workspace-metadata leak in `GET /v1/openai/vector_stores`: the response now uses the same API-key workspace allowlist as model listing, filtering out disallowed workspace names, slugs, and document counts before building the response.
+- Centralized inventory filtering in `server/utils/apiKeyScopes.js` and added unit coverage for explicit allowlists, legacy NULL scope compatibility, malformed scopes, and invalid inventories.
+- Security review now distinguishes historical findings from current source state. Legacy NULL scopes remain unrestricted by design for compatibility; this is not complete tenant isolation.
+- Verification: frontend build and lint passed for commit `2bcf2d94e771e00b934f14934e3b7e57df7c70e3`. Backend CI for the latest scope-filtering source commit `1357e6679503edeef404aadd5736cca2b103c212` is still running. No production database migration or runtime integration test has been performed.
