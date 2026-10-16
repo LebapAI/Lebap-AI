@@ -153,3 +153,11 @@ The earlier findings above describe the state at the time of the initial review.
 - API-key metadata listing now fails closed for malformed stored workspace scope, matching authentication behavior.
 
 The following original findings remain open: NULL-scoped legacy keys are unrestricted, legacy raw-secret records remain accepted, no normalized usage ledger or enforceable rate/spend limits exist, and a complete route-by-route authorization audit has not been finished. No tests, migration, build, or runtime checks have been executed here.
+
+
+## Additional scope-bypass path closed — system information routes (2026-10-16)
+
+- A route-by-route follow-up found `GET /v1/system/env-dump`, `GET /v1/system`, and `GET /v1/system/vector-count` had only `validApiKey`, not the shared administrator/scope guard. A workspace-scoped API key could therefore reach these routes despite the intended restriction to OpenAI-compatible model listing and chat.
+- Added `apiKeyOwnerIsAdmin` to all three endpoints and added route-registration regression tests covering all six system API routes.
+- Commits: `3242794ecd9b6d42e6570a630a1362af0852956d` and `c5c1ad25cc48e679541e4034b640a73a75494c7d`.
+- This closes the identified system-route gap only. The full route inventory is still incomplete, and the tests have not been executed.
