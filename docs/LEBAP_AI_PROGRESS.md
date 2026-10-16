@@ -304,3 +304,10 @@ Started the first implementation layer for durable API usage accounting:
 - Updated endpoint tests for daily trend output and query parameterization.
 - Commits: `8c2b076ae2d4c71d0d1b27a3b6d201aaf8f6bd48`, `3dc3f39173989568580bb2059d06d7922b112763`, `5f762439d30e58b8d2cb5abaae867de10899d4a9`, `e9e7dba963428c7026ddaa2a8f5ba856f50a45af`.
 - No Jest tests, lint, frontend build, Prisma generation/migration, or runtime checks have been executed. This remains unverified source code and is not production-ready.
+
+
+## CI trigger follow-up — 2026-10-16
+
+- Updated `.github/workflows/run-tests.yaml` so backend tests can run on pushes to `lebap-ai/development`, including server JavaScript and Prisma schema/migration changes, rather than being limited to pull requests.
+- Added an explicit regression case with an in-progress request to ensure it is excluded from the terminal completion-rate denominator.
+- Workflow source and test syntax were inspected, but no completed CI run is visible yet. Do not treat the test suite as passed.
