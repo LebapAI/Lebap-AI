@@ -159,3 +159,5 @@
 - Commits: `d85c20830eb2d5e1f54a1a467aeec0147aa81bf0` (document routes), `c9f8181ec6314b2de62f1069309abf4c09ec71a8` (workspace deletion), and `0f0f2a9570c8e79aea38f5ea6bf283e0d423fb55` (image generation).
 - Compatibility impact is intentionally broad: these API routes now require an active administrator-owned key. This is an interim containment measure, not the final product permission model; external agents need scoped credentials and explicit workspace permissions before non-admin access can safely be enabled.
 - Static verification: fetched the updated source files and confirmed the expected middleware ordering. Tests, lint, build, provider calls, and runtime API checks have not been executed.
+
+- Updated `docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md` to reflect the expanded route-level authorization coverage and to keep tenant-scoping, credential lifecycle, metering, quotas, and runtime validation explicitly open. Commit: `43b5b66bdd57f525bade5675403beb13f2d94575`.
