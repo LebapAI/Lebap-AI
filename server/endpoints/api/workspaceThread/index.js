@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const { WorkspaceThread } = require("../../../models/workspaceThread");
 const { Workspace } = require("../../../models/workspace");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
+const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
 const { reqBody, multiUserMode } = require("../../../utils/http");
 const { VALID_CHAT_MODE } = require("../../../utils/chats/stream");
 const { Telemetry } = require("../../../models/telemetry");
@@ -20,7 +21,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/thread/new",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
@@ -110,7 +111,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/thread/:threadSlug/update",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
@@ -195,7 +196,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.delete(
     "/v1/workspace/:slug/thread/:threadSlug",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
     #swagger.tags = ['Workspace Threads']
@@ -244,7 +245,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.get(
     "/v1/workspace/:slug/thread/:threadSlug/chats",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
@@ -328,7 +329,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/thread/:threadSlug/chat",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
@@ -485,7 +486,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/thread/:threadSlug/stream-chat",
-    [validApiKey],
+    [validApiKey, apiKeyOwnerIsAdmin],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
