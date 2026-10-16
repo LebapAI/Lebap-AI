@@ -3,6 +3,7 @@ const { WorkspaceThread } = require("../../../models/workspaceThread");
 const { Workspace } = require("../../../models/workspace");
 const { validApiKey } = require("../../../utils/middleware/validApiKey");
 const { apiKeyOwnerIsAdmin } = require("../../../utils/middleware/apiKeyOwnerIsAdmin");
+const { apiKeyWorkspaceScope } = require("../../../utils/middleware/apiKeyWorkspaceScope");
 const { reqBody, multiUserMode } = require("../../../utils/http");
 const { VALID_CHAT_MODE } = require("../../../utils/chats/stream");
 const { Telemetry } = require("../../../models/telemetry");
@@ -21,7 +22,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/thread/new",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
@@ -111,7 +112,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/thread/:threadSlug/update",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
@@ -196,7 +197,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.delete(
     "/v1/workspace/:slug/thread/:threadSlug",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
     #swagger.tags = ['Workspace Threads']
@@ -245,7 +246,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.get(
     "/v1/workspace/:slug/thread/:threadSlug/chats",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
@@ -329,7 +330,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/thread/:threadSlug/chat",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
@@ -486,7 +487,7 @@ function apiWorkspaceThreadEndpoints(app) {
 
   app.post(
     "/v1/workspace/:slug/thread/:threadSlug/stream-chat",
-    [validApiKey, apiKeyOwnerIsAdmin],
+    [validApiKey, apiKeyOwnerIsAdmin, apiKeyWorkspaceScope],
     async (request, response) => {
       /*
       #swagger.tags = ['Workspace Threads']
