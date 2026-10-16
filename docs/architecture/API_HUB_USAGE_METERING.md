@@ -148,3 +148,8 @@ The OpenAI-compatible chat-completions handler now has an observe-only usage hoo
 - The flag defaults off. Enable only after applying the SQLite migration and regenerating Prisma Client. Do not enable in production before that migration is applied.
 
 Remaining: wire usage capture for embeddings and image generation; test streaming/disconnect lifecycle and runtime behavior; apply and verify the migration; validate provider usage field names and pricing provenance; implement concurrency-safe limits only after usage collection is trustworthy. No tests, lint, build, migration, or runtime checks have been run for this change.
+
+
+### Disconnect classification follow-up — 2026-10-16
+
+The chat handler now observes response closure before the response has finished and uses that signal to finalize an in-flight metering event as `aborted`; ordinary exceptions are classified as `failed`. This is best-effort classification and still requires runtime tests against actual client disconnects and provider stream failures. Commit: `fd8080ffa4979ae5995a6e1f5888a0cd0255b85e`.
