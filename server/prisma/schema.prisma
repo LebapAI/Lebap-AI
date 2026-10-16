@@ -20,6 +20,7 @@ model api_keys {
   name          String?
   secret        String?  @unique // Legacy raw secrets; new credentials use secretHash.
   secretHash    String?  @unique
+  workspaceSlugs String? // JSON allowlist; NULL preserves legacy unrestricted behavior.
   createdBy     Int?
   expiresAt     DateTime?
   revokedAt     DateTime?
