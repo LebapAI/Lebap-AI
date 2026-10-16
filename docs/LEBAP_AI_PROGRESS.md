@@ -55,3 +55,6 @@ Still in development. Changes are committed to `lebap-ai/development`; tests/lin
 - Updated `server/endpoints/api/openai/index.js` (commit `b4a065c27c5212ea95f03c63a5fff449449cde4e`): image-generation failures are now logged server-side and return a generic client error instead of echoing raw provider/SDK exception text. Client-visible response is `Image generation failed. Check server logs for details.`
 - This is a targeted error-disclosure reduction, not a substitute for structured error classification or usage metering. Tests, lint, and build remain unexecuted in this connector-only session.
 
+- Extended static review across the developer API route groups. Most inspected admin, workspace, document, workspace-thread, user-management, and embed routes explicitly include `validApiKey`.
+- Found a high-priority exception: `GET /v1/system/env-dump` in `server/endpoints/api/system/index.js` has no `validApiKey` middleware and calls `dumpENV()` in production. Documented in `docs/security/API_ROUTE_REVIEW.md` (commit `9f8a285a9317627d51fbe7a43b6c2baa14aee7b8`).
+- Attempted a direct targeted code fix, but the GitHub connector blocked that write. **The unauthenticated env-dump route remains unfixed** and should be the next code change. Do not treat the documentation update as remediation.
