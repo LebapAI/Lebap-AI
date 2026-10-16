@@ -17,11 +17,12 @@ export default function ApiKeyRow({ apiKey, removeApiKey }) {
     if (success) removeApiKey(apiKey.id);
   };
 
-  const statusClass = {
-    active: "text-emerald-400",
-    expired: "text-amber-400",
-    revoked: "text-red-400",
-  }[apiKey.status] || "text-theme-text-secondary";
+  const statusClass =
+    {
+      active: "text-emerald-400",
+      expired: "text-amber-400",
+      revoked: "text-red-400",
+    }[apiKey.status] || "text-theme-text-secondary";
 
   const scopeLabel =
     apiKey.workspaceSlugs === null || apiKey.workspaceSlugs === undefined
