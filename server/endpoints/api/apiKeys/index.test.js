@@ -12,6 +12,7 @@ jest.mock("../../../models/apiKeys", () => ({
     create: jest.fn(),
     get: jest.fn(),
     delete: jest.fn(),
+    revoke: jest.fn(),
   },
 }));
 
@@ -88,6 +89,9 @@ describe("API key management endpoints", () => {
       createdBy: { id: 7, username: "admin", role: "admin" },
       createdAt: "2026-01-01T00:00:00.000Z",
       lastUpdatedAt: null,
+      expiresAt: null,
+      revokedAt: null,
+      status: "active",
     });
   });
 
@@ -118,6 +122,9 @@ describe("API key management endpoints", () => {
       createdBy: 7,
       createdAt: null,
       lastUpdatedAt: null,
+      expiresAt: null,
+      revokedAt: null,
+      status: "active",
     });
     expect(JSON.stringify(response.payload)).not.toContain("secret-value");
   });
@@ -159,19 +166,19 @@ describe("API key management endpoints", () => {
       response
     );
     expect(response.statusCode).toBe(409);
-    expect(ApiKey.delete).not.toHaveBeenCalled();
+    expect(ApiKey.revoke).not.toHaveBeenCalled();
   });
 
   test("revokes an existing different key and records an audit event", async () => {
     const routes = setup();
     ApiKey.get.mockResolvedValue({ id: 12, createdBy: 8 });
-    ApiKey.delete.mockResolvedValue(true);
+    ApiKey.revoke.mockResolvedValue(true);
     const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
     await routes["DELETE /v1/admin/api-keys/:id"].handler(
       { params: { id: "12" } },
       response
     );
-    expect(ApiKey.delete).toHaveBeenCalledWith({ id: 12 });
+    expect(ApiKey.revoke).toHaveBeenCalledWith(12);
     expect(response.statusCode).toBe(200);
     expect(response.payload).toEqual({ success: true, revokedId: 12 });
     expect(EventLogs.logEvent).toHaveBeenCalledWith("api_key_revoked", {
@@ -204,7 +211,7 @@ describe("API key management endpoints", () => {
     );
     expect(response.statusCode).toBe(400);
     expect(ApiKey.get).not.toHaveBeenCalled();
-    expect(ApiKey.delete).not.toHaveBeenCalled();
+    expect(ApiKey.revoke).not.toHaveBeenCalled();
   });
 
   test("returns not found when a revocation target does not exist", async () => {
@@ -217,6 +224,30 @@ describe("API key management endpoints", () => {
     );
     expect(response.statusCode).toBe(404);
     expect(ApiKey.delete).not.toHaveBeenCalled();
+  });
+
+
+  test("rejects a non-future expiry before creating a key", async () => {
+    const routes = setup();
+    reqBody.mockReturnValue({ name: "short-lived", expiresAt: "2000-01-01T00:00:00.000Z" });
+    const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
+    await routes["POST /v1/admin/api-keys"].handler({}, response);
+    expect(response.statusCode).toBe(400);
+    expect(ApiKey.create).not.toHaveBeenCalled();
+  });
+
+  test("passes a validated expiry to the key model", async () => {
+    const routes = setup();
+    const expiry = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+    reqBody.mockReturnValue({ name: "short-lived", expiresAt: expiry });
+    ApiKey.create.mockResolvedValue({
+      apiKey: { id: 21, name: "short-lived", secret: "short-secret", createdBy: 7, expiresAt: new Date(expiry) },
+      error: null,
+    });
+    const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
+    await routes["POST /v1/admin/api-keys"].handler({}, response);
+    expect(ApiKey.create).toHaveBeenCalledWith(7, "short-lived", { expiresAt: new Date(expiry) });
+    expect(response.statusCode).toBe(201);
   });
 
 });
