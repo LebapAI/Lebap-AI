@@ -55,6 +55,8 @@ async function validApiKey(request, response, next) {
       workspaceSlugs: parseWorkspaceSlugs(apiKey.workspaceSlugs),
     };
 
+    // Last-use tracking is best-effort and never blocks authentication on telemetry failure.
+    if (typeof ApiKey.markUsed === "function") await ApiKey.markUsed(apiKey.id);
     return next();
   } catch (_error) {
     // Fail closed if authentication infrastructure is unavailable.
