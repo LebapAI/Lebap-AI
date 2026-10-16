@@ -326,3 +326,13 @@ A source review caught an integration issue before runtime validation: the brows
 - Strengthened business-analytics tests for session/admin middleware, reversed date ranges, and null rather than zero for unknown daily costs. Corrected the test description to match session authentication.
 - Commits: `9cabf072784b82cf842b18e94988b5bf81609d17` (image/embedding metering), `240261963e8f4372aba5d2ad1d8accf5a0297933` and `7c03766b5f3fe5c76385fb2def214e12b408f938` (analytics regression coverage).
 - **Not production-ready:** usage metering is still disabled by default; the schema migration and Prisma Client generation remain pending. Jest, lint, build, and runtime verification have not been executed in this session. Budgets, quotas, rate limiting, verified provider pricing, billing/revenue, and full route coverage remain open.
+
+
+## API key administration hardening — 2026-10-16
+
+- Removed reusable API-key secrets and secret verifiers from standard admin/single-user list responses; keys are shown once at creation only.
+- Updated the API-key table to show credential status, workspace scope, expiry, and a clear one-time-secret message.
+- Standard admin and single-user creation paths now scope newly created keys to workspaces that exist at issuance time. Newly created workspaces are not automatically added to those keys.
+- Standard delete actions now perform soft revocation and record api_key_revoked audit events, preserving lifecycle records.
+- Added model-level regression coverage for safe public projections, malformed scopes, and expired/revoked states.
+- Latest backend CI before this block passed on commit 7477fb17e21ac2ffc5d2ed50adaeefea3e3ba88c; newer commits are awaiting their own CI result. No frontend build, deployed database migration, or live runtime test has been completed.
