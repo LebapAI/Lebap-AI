@@ -527,9 +527,32 @@ function adminEndpoints(app) {
     async (request, response) => {
       try {
         const user = await userFromSession(request, response);
-        const { name = null } = reqBody(request) || {};
+        const { name = null, workspaceSlugs: requestedWorkspaceSlugs } = reqBody(request) || {};
         const workspaces = await Workspace.where();
-        const workspaceSlugs = workspaces.map((workspace) => workspace.slug);
+        const availableSlugs = new Set(workspaces.map((workspace) => workspace.slug));
+        let workspaceSlugs = workspaces.map((workspace) => workspace.slug);
+
+        if (requestedWorkspaceSlugs !== undefined) {
+          if (
+            !Array.isArray(requestedWorkspaceSlugs) ||
+            requestedWorkspaceSlugs.length === 0 ||
+            !requestedWorkspaceSlugs.every(
+              (slug) => typeof slug === "string" && slug.trim().length > 0
+            )
+          ) {
+            return response.status(400).json({
+              apiKey: null,
+              error: "Choose at least one valid workspace for this API key.",
+            });
+          }
+          workspaceSlugs = [...new Set(requestedWorkspaceSlugs.map((slug) => slug.trim()))];
+          if (workspaceSlugs.some((slug) => !availableSlugs.has(slug))) {
+            return response.status(400).json({
+              apiKey: null,
+              error: "One or more selected workspaces do not exist.",
+            });
+          }
+        }
         const { apiKey, error } = await ApiKey.create(user.id, name, { workspaceSlugs });
         await EventLogs.logEvent(
           "api_key_created",
