@@ -81,10 +81,10 @@ function apiOpenAICompatibleEndpoints(app) {
     try {
       const data = [];
       const workspaces = await Workspace.where();
-      const allowlist = response.locals?.apiKey?.workspaceSlugs;
-      const visibleWorkspaces = Array.isArray(allowlist)
-        ? workspaces.filter((workspace) => allowlist.includes(workspace.slug))
-        : workspaces;
+      const visibleWorkspaces = filterWorkspacesByApiKeyScope(
+        workspaces,
+        response.locals?.apiKey?.workspaceSlugs
+      );
       for (const workspace of visibleWorkspaces) {
         data.push({
           id: workspace.slug,
