@@ -77,7 +77,7 @@ function mockSuccessfulQueries() {
 describe("business analytics endpoint", () => {
   beforeEach(() => jest.clearAllMocks());
 
-  test("is protected by API-key authentication and administrator authorization", () => {
+  test("uses session authentication and administrator authorization", () => {
     const { route } = setup();
     expect(route.middleware).toEqual([validatedRequest, mockAdminOnlyMiddleware]);
     expect(flexUserRoleValid).toHaveBeenCalledWith(["admin"]);
@@ -86,6 +86,13 @@ describe("business analytics endpoint", () => {
   test("rejects invalid date ranges before querying the database", async () => {
     const { route, response } = setup();
     await route.handler({ query: { from: "invalid-date", to: "2026-10-16T00:00:00.000Z" } }, response);
+    expect(response.status).toHaveBeenCalledWith(400);
+    expect(prisma.api_usage_events.aggregate).not.toHaveBeenCalled();
+  });
+
+  test("rejects a missing or reversed date range before querying the database", async () => {
+    const { route, response } = setup();
+    await route.handler({ query: { from: "2026-10-16T00:00:00.000Z", to: "2026-10-15T00:00:00.000Z" } }, response);
     expect(response.status).toHaveBeenCalledWith(400);
     expect(prisma.api_usage_events.aggregate).not.toHaveBeenCalled();
   });
@@ -136,6 +143,28 @@ describe("business analytics endpoint", () => {
       activeUsers: 6,
       totalWorkspaces: 3,
       totalApiKeys: 4,
+    });
+  });
+
+  test("does not present unknown daily costs as zero-cost usage", async () => {
+    mockSuccessfulQueries();
+    prisma.$queryRawUnsafe.mockResolvedValueOnce([
+      {
+        date: "2026-10-15",
+        requests: 2n,
+        completed: 2n,
+        failed: 0n,
+        totalTokens: 0n,
+        knownCostEvents: 0n,
+        knownCostUsd: 0,
+      },
+    ]);
+    const { route, response } = setup();
+    await route.handler({ query: {} }, response);
+    expect(response.status).toHaveBeenCalledWith(200);
+    expect(response.body.dailyTrend[0]).toMatchObject({
+      knownCostEvents: 0,
+      knownCostUsd: null,
     });
   });
 
