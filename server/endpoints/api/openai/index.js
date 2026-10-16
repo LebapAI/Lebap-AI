@@ -14,6 +14,11 @@ const { getModelTag } = require("../../utils");
 const { extractTextContent, extractAttachments } = require("./helpers");
 const { handleImageGenUpload } = require("../../../utils/files/multer");
 
+function isWorkspaceAllowed(response, workspaceSlug) {
+  const allowlist = response.locals?.apiKey?.workspaceSlugs;
+  return allowlist === null || allowlist === undefined || allowlist.includes(workspaceSlug);
+}
+
 function apiOpenAICompatibleEndpoints(app) {
   if (!app) return;
 
@@ -56,7 +61,11 @@ function apiOpenAICompatibleEndpoints(app) {
     try {
       const data = [];
       const workspaces = await Workspace.where();
-      for (const workspace of workspaces) {
+      const allowlist = response.locals?.apiKey?.workspaceSlugs;
+      const visibleWorkspaces = Array.isArray(allowlist)
+        ? workspaces.filter((workspace) => allowlist.includes(workspace.slug))
+        : workspaces;
+      for (const workspace of visibleWorkspaces) {
         data.push({
           id: workspace.slug,
           object: "model",
@@ -132,7 +141,14 @@ function apiOpenAICompatibleEndpoints(app) {
         }
 
         const workspace = await Workspace.get({ slug: model.trim() });
-        if (!workspace) return response.status(401).end();
+        if (!workspace) return response.status(404).json({
+          error: { message: "Workspace not found.", type: "invalid_request_error" },
+        });
+        if (!isWorkspaceAllowed(response, workspace.slug)) {
+          return response.status(403).json({
+            error: { message: "API key is not authorized for this workspace.", type: "permission_error" },
+          });
+        }
 
         const userMessage = messages[messages.length - 1];
         if (userMessage?.role !== "user") {
