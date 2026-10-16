@@ -38,7 +38,7 @@ This matrix turns the 15 requested product capabilities into implementation work
 1. Inventory all API routes and authentication/authorization paths.
 2. Define tenant/client, user-key and service-key semantics without silently breaking legacy credentials.
 3. Implement and test workspace/tenant isolation.
-4. Expiry and soft revocation now have a staged SQLite migration and source changes; apply the migration and run tests before relying on them. Next add credential scopes and workspace/client binding.
+4. Expiry, soft revocation, hashed storage for new keys, and optional workspace allowlists have staged SQLite migrations; apply migrations and run tests before relying on them. Extend allowlist enforcement to every relevant route and add operation/client scopes.
 5. Add CI checks and repeatable test/build commands.
 
 **Do not expose the platform as a multi-tenant public API until this gate passes.**
