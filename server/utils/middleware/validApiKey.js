@@ -1,6 +1,21 @@
 const { ApiKey } = require("../../models/apiKeys");
 const { SystemSettings } = require("../../models/systemSettings");
 
+function parseWorkspaceSlugs(value) {
+  if (value === null || value === undefined || value === "") return null;
+  try {
+    const parsed = JSON.parse(value);
+    if (
+      Array.isArray(parsed) &&
+      parsed.length > 0 &&
+      parsed.every((slug) => typeof slug === "string" && slug.trim().length > 0)
+    ) return [...new Set(parsed.map((slug) => slug.trim()))];
+  } catch (_error) {
+    // Invalid stored scope must fail closed.
+  }
+  return [];
+}
+
 async function validApiKey(request, response, next) {
   try {
     const multiUserMode = await SystemSettings.isMultiUserMode();
@@ -45,6 +60,7 @@ async function validApiKey(request, response, next) {
       name: apiKey.name ?? null,
       expiresAt: apiKey.expiresAt ?? null,
       revokedAt: apiKey.revokedAt ?? null,
+      workspaceSlugs: parseWorkspaceSlugs(apiKey.workspaceSlugs),
     };
 
     return next();
@@ -59,4 +75,5 @@ async function validApiKey(request, response, next) {
 
 module.exports = {
   validApiKey,
+  parseWorkspaceSlugs,
 };
