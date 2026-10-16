@@ -44,6 +44,7 @@ const { Telemetry } = require("../models/telemetry");
 const { ApiKey, publicApiKey } = require("../models/apiKeys");
 const { Workspace } = require("../models/workspace");
 const { resolveWorkspaceScope } = require("../utils/apiKeyScopes");
+const { resolveApiKeyExpiry } = require("../utils/apiKeyExpiry");
 const { getCustomModels } = require("../utils/helpers/customModels");
 const { WorkspaceChats } = require("../models/workspaceChats");
 const { WorkspaceThread } = require("../models/workspaceThread");
@@ -1066,7 +1067,15 @@ function systemEndpoints(app) {
           return response.sendStatus(401).end();
         }
 
-        const { name = null, workspaceSlugs: requestedWorkspaceSlugs } = reqBody(request) || {};
+        const {
+          name = null,
+          workspaceSlugs: requestedWorkspaceSlugs,
+          expiresInDays,
+        } = reqBody(request) || {};
+        const { expiresAt, error: expiryError } = resolveApiKeyExpiry(expiresInDays);
+        if (expiryError) {
+          return response.status(400).json({ apiKey: null, error: expiryError });
+        }
         const workspaces = await Workspace.where();
         const { workspaceSlugs, error: scopeError } = resolveWorkspaceScope(
           requestedWorkspaceSlugs,
@@ -1075,12 +1084,13 @@ function systemEndpoints(app) {
         if (scopeError) {
           return response.status(400).json({ apiKey: null, error: scopeError });
         }
-        const { apiKey, error } = await ApiKey.create(null, name, { workspaceSlugs });
+        const { apiKey, error } = await ApiKey.create(null, name, { workspaceSlugs, expiresAt });
         await EventLogs.logEvent(
           "api_key_created",
           {
             name: apiKey?.name,
             workspaceSlugs,
+            expiresAt,
           },
           response?.locals?.user?.id
         );
