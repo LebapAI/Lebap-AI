@@ -316,3 +316,13 @@ Started the first implementation layer for durable API usage accounting:
 ## Business analytics authorization correction — 2026-10-16
 
 A source review caught an integration issue before runtime validation: the browser admin page sends the session token from local storage, while the initial analytics route required a developer API key. Corrected the route to `GET /admin/business-analytics`, registered it with the normal admin endpoint group, and applied `validatedRequest` plus `flexUserRoleValid([ROLES.admin])`. The frontend now calls that session-authenticated route. The earlier `/v1/admin/business-analytics` API-key description above records the initial implementation and is superseded by this correction. Tests remain unexecuted.
+
+
+## API usage coverage expansion — 2026-10-16
+
+- Expanded feature-flagged usage-ledger capture from OpenAI-compatible chat completions to image generation/editing and embeddings on `lebap-ai/development`.
+- Image events distinguish generation from editing and finalize as completed, failed, or aborted where disconnect/abort signals are observable. Embedding events record model, duration, and outcome.
+- Metering remains best-effort and does not block provider requests. The ledger deliberately stores no prompts, image bytes, embedding inputs, bearer secrets, or raw provider errors. Token counts and provider cost remain unknown for image/embedding operations unless a trustworthy provider usage source is added.
+- Strengthened business-analytics tests for session/admin middleware, reversed date ranges, and null rather than zero for unknown daily costs. Corrected the test description to match session authentication.
+- Commits: `9cabf072784b82cf842b18e94988b5bf81609d17` (image/embedding metering), `240261963e8f4372aba5d2ad1d8accf5a0297933` and `7c03766b5f3fe5c76385fb2def214e12b408f938` (analytics regression coverage).
+- **Not production-ready:** usage metering is still disabled by default; the schema migration and Prisma Client generation remain pending. Jest, lint, build, and runtime verification have not been executed in this session. Budgets, quotas, rate limiting, verified provider pricing, billing/revenue, and full route coverage remain open.
