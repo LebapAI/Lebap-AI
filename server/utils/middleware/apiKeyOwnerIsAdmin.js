@@ -14,7 +14,7 @@ async function apiKeyOwnerIsAdmin(_request, response, next) {
       });
     }
 
-    const owner = await User.get({ id: Number(ownerId) });
+    const owner = await User.getForAuthorization({ id: Number(ownerId) });
     if (!owner || owner.role !== "admin" || Boolean(owner.suspended)) {
       return response.status(403).json({
         error: "Administrator privileges required.",
