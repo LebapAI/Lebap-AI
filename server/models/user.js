@@ -269,6 +269,14 @@ const User = {
    * @param {Object} clause - The clause to use to find the user.
    * @returns {Promise<import("@prisma/client").users|null>} The user object or null if not found.
    */
+  // Authorization lookups must distinguish a missing user from a database failure.
+  // Unlike get(), this method deliberately lets query errors propagate so security
+  // middleware can fail closed with an operational error instead of misreporting 403.
+  getForAuthorization: async function (clause = {}) {
+    const user = await prisma.users.findFirst({ where: clause });
+    return user ? this.filterFields({ ...user }) : null;
+  },
+
   get: async function (clause = {}) {
     try {
       const user = await prisma.users.findFirst({ where: clause });
