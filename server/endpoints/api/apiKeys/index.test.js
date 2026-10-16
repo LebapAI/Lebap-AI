@@ -179,4 +179,44 @@ describe("API key management endpoints", () => {
       createdBy: 8,
     });
   });
+
+  test("returns the created secret even when audit storage is unavailable", async () => {
+    const routes = setup();
+    reqBody.mockReturnValue({ name: "service integration" });
+    ApiKey.create.mockResolvedValue({
+      apiKey: { id: 15, name: "service integration", secret: "one-time-secret", createdBy: 7 },
+      error: null,
+    });
+    EventLogs.logEvent.mockRejectedValue(new Error("audit database unavailable"));
+    const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
+    await routes["POST /v1/admin/api-keys"].handler({}, response);
+    expect(response.statusCode).toBe(201);
+    expect(response.payload.apiKey.secret).toBe("one-time-secret");
+    expect(console.error).toHaveBeenCalledWith("API key audit event could not be recorded.");
+  });
+
+  test("rejects malformed IDs and does not query or delete a key", async () => {
+    const routes = setup();
+    const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
+    await routes["DELETE /v1/admin/api-keys/:id"].handler(
+      { params: { id: "NaN" } },
+      response
+    );
+    expect(response.statusCode).toBe(400);
+    expect(ApiKey.get).not.toHaveBeenCalled();
+    expect(ApiKey.delete).not.toHaveBeenCalled();
+  });
+
+  test("returns not found when a revocation target does not exist", async () => {
+    const routes = setup();
+    ApiKey.get.mockResolvedValue(null);
+    const response = makeResponse({ apiKey: { id: 10, createdBy: 7 } });
+    await routes["DELETE /v1/admin/api-keys/:id"].handler(
+      { params: { id: "99" } },
+      response
+    );
+    expect(response.statusCode).toBe(404);
+    expect(ApiKey.delete).not.toHaveBeenCalled();
+  });
+
 });
