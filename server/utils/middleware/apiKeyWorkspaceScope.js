@@ -45,26 +45,34 @@ function apiKeyWorkspaceScope(request, response, next) {
     request.params?.slug ??
     request.params?.workspaceSlug ??
     request.body?.workspaceSlug;
-  if (typeof slug === "string" && slug.length > 0) {
-    return isWorkspaceAllowed(scopes, slug) ? next() : deny(response);
+  const hasWorkspaceSlug = typeof slug === "string" && slug.length > 0;
+  if (hasWorkspaceSlug && !isWorkspaceAllowed(scopes, slug)) {
+    return deny(response);
   }
 
   const addToWorkspaces = request.body?.addToWorkspaces;
   if (addToWorkspaces !== undefined && addToWorkspaces !== null && addToWorkspaces !== "") {
-    const requested = Array.isArray(addToWorkspaces)
-      ? addToWorkspaces
-      : typeof addToWorkspaces === "string"
-        ? addToWorkspaces.split(",").map((item) => item.trim()).filter(Boolean)
-        : null;
+    const requested =
+      Array.isArray(addToWorkspaces)
+        ? addToWorkspaces
+        : typeof addToWorkspaces === "string"
+          ? addToWorkspaces.split(",").map((item) => item.trim())
+          : null;
     if (
       !requested ||
       requested.length === 0 ||
-      requested.some((workspaceSlug) => !isWorkspaceAllowed(scopes, workspaceSlug))
+      requested.some(
+        (workspaceSlug) =>
+          typeof workspaceSlug !== "string" ||
+          workspaceSlug.length === 0 ||
+          !isWorkspaceAllowed(scopes, workspaceSlug)
+      )
     ) {
       return deny(response);
     }
     return next();
   }
+  if (hasWorkspaceSlug) return next();
 
   // These routes return static capability metadata and do not expose tenant data.
   if (method === "GET" && SAFE_DOCUMENT_METADATA_PATHS.has(path)) return next();
