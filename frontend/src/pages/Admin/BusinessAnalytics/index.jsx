@@ -163,9 +163,7 @@ export default function BusinessAnalytics() {
         );
         const result = await response.json().catch(() => ({}));
         if (!response.ok) {
-          throw new Error(
-            result.error || "Unable to load business analytics."
-          );
+          throw new Error(result.error || "Unable to load business analytics.");
         }
         setData(result);
       } catch (e) {
@@ -202,8 +200,8 @@ export default function BusinessAnalytics() {
                 </h1>
               </div>
               <p className="mt-2 text-sm text-theme-text-secondary">
-                Operational metrics from recorded API activity. Financial
-                values are shown only when verified data exists.
+                Operational metrics from recorded API activity. Financial values
+                are shown only when verified data exists.
               </p>
             </div>
             <div className="flex flex-wrap items-end gap-3">
@@ -380,9 +378,7 @@ export default function BusinessAnalytics() {
                   ? new Date(data.range.from).toLocaleString()
                   : from}{" "}
                 —{" "}
-                {data.range?.to
-                  ? new Date(data.range.to).toLocaleString()
-                  : to}
+                {data.range?.to ? new Date(data.range.to).toLocaleString() : to}
                 . Historical requests before metering was enabled are not
                 backfilled.
               </p>
