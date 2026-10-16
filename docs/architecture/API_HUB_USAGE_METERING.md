@@ -1,6 +1,6 @@
 # API Hub Usage Metering Design
 
-Status: proposed design; not yet implemented in application code  
+Status: partially implemented foundation; enforcement and production rollout remain incomplete  
 Date: 2026-10-16  
 Branch: `lebap-ai/development`
 
