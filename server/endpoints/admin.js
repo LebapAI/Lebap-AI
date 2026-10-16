@@ -34,6 +34,7 @@ const {
 
 function adminEndpoints(app) {
   if (!app) return;
+  businessAnalyticsEndpoints(app);
 
   app.get(
     "/admin/users",
