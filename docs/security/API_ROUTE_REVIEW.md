@@ -161,3 +161,11 @@ The following original findings remain open: NULL-scoped legacy keys are unrestr
 - Added `apiKeyOwnerIsAdmin` to all three endpoints and added route-registration regression tests covering all six system API routes.
 - Commits: `3242794ecd9b6d42e6570a630a1362af0852956d` and `c5c1ad25cc48e679541e4034b640a73a75494c7d`.
 - This closes the identified system-route gap only. The full route inventory is still incomplete, and the tests have not been executed.
+
+
+## Credential lifecycle edge case — invalid expiry values (2026-10-16)
+
+A defensive edge case was found in expiry enforcement: a non-null expiry value that could not be parsed produced `NaN`, and the previous comparison did not classify it as expired. Authentication now rejects invalid expiry values as well as expired/revoked keys. The public key metadata status also reports malformed expiry as `expired` rather than `active`.
+- Added regression tests in `server/utils/middleware/validApiKey.test.js` and `server/endpoints/api/apiKeys/index.test.js`.
+- Commits: `bd62229e4a4c1ad9222cc6ead45427a744f8cd61` (authentication), `3a69cb4d1a4a5053d485642ebd077a503794a4c7` (middleware test), `e86fc35a728b7a28313922a695807f5a1e921034` (safe metadata), `05da24af16857f79f4f27e099a4032114d604a73` (endpoint test).
+- Static source review only; tests, lint, build, migrations, and runtime verification remain outstanding.
