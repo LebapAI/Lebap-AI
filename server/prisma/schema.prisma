@@ -24,8 +24,20 @@ model api_keys {
   createdBy     Int?
   expiresAt     DateTime?
   revokedAt     DateTime?
+  lastUsedAt    DateTime?
   createdAt     DateTime @default(now())
   lastUpdatedAt DateTime @default(now())
+}
+
+// Persistent fixed-window counters make API request limiting consistent across server restarts.
+model api_key_rate_limit_windows {
+  id           Int @id @default(autoincrement())
+  apiKeyId     Int
+  windowStart  Int
+  requestCount Int @default(0)
+
+  @@unique([apiKeyId, windowStart])
+  @@index([windowStart])
 }
 
 // Append-oriented API usage ledger. Never store prompts, credentials, or raw provider errors here.

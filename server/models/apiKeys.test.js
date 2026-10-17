@@ -6,6 +6,7 @@ jest.mock("../utils/prisma", () => ({
   api_keys: {
     create: jest.fn(),
     findFirst: jest.fn(),
+    updateMany: jest.fn(),
   },
 }));
 
@@ -36,6 +37,27 @@ describe("ApiKey secret storage", () => {
     expect(result.apiKey.secret).toBe(secret);
     expect(result.apiKey.secretHash).toBe(expectedHash);
     expect(JSON.stringify(stored)).not.toContain(secret);
+  });
+
+  test("records last-use timestamps only for active keys", async () => {
+    prisma.api_keys.updateMany.mockResolvedValue({ count: 1 });
+    const before = Date.now();
+    await expect(ApiKey.markUsed(42)).resolves.toBe(true);
+    const query = prisma.api_keys.updateMany.mock.calls[0][0];
+    expect(query.where.id).toBe(42);
+    expect(query.where.revokedAt).toBeNull();
+    expect(query.where.OR[0]).toEqual({ lastUsedAt: null });
+    expect(query.where.OR[1].lastUsedAt.lt).toBeInstanceOf(Date);
+    expect(query.where.OR[1].lastUsedAt.lt.getTime()).toBeLessThanOrEqual(Date.now() - 60000);
+    expect(query.data.lastUsedAt).toBeInstanceOf(Date);
+    expect(query.data.lastUsedAt.getTime()).toBeGreaterThanOrEqual(before);
+  });
+
+  test("does not record last use for invalid ids or revoked credentials", async () => {
+    prisma.api_keys.updateMany.mockResolvedValue({ count: 0 });
+    await expect(ApiKey.markUsed(0)).resolves.toBe(false);
+    await expect(ApiKey.markUsed(42)).resolves.toBe(false);
+    expect(prisma.api_keys.updateMany).toHaveBeenCalledTimes(1);
   });
 
   test("authenticates new keys using the verifier hash", async () => {

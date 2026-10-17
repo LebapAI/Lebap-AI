@@ -28,6 +28,7 @@ function publicApiKey(apiKey) {
     lastUpdatedAt: apiKey.lastUpdatedAt || null,
     expiresAt: apiKey.expiresAt || null,
     revokedAt: apiKey.revokedAt || null,
+    lastUsedAt: apiKey.lastUsedAt || null,
     workspaceSlugs: parseWorkspaceSlugs(apiKey.workspaceSlugs),
     status: apiKey.revokedAt
       ? "revoked"

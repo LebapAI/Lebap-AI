@@ -1,11 +1,17 @@
 const { ApiKey } = require("../../models/apiKeys");
 const { SystemSettings } = require("../../models/systemSettings");
 const { validApiKey, parseWorkspaceSlugs } = require("./validApiKey");
+const { consumeApiKeyRateLimit } = require("../apiKeyRateLimiter");
 
 jest.mock("../../models/apiKeys", () => ({
   ApiKey: {
     getForAuthentication: jest.fn(),
+    markUsed: jest.fn(),
   },
+}));
+
+jest.mock("../apiKeyRateLimiter", () => ({
+  consumeApiKeyRateLimit: jest.fn(),
 }));
 
 jest.mock("../../models/systemSettings", () => ({
@@ -14,9 +20,15 @@ jest.mock("../../models/systemSettings", () => ({
   },
 }));
 
-function makeRequest(authorization) {
+function makeRequest(authorization, overrides = {}) {
   return {
     header: jest.fn(() => authorization),
+    method: "GET",
+    path: "/v1/workspaces",
+    params: {},
+    query: {},
+    body: {},
+    ...overrides,
   };
 }
 
@@ -25,6 +37,7 @@ function makeResponse() {
     locals: {},
     status: jest.fn(),
     json: jest.fn(),
+    setHeader: jest.fn(),
   };
   response.status.mockReturnValue(response);
   response.json.mockReturnValue(response);
@@ -60,6 +73,8 @@ describe("validApiKey middleware", () => {
     next = jest.fn();
     SystemSettings.isMultiUserMode.mockResolvedValue(false);
     ApiKey.getForAuthentication.mockResolvedValue({ id: 1 });
+    ApiKey.markUsed.mockResolvedValue(true);
+    consumeApiKeyRateLimit.mockResolvedValue({ allowed: true, limit: 120, remaining: 119, resetAt: Date.now() + 60000, retryAfterSeconds: 60 });
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -96,6 +111,7 @@ describe("validApiKey middleware", () => {
 
     expect(response.locals.multiUserMode).toBe(false);
     expect(ApiKey.getForAuthentication).toHaveBeenCalledWith({ secret: "secret-value" });
+    expect(ApiKey.markUsed).toHaveBeenCalledWith(1);
     expect(next).toHaveBeenCalledTimes(1);
     expect(response.status).not.toHaveBeenCalled();
   });
@@ -183,6 +199,61 @@ describe("validApiKey middleware", () => {
     expect(next).toHaveBeenCalledTimes(1);
   });
 
+  test("returns 429 with Retry-After when the API key exceeds its rate limit", async () => {
+    consumeApiKeyRateLimit.mockResolvedValueOnce({
+      allowed: false,
+      limit: 120,
+      remaining: 0,
+      resetAt: Date.UTC(2026, 9, 17, 12, 35, 0),
+      retryAfterSeconds: 12,
+    });
+    const request = makeRequest("Bearer secret-value");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.setHeader).toHaveBeenCalledWith("Retry-After", "12");
+    expect(response.status).toHaveBeenCalledWith(429);
+    expect(response.json).toHaveBeenCalledWith({
+      error: "API rate limit exceeded.",
+      limit: 120,
+      resetAt: "2026-10-17T12:35:00.000Z",
+    });
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test("fails closed when the shared rate-limit store is unavailable", async () => {
+    consumeApiKeyRateLimit.mockRejectedValueOnce(new Error("private database detail"));
+    const request = makeRequest("Bearer secret-value");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(503);
+    expect(response.json).toHaveBeenCalledWith({ error: "API access temporarily unavailable." });
+    expect(JSON.stringify(response.json.mock.calls)).not.toContain("private database detail");
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test("enforces explicit workspace scopes before a protected route runs", async () => {
+    ApiKey.getForAuthentication.mockResolvedValue({
+      id: 17,
+      createdBy: 7,
+      workspaceSlugs: '["workspace-a"]',
+    });
+    const request = makeRequest("Bearer scoped-secret", {
+      method: "GET",
+      path: "/v1/workspace/workspace-b",
+      params: { slug: "workspace-b" },
+    });
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(next).not.toHaveBeenCalled();
+  });
+
   test("rejects a revoked credential", async () => {
     ApiKey.getForAuthentication.mockResolvedValue({
       id: 13,
@@ -234,7 +305,7 @@ describe("validApiKey middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  test("treats an empty stored scope as restricted rather than unrestricted", async () => {
+  test("denies an empty stored scope instead of treating it as unrestricted", async () => {
     ApiKey.getForAuthentication.mockResolvedValue({
       id: 15,
       createdBy: 7,
@@ -246,6 +317,7 @@ describe("validApiKey middleware", () => {
     await validApiKey(request, response, next);
 
     expect(response.locals.apiKey.workspaceSlugs).toEqual([]);
-    expect(next).toHaveBeenCalledTimes(1);
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(next).not.toHaveBeenCalled();
   });
 });

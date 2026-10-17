@@ -50,6 +50,11 @@ export default function ApiKeyRow({ apiKey, removeApiKey }) {
               : "No expiry set"}
           </span>
           <span className="text-theme-text-secondary">
+            {apiKey.lastUsedAt
+              ? `Last used ${moment(apiKey.lastUsedAt).format("lll")}`
+              : "Never used"}
+          </span>
+          <span className="text-theme-text-secondary">
             Secret hidden after creation
           </span>
         </div>

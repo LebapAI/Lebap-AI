@@ -1,6 +1,8 @@
 const { ApiKey } = require("../../models/apiKeys");
 const { SystemSettings } = require("../../models/systemSettings");
 const { parseWorkspaceSlugs } = require("../apiKeyScopes");
+const { apiKeyWorkspaceScope } = require("./apiKeyWorkspaceScope");
+const { consumeApiKeyRateLimit } = require("../apiKeyRateLimiter");
 
 
 async function validApiKey(request, response, next) {
@@ -55,7 +57,39 @@ async function validApiKey(request, response, next) {
       workspaceSlugs: parseWorkspaceSlugs(apiKey.workspaceSlugs),
     };
 
-    return next();
+    // Last-use tracking is best-effort and never blocks authentication on telemetry failure.
+    if (typeof ApiKey.markUsed === "function") await ApiKey.markUsed(apiKey.id);
+    const continueAfterScope = async () => {
+      let rateLimit;
+      try {
+        rateLimit = await consumeApiKeyRateLimit(Number(response.locals.apiKey.id));
+      } catch (_error) {
+        // Fail closed if the shared limiter cannot verify whether a key exceeded its limit.
+        console.error("API key rate-limit check failed.");
+        return response.status(503).json({ error: "API access temporarily unavailable." });
+      }
+
+      if (typeof response.setHeader === "function") {
+        response.setHeader("X-RateLimit-Limit", String(rateLimit.limit));
+        response.setHeader("X-RateLimit-Remaining", String(rateLimit.remaining));
+        response.setHeader("X-RateLimit-Reset", String(Math.ceil(rateLimit.resetAt / 1000)));
+      }
+
+      if (!rateLimit.allowed) {
+        if (typeof response.setHeader === "function") {
+          response.setHeader("Retry-After", String(rateLimit.retryAfterSeconds));
+        }
+        return response.status(429).json({
+          error: "API rate limit exceeded.",
+          limit: rateLimit.limit,
+          resetAt: new Date(rateLimit.resetAt).toISOString(),
+        });
+      }
+
+      return next();
+    };
+
+    return await apiKeyWorkspaceScope(request, response, continueAfterScope);
   } catch (_error) {
     // Fail closed if authentication infrastructure is unavailable.
     console.error("API key authentication failed due to an internal error.");
