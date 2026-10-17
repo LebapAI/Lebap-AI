@@ -2,9 +2,9 @@
 
 ## Status and repository rules
 
-- Upstream baseline: `migration/anythingllm-upstream`. Treat it as immutable.
-- Active implementation branch: `lebap-ai/development`.
-- Do not overwrite or merge unrelated `main` history without a separately reviewed migration plan.
+- Upstream baseline content has been incorporated into the integrated working history. Keep a backup ref until migration completeness and build/test checks are confirmed; do not delete source branches before that gate.
+- Active implementation branch: `lebap-ai/organized` (created from the integrated `lebap-ai/development` head on 2026-10-17).
+- Work only on `lebap-ai/organized`; avoid parallel implementation branches and duplicate implementations.
 - Preserve upstream license and third-party notices. Audit submodules and dependency licenses before redistribution.
 - Do not describe the platform as production-ready until builds, tests, security review, and deployment verification pass.
 
