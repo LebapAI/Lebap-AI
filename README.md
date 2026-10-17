@@ -37,6 +37,14 @@ The repository contains an existing AI workspace application and partial Lebap A
 
 **Important limitations:** legacy credentials and legacy unrestricted workspace scopes still require a migration plan; workspace-scope enforcement has not been proven across every route; usage capture is not billing or budget enforcement; provider costs are not automatically verified; and database migrations, full tests, builds, and runtime behavior must be validated before release.
 
+## Working branch and engineering status
+
+- **Working branch:** `lebap-ai/organized`. New implementation work should be made on this branch only.
+- **Capability matrix:** [`docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md`](docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md)
+- **Current engineering status:** [`docs/LEBAP_AI_PROGRESS.md`](docs/LEBAP_AI_PROGRESS.md)
+- **Repository layout and migration baseline:** [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md)
+- **Historical engineering notes:** [`docs/archive/LEBAP_AI_PROGRESS_HISTORY.md`](docs/archive/LEBAP_AI_PROGRESS_HISTORY.md)
+
 ## Repository structure
 
 | Path | Purpose |
