@@ -1,7 +1,7 @@
 # Lebap AI — Product implementation matrix
 
-**Active branch:** `lebap-ai/development`  
-**Status date:** 2026-10-16  
+**Active branch:** `lebap-ai/organized`  
+**Status date:** 2026-10-17  
 **Release status:** Not production-ready; CI, build, integration tests, deployment and security gates remain outstanding.
 
 This matrix turns the 15 requested product capabilities into implementation work. A dependency being present, a design document existing, or an inherited upstream feature is not proof that the complete Lebap AI capability is implemented.
