@@ -44,7 +44,11 @@ describe("ApiKey secret storage", () => {
     const before = Date.now();
     await expect(ApiKey.markUsed(42)).resolves.toBe(true);
     const query = prisma.api_keys.updateMany.mock.calls[0][0];
-    expect(query.where).toEqual({ id: 42, revokedAt: null });
+    expect(query.where.id).toBe(42);
+    expect(query.where.revokedAt).toBeNull();
+    expect(query.where.OR[0]).toEqual({ lastUsedAt: null });
+    expect(query.where.OR[1].lastUsedAt.lt).toBeInstanceOf(Date);
+    expect(query.where.OR[1].lastUsedAt.lt.getTime()).toBeLessThanOrEqual(Date.now() - 60000);
     expect(query.data.lastUsedAt).toBeInstanceOf(Date);
     expect(query.data.lastUsedAt.getTime()).toBeGreaterThanOrEqual(before);
   });

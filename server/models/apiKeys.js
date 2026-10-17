@@ -111,13 +111,19 @@ const ApiKey = {
     }
   },
 
-  // Update the last successful authentication timestamp without changing the credential lifecycle.
+  // Track authenticated use at most once per minute to avoid a write on every request.
   markUsed: async function (id) {
     if (!Number.isSafeInteger(id) || id <= 0) return false;
     try {
+      const now = new Date();
+      const staleBefore = new Date(now.getTime() - 60 * 1000);
       const result = await prisma.api_keys.updateMany({
-        where: { id, revokedAt: null },
-        data: { lastUsedAt: new Date() },
+        where: {
+          id,
+          revokedAt: null,
+          OR: [{ lastUsedAt: null }, { lastUsedAt: { lt: staleBefore } }],
+        },
+        data: { lastUsedAt: now },
       });
       return result.count === 1;
     } catch (_error) {
