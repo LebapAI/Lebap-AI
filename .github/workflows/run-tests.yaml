@@ -10,6 +10,7 @@ on:
     branches:
       - main
       - lebap-ai/development
+      - lebap-ai/organized
     paths:
       - "server/**/*.js"
       - "server/prisma/**"
