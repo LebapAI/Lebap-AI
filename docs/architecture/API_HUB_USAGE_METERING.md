@@ -2,7 +2,7 @@
 
 Status: partially implemented foundation; enforcement and production rollout remain incomplete  
 Date: 2026-10-16  
-Branch: `main`
+Working branch: `lebap-ai/organized`
 
 ## Goals
 
@@ -13,7 +13,7 @@ Provide a durable foundation for per-client usage analytics, enforceable quotas,
 - `api_keys` contains `id`, `name`, nullable unique legacy `secret`, nullable unique `secretHash` for newly issued keys, nullable `createdBy`, nullable `expiresAt`/`revokedAt`, and timestamps. Existing raw-secret records are retained during the compatibility rollout.
 - The active Prisma datasource is SQLite. PostgreSQL configuration is commented out. A production database migration must be an explicit infrastructure decision, not an assumed configuration.
 - OpenAI-compatible chat, embedding, image generation, and vector-store routes use existing workspace/provider code. Their behavior should remain compatible while a shared metering layer is introduced.
-- The API-key record has nullable expiry/revocation/last-use timestamps and an optional `workspaceSlugs` allowlist. The `validApiKey` middleware now applies workspace-scope enforcement after authentication, and OpenAI-compatible model listing separately filters visible workspaces. This still requires endpoint-by-endpoint security review and tests; operation scopes, tenant ID, concurrency limits, and spend limits remain absent. A configurable fixed-window request limiter has been added in source and is awaiting CI and controlled migration/runtime verification.
+- The API-key record has nullable expiry/revocation/last-use timestamps and an optional `workspaceSlugs` allowlist. The `validApiKey` middleware now applies workspace-scope enforcement after authentication, and OpenAI-compatible model listing separately filters visible workspaces. This still requires endpoint-by-endpoint security review and tests; operation scopes, tenant ID, concurrency limits, and spend limits remain absent. A shared fixed-window API-key request limiter and rate-limit window schema are present in source. The current branch CI is running; concurrency, multi-instance behavior, outage handling, migration correctness, and runtime behavior remain unverified.
 
 ## Recommended data model
 
