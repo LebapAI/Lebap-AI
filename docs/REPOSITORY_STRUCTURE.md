@@ -1,37 +1,41 @@
-# Repository structure and migration baseline
+# Repository Structure and Branch Policy
 
-**Working branch:** `lebap-ai/organized`  
-**Baseline commit:** `604a918d66bb4b78c6313dbc3d32d485cfaa52d4` (integrated development head, 2026-10-17)
+**Reviewed:** 2026-10-20  
+**Canonical working branch:** `lebap-ai/organized`  
+**Default branch:** `main`
 
-## Rules
+## Branch policy
 
-- Make all new implementation changes on `lebap-ai/organized` only.
-- Extend existing modules instead of creating a second implementation of the same capability.
-- Keep upstream-derived code and its license/third-party notices intact.
-- Do not remove a branch until its unique commits and files are verified on this branch and CI/build checks are reviewed.
-- Do not claim production readiness from source inspection alone.
+- Make new implementation changes only on `lebap-ai/organized`.
+- Keep `main` as the stable/default branch.
+- `lebap-ai/development` is an older integration branch and is an ancestor of the current working branch. Retire it only after CI and recovery requirements are reviewed.
+- Retain `migration/anythingllm-upstream` as an upstream-history reference until migration completeness, licensing notices, and recovery needs are verified.
+- Preserve upstream-derived code and required license/third-party notices. Do not rewrite history.
+- Do not claim production readiness based on source inspection or historical CI alone.
 
 ## Top-level layout
 
-- `frontend/` — React/Vite user interface, pages, components, styles, public assets.
+- `frontend/` — React/Vite user interface, pages, components, styles, and public assets.
 - `server/` — API routes, middleware, models, service utilities, and tests.
 - `server/prisma/` — Prisma schema and ordered database migrations.
-- `docs/` — product plan, capability matrix, architecture, security reviews, and progress notes.
+- `collector/` — document ingestion and processing service.
+- `docs/` — product plan, implementation matrix, architecture, security review, current status, and archived history.
 - `.github/workflows/` — CI definitions for backend tests and frontend build/lint.
 - Root package manifests and lockfiles — shared scripts and dependency orchestration.
 
-## Key documentation
+## Source-of-truth documents
 
-- `LEBAP_AI_IMPLEMENTATION_MATRIX.md` — capability-by-capability implementation status and acceptance gates.
-- `LEBAP_AI_IMPLEMENTATION_PLAN.md` — delivery phases and release gates.
-- `LEBAP_AI_PROGRESS.md` — dated engineering history; historical entries can be superseded and must not be read as current status without checking their date.
-- `architecture/API_HUB.md` and `architecture/API_HUB_USAGE_METERING.md` — API Hub and usage-accounting design.
-- `security/API_SECURITY_REVIEW.md` and `security/API_ROUTE_REVIEW.md` — source-level findings and remaining security work.
+- `README.md` — project purpose, setup, scripts, and top-level limitations.
+- `docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md` — capability-by-capability status and acceptance gates.
+- `docs/LEBAP_AI_IMPLEMENTATION_PLAN.md` — delivery phases and release gates.
+- `docs/LEBAP_AI_PROGRESS.md` — current engineering status and unresolved release risks.
+- `docs/architecture/API_HUB_USAGE_METERING.md` — current usage-metering design and limitations.
+- `docs/security/API_SECURITY_REVIEW.md` and `docs/security/API_ROUTE_REVIEW.md` — source-level findings and required security work.
+- `docs/archive/` — historical notes for context only; current status documents supersede them.
 
-## Migration audit snapshot
+## Branch comparison snapshot
 
-- `lebap-ai/development` contains all commits reachable from `main` and is three commits ahead of `main`.
-- `lebap-ai/development` is 367 commits ahead of `migration/anythingllm-upstream`; the upstream migration branch is an ancestor, not a newer source of changes.
-- The new working branch was created from `lebap-ai/development` at `604a918d66bb4b78c6313dbc3d32d485cfaa52d4`.
-- Before removing old refs, compare each old branch with this branch and preserve a recovery reference until verification is complete.
-- Current CI status must be checked against the new branch's head. Historical green runs do not validate later commits.
+- `lebap-ai/organized` is 23 commits ahead of `main`, with no commits behind it in the current comparison. The current diff against `main` is documentation and CI configuration.
+- `lebap-ai/development` is an ancestor of `lebap-ai/organized`; it is not the active implementation target.
+- Keep the upstream migration branch until migration/provenance and recovery needs are reviewed.
+- Backend tests and frontend build/lint were queued for recent workflow commits on 2026-10-20. Check final results and compare the tested SHA with the current branch head before treating the branch as verified.
