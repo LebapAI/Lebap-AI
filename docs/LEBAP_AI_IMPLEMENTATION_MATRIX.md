@@ -1,7 +1,7 @@
 # Lebap AI — Product implementation matrix
 
 **Active branch:** `lebap-ai/organized`  
-**Status date:** 2026-10-17  
+**Status date:** 2026-10-20  
 **Release status:** Not production-ready; CI, build, integration tests, deployment and security gates remain outstanding.
 
 This matrix turns the 15 requested product capabilities into implementation work. A dependency being present, a design document existing, or an inherited upstream feature is not proof that the complete Lebap AI capability is implemented.
@@ -68,7 +68,8 @@ This matrix turns the 15 requested product capabilities into implementation work
 
 ## Engineering rules
 
-- Work only on `lebap-ai/development`; do not change `main` or `migration/anythingllm-upstream`.
+- Work only on `lebap-ai/organized`; do not make parallel implementation changes on `lebap-ai/development`.
+- Keep `main` as the stable/default branch and preserve `migration/anythingllm-upstream` as the upstream-history reference until a separate retention review.
 - Preserve existing API compatibility unless a reviewed migration says otherwise.
 - Do not add a feature flag or UI control that implies a backend capability is operational when it is not.
 - Do not claim tests pass unless they were actually executed and their results inspected.
@@ -77,58 +78,5 @@ This matrix turns the 15 requested product capabilities into implementation work
 
 ## Current verification limitation
 
-The latest source review confirmed existing provider/workspace/document functionality, the MCP SDK dependency, and several targeted API security changes. It did **not** execute the test suite, lint, build, migrations, runtime API tests, or deployment checks. All capability completion gates above remain open until verified.
+The repository consolidation review on 2026-10-20 checked branch relationships and documentation consistency. It did **not** execute the test suite, lint, build, migrations, runtime API tests, or deployment checks. The current `lebap-ai/organized` head has no reported combined status checks in the connector response; treat CI as unverified until fresh workflow runs complete. All capability completion gates above remain open until verified.
 
-
-## 2026-10-16 incremental delivery note
-
-The API Hub now has an initial administrator-only credential management surface in `server/endpoints/api/apiKeys/index.js`: list metadata, create an administrator-owned key, and revoke a different key. The new test file covers secret handling and core endpoint decisions, but those tests have not been executed. This does not close Gate A: there are still no credential scopes, expiry fields, tenant/workspace binding, rate limits, quotas, or usage accounting, and no runtime verification has been performed.
-
-
-## Credential lifecycle implementation note — 2026-10-16
-
-The SQLite schema now declares nullable `api_keys.expiresAt` and `api_keys.revokedAt`, with migration `server/prisma/migrations/20261016150000_api_key_lifecycle/migration.sql`. New keys may have an optional future expiry; the authentication middleware rejects expired or revoked keys; the admin delete route now performs a soft revocation and key listings show lifecycle status without secrets.
-
-This remains source-only. The migration has not been applied, Prisma client has not been regenerated, and Jest/lint/build/runtime checks have not been run. Credential scopes, tenant/client identity, workspace allowlists, rate limits and usage metering remain open.
-
-
-## API credential storage update — 2026-10-16
-
-Newly issued API keys now persist a SHA-256 verifier in `api_keys.secretHash`, not the raw bearer secret. The creation response returns the raw secret once. Authentication supports both hashed new credentials and existing raw-secret records during migration; existing legacy secrets have **not** been automatically transformed or removed. A separate nullable SQLite migration preserves existing rows. Migration application, Prisma generation, tests, lint, build, and runtime verification remain outstanding.
-
-
-## Workspace allowlist implementation note — 2026-10-16
-
-Optional API-key workspace allowlists are now accepted during key creation and enforced on OpenAI-compatible model listing and chat completion. Existing keys with NULL allowlists preserve prior behavior. This is an incremental control, not complete tenant isolation: other API route families and image generation still require operation/resource scopes, and the SQLite migration, Prisma generation, tests, lint, build, and runtime verification remain outstanding.
-
-
-## Business analytics implementation note — 2026-10-16
-
-Added `GET /v1/admin/business-analytics` guarded by API-key validation and active administrator ownership, plus the admin-only `/settings/business-analytics` page. The dashboard displays recorded request outcomes, completion rate, token counts, average latency, top models/providers, user/workspace/API-key counts, and coverage-qualified AI cost. It intentionally displays revenue and profit as unavailable until billing and operating-cost sources exist; unknown-cost usage is not treated as free. Date ranges are validated and limited to 366 days. SQLite migration and Prisma Client generation are still pending; tests, lint, frontend build, and runtime checks have not been executed.
-
-
-## Business analytics trend follow-up — 2026-10-16
-
-The business-analytics endpoint now returns a bounded daily trend using a database-side SQLite aggregation instead of loading every usage event into application memory. The dashboard renders the latest 14 dates with recorded activity. The completion-rate denominator now excludes in-progress events and includes only terminal outcomes (completed, failed, aborted). Tests were updated to cover daily trend output, but have not been executed. Migration, Prisma Client generation, frontend build, and runtime checks remain outstanding.
-
-
-## Business analytics authorization correction — 2026-10-16
-
-The initial developer-API-key route was superseded after source review showed the admin UI authenticates with the browser session token. The live source now registers `GET /admin/business-analytics` through the standard admin endpoint group with `validatedRequest` and `flexUserRoleValid([ROLES.admin])`. This resolves the known authentication mismatch at source level; runtime validation remains outstanding.
-
-
-## 2026-10-16 — Usage accounting increment
-
-The feature-flagged usage ledger now has source hooks for OpenAI-compatible chat completions, image generation/editing, and embeddings. It records request outcomes and latency where supported; token and cost values remain unknown unless supplied by a trusted source. This improves observability but does not implement budgets, quotas, rate limiting, verified pricing, billing, or complete metering across all API routes. Migration/client generation and automated verification remain outstanding; no capability gate is closed by this increment.
-
-
-## API key administration hardening — 2026-10-16
-
-The standard admin and single-user API-key management paths now redact secret/verifier fields from listing responses, display status/scope/expiry in the UI, scope newly issued keys to currently existing workspaces, and soft-revoke credentials with audit events. Legacy NULL-scope keys remain unrestricted to avoid silently breaking existing integrations; rotation/remediation is still required. The latest changes require a fresh CI pass and migration/runtime validation.
-
-### API key least-privilege UX follow-up — 2026-10-16
-
-- [x] API key creation UI lets the administrator select allowed workspaces.
-- [x] Backend validates explicit workspace scopes against the current workspace inventory and rejects unknown or empty selections.
-- [ ] Automated route tests and frontend build/CI validation for the latest changes.
-- [ ] Rotation/migration plan for legacy unrestricted API keys.
