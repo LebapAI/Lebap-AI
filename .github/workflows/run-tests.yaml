@@ -1,7 +1,7 @@
 name: Run backend tests
 
 # Keep each commit's result available instead of cancelling it on a later push.
-# The organized working branch intentionally runs the same backend test gate.
+# Main is the canonical branch; short-lived branches are validated through pull requests.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: false
@@ -10,7 +10,6 @@ on:
   push:
     branches:
       - main
-      - lebap-ai/organized
     paths:
       - "server/**/*.js"
       - "server/prisma/**"
