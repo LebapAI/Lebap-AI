@@ -26,9 +26,9 @@ These are source-level observations, not proof that every path is secure or prod
 
 ## Verification status
 
-- **Current branch CI:** no combined status checks were returned for the reviewed head; a fresh workflow result is required.
-- **Backend tests:** historical successful runs do not validate later commits.
-- **Frontend build/lint:** current-head verification is required.
+- **Backend CI:** workflow [39462989790](https://github.com/LebapAI/Lebap-AI/actions/runs/39462989790) is in progress on source commit `911d3940d8cd58717b7c1070294ffbbd1a258026`.
+- **Frontend build/lint:** workflow [39462992668](https://github.com/LebapAI/Lebap-AI/actions/runs/39462992668) is in progress on source commit `5751c7258989a6f077b5db106be65a97eacb45ff`.
+- Both workflows started before the later documentation-only cleanup commits. Re-check the final results and compare their source state with the current branch before treating CI as verified.
 - **Database:** API-key lifecycle, scope, usage-event, last-used, and rate-limit migrations exist in source. Validate Prisma Client generation and apply migrations only through a controlled procedure against a disposable database first.
 - **Runtime:** no live deployment smoke test was performed in this review.
 - **Consolidation review:** branch ancestry and key documentation were inspected; this was not a full code audit and no test suite was executed.
