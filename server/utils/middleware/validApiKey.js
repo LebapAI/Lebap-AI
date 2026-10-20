@@ -12,7 +12,9 @@ async function validApiKey(request, response, next) {
     // Accept only an explicit Bearer token. Do not log or echo credentials.
     const authorization = request.header("Authorization");
     const parts =
-      typeof authorization === "string" ? authorization.trim().split(/\s+/) : [];
+      typeof authorization === "string"
+        ? authorization.trim().split(/\s+/)
+        : [];
     const scheme = parts[0];
     const bearerKey =
       parts.length === 2 && /^Bearer$/i.test(scheme) ? parts[1] : null;
@@ -65,7 +67,9 @@ async function validApiKey(request, response, next) {
     const continueAfterScope = async () => {
       let rateLimit;
       try {
-        rateLimit = await consumeApiKeyRateLimit(Number(response.locals.apiKey.id));
+        rateLimit = await consumeApiKeyRateLimit(
+          Number(response.locals.apiKey.id)
+        );
       } catch (_error) {
         // Fail closed if the shared limiter cannot verify whether a key exceeded its limit.
         console.error("API key rate-limit check failed.");
@@ -76,7 +80,10 @@ async function validApiKey(request, response, next) {
 
       if (typeof response.setHeader === "function") {
         response.setHeader("X-RateLimit-Limit", String(rateLimit.limit));
-        response.setHeader("X-RateLimit-Remaining", String(rateLimit.remaining));
+        response.setHeader(
+          "X-RateLimit-Remaining",
+          String(rateLimit.remaining)
+        );
         response.setHeader(
           "X-RateLimit-Reset",
           String(Math.ceil(rateLimit.resetAt / 1000))
