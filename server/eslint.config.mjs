@@ -34,5 +34,9 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ["**/*.test.js"],
+    languageOptions: { globals: { ...globals.jest } },
+  },
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
 ]);
