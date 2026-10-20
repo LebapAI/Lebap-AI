@@ -57,8 +57,14 @@ async function validApiKey(request, response, next) {
       workspaceSlugs: parseWorkspaceSlugs(apiKey.workspaceSlugs),
     };
 
-    // Last-use tracking is best-effort and never blocks authentication on telemetry failure.
-    if (typeof ApiKey.markUsed === "function") await ApiKey.markUsed(apiKey.id);
+    // Last-use tracking is best-effort and must not block an otherwise valid request.
+    if (typeof ApiKey.markUsed === "function") {
+      try {
+        await ApiKey.markUsed(apiKey.id);
+      } catch (_error) {
+        console.error("API key last-use tracking failed.");
+      }
+    }
     const continueAfterScope = async () => {
       let rateLimit;
       try {
