@@ -1,6 +1,6 @@
 # Lebap AI — Product implementation matrix
 
-**Active branch:** `lebap-ai/organized`  
+**Active branch:** `main`  
 **Status date:** 2026-10-20  
 **Release status:** Not production-ready; CI, build, integration tests, deployment and security gates remain outstanding.
 
@@ -68,8 +68,8 @@ This matrix turns the 15 requested product capabilities into implementation work
 
 ## Engineering rules
 
-- Work only on `lebap-ai/organized`; do not make parallel implementation changes on `lebap-ai/development`.
-- Keep `main` as the stable/default branch and preserve `migration/anythingllm-upstream` as the upstream-history reference until a separate retention review.
+- Use `main` as the canonical implementation and release-preparation branch. Create short-lived task branches only when useful, then merge them back into `main`.
+- Keep `main` as the canonical/default branch and preserve `migration/anythingllm-upstream` as the upstream-history reference until a separate retention review.
 - Preserve existing API compatibility unless a reviewed migration says otherwise.
 - Do not add a feature flag or UI control that implies a backend capability is operational when it is not.
 - Do not claim tests pass unless they were actually executed and their results inspected.
@@ -78,5 +78,5 @@ This matrix turns the 15 requested product capabilities into implementation work
 
 ## Current verification limitation
 
-The repository consolidation review on 2026-10-20 checked branch relationships and documentation consistency. It did **not** execute the test suite, lint, build, migrations, runtime API tests, or deployment checks. The current `lebap-ai/organized` head has no reported combined status checks in the connector response; treat CI as unverified until fresh workflow runs complete. All capability completion gates above remain open until verified.
+The repository consolidation review on 2026-10-20 checked branch relationships and documentation consistency. It did **not** execute the test suite, lint, build, migrations, runtime API tests, or deployment checks. The `main` branch was advanced to the former `lebap-ai/organized` head on 2026-10-20. Fresh CI results for the resulting `main` head still need to be confirmed. All capability completion gates above remain open until verified.
 
