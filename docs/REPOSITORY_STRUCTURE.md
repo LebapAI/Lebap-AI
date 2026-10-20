@@ -8,10 +8,10 @@
 
 - Make new implementation changes only on `lebap-ai/organized`.
 - Keep `main` as the stable/default branch.
-- `lebap-ai/development` is an older integration branch and is an ancestor of the current working branch. Retire it only after CI and recovery requirements are reviewed.
+- `lebap-ai/development` has been retired after verifying it was an ancestor of `lebap-ai/organized`; it is no longer present in the remote branch list.
 - Retain `migration/anythingllm-upstream` as an upstream-history reference until migration completeness, licensing notices, and recovery needs are verified.
 - Preserve upstream-derived code and required license/third-party notices. Do not rewrite history.
-- Do not claim production readiness based on source inspection or historical CI alone.
+- Do not claim production readiness based on source inspection or CI alone.
 
 ## Top-level layout
 
@@ -35,7 +35,9 @@
 
 ## Branch comparison snapshot
 
-- `lebap-ai/organized` is 23 commits ahead of `main`, with no commits behind it in the current comparison. The current diff against `main` is documentation and CI configuration.
-- `lebap-ai/development` is an ancestor of `lebap-ai/organized`; it is not the active implementation target.
-- Keep the upstream migration branch until migration/provenance and recovery needs are reviewed.
-- Backend tests and frontend build/lint were queued for recent workflow commits on 2026-10-20. Check final results and compare the tested SHA with the current branch head before treating the branch as verified.
+- Current remote branches: `main`, `lebap-ai/organized`, and `migration/anythingllm-upstream`.
+- `lebap-ai/organized` is 27 commits ahead of `main` and 0 commits behind it. The current comparison contains documentation and CI configuration changes.
+- The deleted `lebap-ai/development` branch was an ancestor of `lebap-ai/organized`; it had no unique commits absent from the canonical working branch.
+- Backend test workflow [39462989790](https://github.com/LebapAI/Lebap-AI/actions/runs/39462989790) completed successfully on source commit `911d3940d8cd58717b7c1070294ffbbd1a258026`.
+- Frontend build/lint workflow [39462992668](https://github.com/LebapAI/Lebap-AI/actions/runs/39462992668) completed successfully on source commit `5751c7258989a6f077b5db106be65a97eacb45ff`.
+- Those successful runs are not on the current branch head; the subsequent commits changed documentation and CI configuration only. Re-run CI on the current head after future application-code changes and before release.
