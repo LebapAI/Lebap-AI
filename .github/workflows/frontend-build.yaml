@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - lebap-ai/development
       - lebap-ai/organized
     paths:
       - "frontend/**"
