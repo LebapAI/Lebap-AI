@@ -4,7 +4,6 @@ const { parseWorkspaceSlugs } = require("../apiKeyScopes");
 const { apiKeyWorkspaceScope } = require("./apiKeyWorkspaceScope");
 const { consumeApiKeyRateLimit } = require("../apiKeyRateLimiter");
 
-
 async function validApiKey(request, response, next) {
   try {
     const multiUserMode = await SystemSettings.isMultiUserMode();
@@ -15,9 +14,8 @@ async function validApiKey(request, response, next) {
     const parts =
       typeof authorization === "string" ? authorization.trim().split(/\s+/) : [];
     const scheme = parts[0];
-    const bearerKey = parts.length === 2 && /^Bearer$/i.test(scheme)
-      ? parts[1]
-      : null;
+    const bearerKey =
+      parts.length === 2 && /^Bearer$/i.test(scheme) ? parts[1] : null;
 
     if (!bearerKey) {
       return response.status(403).json({
@@ -37,8 +35,7 @@ async function validApiKey(request, response, next) {
       apiKey.expiresAt === null || apiKey.expiresAt === undefined
         ? null
         : new Date(apiKey.expiresAt).getTime();
-    const invalidExpiry =
-      expiryTime !== null && !Number.isFinite(expiryTime);
+    const invalidExpiry = expiryTime !== null && !Number.isFinite(expiryTime);
     const expired = expiryTime !== null && expiryTime <= now;
     if (apiKey.revokedAt || invalidExpiry || expired) {
       return response.status(403).json({
@@ -72,18 +69,26 @@ async function validApiKey(request, response, next) {
       } catch (_error) {
         // Fail closed if the shared limiter cannot verify whether a key exceeded its limit.
         console.error("API key rate-limit check failed.");
-        return response.status(503).json({ error: "API access temporarily unavailable." });
+        return response
+          .status(503)
+          .json({ error: "API access temporarily unavailable." });
       }
 
       if (typeof response.setHeader === "function") {
         response.setHeader("X-RateLimit-Limit", String(rateLimit.limit));
         response.setHeader("X-RateLimit-Remaining", String(rateLimit.remaining));
-        response.setHeader("X-RateLimit-Reset", String(Math.ceil(rateLimit.resetAt / 1000)));
+        response.setHeader(
+          "X-RateLimit-Reset",
+          String(Math.ceil(rateLimit.resetAt / 1000))
+        );
       }
 
       if (!rateLimit.allowed) {
         if (typeof response.setHeader === "function") {
-          response.setHeader("Retry-After", String(rateLimit.retryAfterSeconds));
+          response.setHeader(
+            "Retry-After",
+            String(rateLimit.retryAfterSeconds)
+          );
         }
         return response.status(429).json({
           error: "API rate limit exceeded.",
