@@ -3,9 +3,16 @@
  * Omitted scope retains compatibility with older clients by granting all current workspaces;
  * explicit scope is always validated and must contain at least one existing workspace.
  */
-function resolveWorkspaceScope(requestedWorkspaceSlugs, availableWorkspaceSlugs = []) {
+function resolveWorkspaceScope(
+  requestedWorkspaceSlugs,
+  availableWorkspaceSlugs = []
+) {
   const available = Array.isArray(availableWorkspaceSlugs)
-    ? [...new Set(availableWorkspaceSlugs.filter((slug) => typeof slug === "string"))]
+    ? [
+        ...new Set(
+          availableWorkspaceSlugs.filter((slug) => typeof slug === "string")
+        ),
+      ]
     : [];
 
   if (requestedWorkspaceSlugs === undefined) {
@@ -51,7 +58,9 @@ function parseWorkspaceSlugs(value) {
     if (
       Array.isArray(parsed) &&
       parsed.length > 0 &&
-      parsed.every((slug) => typeof slug === "string" && slug.trim().length > 0)
+      parsed.every(
+        (slug) => typeof slug === "string" && slug.trim().length > 0
+      )
     ) {
       return [...new Set(parsed.map((slug) => slug.trim()))];
     }
