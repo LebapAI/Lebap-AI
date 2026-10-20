@@ -30,3 +30,25 @@ The API router registers authentication, admin, system, workspace, document, wor
 ## Verification boundary
 
 This is not an exhaustive automated route proof, runtime integration test, load test, or penetration test. Production readiness must remain blocked until the route inventory and required test suites are complete.
+
+## Focused source audit — 2026-10-20
+
+The following observations were confirmed by reading the current route and middleware source. They are not runtime verification.
+
+- Developer API route groups are registered in `server/endpoints/api/index.js`: auth, admin, system, workspace, document, workspace-thread, user-management, OpenAI-compatible, embed, and API-key management.
+- `validApiKey` validates Bearer credentials, expiry/revocation, workspace scope, and the shared database-backed rate limiter. Rate-limit storage failures return 503 (fail closed); rejected requests return 429.
+- Privileged route families generally chain `apiKeyOwnerIsAdmin` after authentication. That middleware checks that the key has an active administrator owner and denies workspace-scoped keys except for the two explicitly supported OpenAI chat/model routes.
+- The OpenAI chat handler separately checks the requested model/workspace slug against the API key's allowlist. The model-list handler filters returned workspaces by the same allowlist.
+- Workspace-scoped keys are not a universal route-scoping system: they are intentionally denied by the admin-owner middleware on most route families. Document metadata endpoints are treated as safe static metadata by the workspace-scope helper.
+- **Legacy scope risk remains:** a database `workspaceSlugs = NULL` is interpreted as unrestricted for backward compatibility. This must be inventoried and migrated/rotated deliberately; changing NULL to deny-all without a rollout plan could break existing integrations.
+- **Operational limitation:** the limiter depends on the configured Prisma database. Its unit tests mock the Prisma client, so they do not establish cross-process behavior, production database semantics, or concurrent request correctness under load.
+- **Unverified:** complete method-by-method route coverage, live authorization tests against a real database, migration execution, concurrency/load tests, tenant isolation, and end-to-end provider request behavior.
+
+## Required next actions
+
+1. Generate a route/method inventory from registered Express routes and verify every route has an explicit authorization classification.
+2. Add integration tests for each route family covering missing, expired, revoked, ownerless, suspended-owner, unrestricted legacy, and explicit workspace-scoped keys.
+3. Decide and document the deprecation/rotation path for legacy NULL-scope keys before changing their semantics.
+4. Run migrations and rate-limit concurrency tests against a disposable instance of each supported database configuration.
+5. Re-run the full CI suite on the exact current branch head and attach the results before release.
+
