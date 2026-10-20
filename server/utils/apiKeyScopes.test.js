@@ -65,9 +65,9 @@ describe("parseWorkspaceSlugs", () => {
   );
 
   test("parses, trims, and deduplicates a valid persisted scope", () => {
-    expect(
-      parseWorkspaceSlugs('["support", " research ", "support"]')
-    ).toEqual(["support", "research"]);
+    expect(parseWorkspaceSlugs('["support", " research ", "support"]')).toEqual(
+      ["support", "research"]
+    );
   });
 });
 
