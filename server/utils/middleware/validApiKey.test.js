@@ -116,6 +116,18 @@ describe("validApiKey middleware", () => {
     expect(response.status).not.toHaveBeenCalled();
   });
 
+  test("continues when best-effort last-use tracking fails", async () => {
+    ApiKey.markUsed.mockRejectedValueOnce(new Error("last-use store unavailable"));
+    const request = makeRequest("Bearer secret-value");
+    const response = makeResponse();
+
+    await validApiKey(request, response, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(response.status).not.toHaveBeenCalled();
+    expect(console.error).toHaveBeenCalledWith("API key last-use tracking failed.");
+  });
+
   test("accepts the Bearer scheme case-insensitively", async () => {
     const request = makeRequest("bEaReR secret-value");
     const response = makeResponse();
