@@ -25,7 +25,7 @@
 6. **Tenant/client model:** workspace allowlists do not replace a complete tenant identity and authorization model across all APIs.
 7. **Usage and costs:** event capture is best-effort and feature-flagged. Unknown costs must remain unknown; analytics is not billing.
 8. **Database lifecycle:** validate migrations and Prisma Client generation on a disposable database first; confirm supported database configuration and migration order.
-9. **Runtime verification:** current branch CI is running; do not claim tests/build passed until the exact current head has completed successfully.
+9. **Runtime verification:** no combined status checks were reported for the reviewed head during the 2026-10-20 repository audit. Re-check GitHub Actions on the exact current head; do not infer success from historical runs or source changes.
 
 ## Required release gates
 
