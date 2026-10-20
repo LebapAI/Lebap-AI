@@ -58,9 +58,7 @@ function parseWorkspaceSlugs(value) {
     if (
       Array.isArray(parsed) &&
       parsed.length > 0 &&
-      parsed.every(
-        (slug) => typeof slug === "string" && slug.trim().length > 0
-      )
+      parsed.every((slug) => typeof slug === "string" && slug.trim().length > 0)
     ) {
       return [...new Set(parsed.map((slug) => slug.trim()))];
     }
