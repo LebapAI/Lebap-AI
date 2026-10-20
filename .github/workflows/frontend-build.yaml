@@ -1,12 +1,11 @@
 name: Frontend build
 
-# Shared release gate for the organized working branch.
+# Shared release gate for the canonical main branch.
 
 on:
   push:
     branches:
       - main
-      - lebap-ai/organized
     paths:
       - "frontend/**"
       - "package.json"
