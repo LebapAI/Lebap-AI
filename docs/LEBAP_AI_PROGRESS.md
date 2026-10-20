@@ -2,15 +2,16 @@
 
 **As of:** 2026-10-20  
 **Canonical working branch:** `lebap-ai/organized`  
-**Release status:** Not production-ready. Source inspection and historical CI results do not establish production readiness.
+**Release status:** Not production-ready. Source inspection and successful CI runs do not establish production readiness.
 
 ## Consolidation decision
 
 - `lebap-ai/organized` is the sole active implementation branch.
-- `lebap-ai/development` is an older integration branch whose reachable work is incorporated into the organized branch's base.
+- `lebap-ai/development` has been deleted after confirming its commit history was fully incorporated into `lebap-ai/organized`; it had no unique commits missing from the canonical branch.
 - `main` remains the stable/default branch; do not use it for ongoing implementation.
-- `migration/anythingllm-upstream` is retained as an upstream-history reference until its retention and recovery role is explicitly verified.
-- Do not delete any branch solely to reduce the branch count. First verify unique commits, files, tags, open PR references, and recovery requirements.
+- `migration/anythingllm-upstream` remains as an upstream-history reference until its retention, provenance, licensing, and recovery role are explicitly verified.
+- Current remote branches are `main`, `lebap-ai/organized`, and `migration/anythingllm-upstream`.
+- Do not delete additional branches until unique commits, files, tags, open PR references, and recovery requirements are checked.
 
 ## What exists in source
 
@@ -26,12 +27,12 @@ These are source-level observations, not proof that every path is secure or prod
 
 ## Verification status
 
-- **Backend CI:** workflow [39462989790](https://github.com/LebapAI/Lebap-AI/actions/runs/39462989790) is in progress on source commit `911d3940d8cd58717b7c1070294ffbbd1a258026`.
-- **Frontend build/lint:** workflow [39462992668](https://github.com/LebapAI/Lebap-AI/actions/runs/39462992668) is in progress on source commit `5751c7258989a6f077b5db106be65a97eacb45ff`.
-- Both workflows started before the later documentation-only cleanup commits. Re-check the final results and compare their source state with the current branch before treating CI as verified.
+- **Backend CI:** [workflow 39462989790](https://github.com/LebapAI/Lebap-AI/actions/runs/39462989790) completed successfully on source commit `911d3940d8cd58717b7c1070294ffbbd1a258026`.
+- **Frontend build/lint:** [workflow 39462992668](https://github.com/LebapAI/Lebap-AI/actions/runs/39462992668) completed successfully on source commit `5751c7258989a6f077b5db106be65a97eacb45ff`.
+- These runs passed, but are not on the current branch head. The commits after those tested SHAs changed documentation and CI configuration only; application code was not changed. Re-run the relevant CI on the current head when application code changes and before release.
 - **Database:** API-key lifecycle, scope, usage-event, last-used, and rate-limit migrations exist in source. Validate Prisma Client generation and apply migrations only through a controlled procedure against a disposable database first.
 - **Runtime:** no live deployment smoke test was performed in this review.
-- **Consolidation review:** branch ancestry and key documentation were inspected; this was not a full code audit and no test suite was executed.
+- **Consolidation review:** branch ancestry, current branch list, open PR list, CI results, and key documentation were inspected; this was not a full code audit or production-readiness certification.
 
 ## Open security and release gates
 
@@ -50,4 +51,4 @@ Use `docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md` as the single capability-by-capabil
 
 ## Engineering rule
 
-Make focused, test-backed changes only on `lebap-ai/organized`. Keep `main` stable and preserve upstream history. Do not claim tests passed unless the exact current head's results have been inspected.
+Make focused, test-backed changes only on `lebap-ai/organized`. Keep `main` stable and preserve upstream history. Do not claim tests passed unless their results and tested source SHAs have been inspected.
