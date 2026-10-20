@@ -1,13 +1,13 @@
 # Repository Structure and Branch Policy
 
 **Reviewed:** 2026-10-20  
-**Canonical working branch:** `lebap-ai/organized`  
+**Canonical working branch:** `main`  
 **Default branch:** `main`
 
 ## Branch policy
 
-- Make new implementation changes only on `lebap-ai/organized`.
-- Keep `main` as the stable/default branch.
+- Make new implementation changes on `main`.
+- Use short-lived task branches only when they provide value; merge completed work back into `main`.
 - `lebap-ai/development` has been retired after verifying it was an ancestor of `lebap-ai/organized`; it is no longer present in the remote branch list.
 - Retain `migration/anythingllm-upstream` as an upstream-history reference until migration completeness, licensing notices, and recovery needs are verified.
 - Preserve upstream-derived code and required license/third-party notices. Do not rewrite history.
@@ -36,8 +36,8 @@
 ## Branch comparison snapshot
 
 - Current remote branches: `main`, `lebap-ai/organized`, and `migration/anythingllm-upstream`.
-- `lebap-ai/organized` is 27 commits ahead of `main` and 0 commits behind it. The current comparison contains documentation and CI configuration changes.
+- `main` was fast-forwarded to the former `lebap-ai/organized` HEAD (`e40d844e4bce686389c77a8e9429cdd4cdc59c42`) on 2026-10-20. `lebap-ai/organized` is now redundant but still exists as a branch ref.
 - The deleted `lebap-ai/development` branch was an ancestor of `lebap-ai/organized`; it had no unique commits absent from the canonical working branch.
 - Backend test workflow [39462989790](https://github.com/LebapAI/Lebap-AI/actions/runs/39462989790) completed successfully on source commit `911d3940d8cd58717b7c1070294ffbbd1a258026`.
 - Frontend build/lint workflow [39462992668](https://github.com/LebapAI/Lebap-AI/actions/runs/39462992668) completed successfully on source commit `5751c7258989a6f077b5db106be65a97eacb45ff`.
-- Those successful runs are not on the current branch head; the subsequent commits changed documentation and CI configuration only. Re-run CI on the current head after future application-code changes and before release.
+- Those successful runs were from earlier commits; fresh CI results for the updated `main` head must be confirmed before release.
