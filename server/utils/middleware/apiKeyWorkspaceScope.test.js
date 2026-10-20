@@ -95,6 +95,63 @@ describe("API key workspace scope middleware", () => {
     expect(response.body.workspaces).toEqual([{ slug: "allowed-workspace" }]);
   });
 
+  test.each([
+    ["document inventory", "/v1/documents"],
+    ["document metadata by name", "/v1/document/private-document.txt"],
+    ["document folder inventory", "/v1/documents/folder/private-folder"],
+  ])("denies scoped keys from workspace-less %s routes", (_label, path) => {
+    const { response, next, request } = setup(["allowed-workspace"], {
+      path,
+      method: "GET",
+    });
+
+    apiKeyWorkspaceScope(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    "/v1/document/accepted-file-types",
+    "/v1/document/metadata-schema",
+  ])("allows non-sensitive document capability metadata at %s", (path) => {
+    const { response, next, request } = setup(["allowed-workspace"], {
+      path,
+      method: "GET",
+    });
+
+    apiKeyWorkspaceScope(request, response, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(response.status).not.toHaveBeenCalled();
+  });
+
+  test("allows addToWorkspaces only when every target workspace is in scope", () => {
+    const { response, next, request } = setup(["allowed-workspace"], {
+      path: "/v1/document/upload-link",
+      method: "POST",
+      body: { addToWorkspaces: "allowed-workspace" },
+    });
+
+    apiKeyWorkspaceScope(request, response, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(response.status).not.toHaveBeenCalled();
+  });
+
+  test("rejects addToWorkspaces when any target workspace is outside scope", () => {
+    const { response, next, request } = setup(["allowed-workspace"], {
+      path: "/v1/document/upload-link",
+      method: "POST",
+      body: { addToWorkspaces: "allowed-workspace,private-workspace" },
+    });
+
+    apiKeyWorkspaceScope(request, response, next);
+
+    expect(response.status).toHaveBeenCalledWith(403);
+    expect(next).not.toHaveBeenCalled();
+  });
+
   test("collects all supported workspace selector locations", () => {
     expect(requestedWorkspaceSlugs({
       params: { slug: " path " },
