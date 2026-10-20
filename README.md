@@ -39,7 +39,7 @@ The repository contains an existing AI workspace application and partial Lebap A
 
 ## Working branch and engineering status
 
-- **Working branch:** `lebap-ai/organized`. New implementation work should be made on this branch only.
+- **Canonical working branch:** `main`. All ongoing implementation work should target `main`; use short-lived task branches or pull requests for focused, reviewable changes.
 - **Capability matrix:** [`docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md`](docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md)
 - **Current engineering status:** [`docs/LEBAP_AI_PROGRESS.md`](docs/LEBAP_AI_PROGRESS.md)
 - **Repository layout and migration baseline:** [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md)
