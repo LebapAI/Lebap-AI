@@ -64,9 +64,7 @@ describe("parseWorkspaceSlugs", () => {
 
   test("normalizes valid scopes and removes duplicates", () => {
     expect(
-      parseWorkspaceSlugs(
-        '["workspace-a"," workspace-b ","workspace-a"]'
-      )
+      parseWorkspaceSlugs('["workspace-a"," workspace-b ","workspace-a"]')
     ).toEqual(["workspace-a", "workspace-b"]);
   });
 });
@@ -131,7 +129,9 @@ describe("validApiKey middleware", () => {
   });
 
   test("continues when best-effort last-use tracking fails", async () => {
-    ApiKey.markUsed.mockRejectedValueOnce(new Error("last-use store unavailable"));
+    ApiKey.markUsed.mockRejectedValueOnce(
+      new Error("last-use store unavailable")
+    );
     const request = makeRequest("Bearer secret-value");
     const response = makeResponse();
 
@@ -231,9 +231,7 @@ describe("validApiKey middleware", () => {
       workspaceSlugs: ["allowed-workspace"],
     });
     expect(JSON.stringify(response.locals)).not.toContain("supplied-secret");
-    expect(JSON.stringify(response.locals)).not.toContain(
-      "must-not-be-copied"
-    );
+    expect(JSON.stringify(response.locals)).not.toContain("must-not-be-copied");
     expect(next).toHaveBeenCalledTimes(1);
   });
 
