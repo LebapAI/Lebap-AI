@@ -1,10 +1,19 @@
-const { apiKeyWorkspaceScope, requestedWorkspaceSlugs } = require("./apiKeyWorkspaceScope");
+const {
+  apiKeyWorkspaceScope,
+  requestedWorkspaceSlugs,
+} = require("./apiKeyWorkspaceScope");
 
 function setup(scopes, request = {}) {
   const response = {
     locals: { apiKey: { workspaceSlugs: scopes } },
-    status: jest.fn(function (code) { this.statusCode = code; return this; }),
-    json: jest.fn(function (body) { this.body = body; return this; }),
+    status: jest.fn(function (code) {
+      this.statusCode = code;
+      return this;
+    }),
+    json: jest.fn(function (body) {
+      this.body = body;
+      return this;
+    }),
   };
   const next = jest.fn();
   const normalizedRequest = {
@@ -153,10 +162,12 @@ describe("API key workspace scope middleware", () => {
   });
 
   test("collects all supported workspace selector locations", () => {
-    expect(requestedWorkspaceSlugs({
-      params: { slug: " path " },
-      body: { workspaceSlug: "body" },
-      query: { workspaceSlug: "query", workspace_slug: "legacy-query" },
-    })).toEqual(["path", "body", "query", "legacy-query"]);
+    expect(
+      requestedWorkspaceSlugs({
+        params: { slug: " path " },
+        body: { workspaceSlug: "body" },
+        query: { workspaceSlug: "query", workspace_slug: "legacy-query" },
+      })
+    ).toEqual(["path", "body", "query", "legacy-query"]);
   });
 });
