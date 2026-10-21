@@ -98,8 +98,7 @@ function TelemetryLogs({ settings }) {
             Review the destination project, IP/data settings, and event
             properties before enabling it. Do not send prompts, document
             contents, secrets, or personal data. Event payloads should be
-            limited to non-sensitive usage metadata. Review the event definitions
-            in the source code: 
+            limited to non-sensitive usage metadata.
           </p>
           <p className="text-theme-text-secondary text-xs rounded-lg w-96">
             As an open-source project we respect your right to privacy. We are
