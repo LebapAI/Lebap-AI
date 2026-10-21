@@ -1,6 +1,8 @@
 export const API_BASE = import.meta.env.VITE_API_BASE || "/api";
+// The inherited survey endpoint is external; the onboarding UI discloses this before submission.
 export const ONBOARDING_SURVEY_URL = "https://onboarding.anythingllm.com";
 
+// Legacy browser-storage keys are intentionally retained to preserve existing sessions and preferences.
 export const AUTH_USER = "anythingllm_user";
 export const AUTH_TOKEN = "anythingllm_authToken";
 export const AUTH_TIMESTAMP = "anythingllm_authTimestamp";

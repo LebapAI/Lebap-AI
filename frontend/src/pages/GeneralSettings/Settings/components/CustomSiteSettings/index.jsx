@@ -63,7 +63,7 @@ export default function CustomSiteSettings() {
             name="meta_page_title"
             type="text"
             className="border-none bg-theme-settings-input-bg mt-2 text-white placeholder:text-theme-settings-input-placeholder text-sm rounded-lg focus:outline-primary-button active:outline-primary-button outline-none block w-fit py-2 px-4"
-            placeholder="AnythingLLM | Your personal LLM trained on anything"
+            placeholder="Lebap AI | AI workspace and agent platform"
             autoComplete="off"
             onChange={(e) => {
               setSettings((prev) => {
@@ -71,8 +71,7 @@ export default function CustomSiteSettings() {
               });
             }}
             value={
-              settings.title ??
-              "AnythingLLM | Your personal LLM trained on anything"
+              settings.title ?? "Lebap AI | AI workspace and agent platform"
             }
           />
         </div>
@@ -87,8 +86,8 @@ export default function CustomSiteSettings() {
         </p>
         <div className="flex items-center gap-x-2">
           <img
-            src={settings.faviconUrl ?? "/favicon.png"}
-            onError={(e) => (e.target.src = "/favicon.png")}
+            src={settings.faviconUrl ?? "/lebap-ai-favicon.svg"}
+            onError={(e) => (e.target.src = "/lebap-ai-favicon.svg")}
             className="h-10 w-10 rounded-lg mt-2"
             alt="Site favicon"
           />

@@ -1,4 +1,4 @@
----
+# NOTE: This inherited manifest currently uses the upstream container image. Replace it with a published Lebap AI image before deployment.\n---
 apiVersion: v1                                                                                                                                           
 kind: PersistentVolume                                                                                                                                   
 metadata:                                                                                                                                                

@@ -15,7 +15,7 @@ import MonoProviderIcon from "@/components/lib/MonoProviderIcon";
 import ModelTableLayout from "@/components/lib/ModelTable/layout";
 import ModelTableLoadingSkeleton from "@/components/lib/ModelTable/loading";
 import showToast from "@/utils/toast";
-import AnythingLLMIcon from "@/media/logo/anything-llm-icon.png";
+import AnythingLLMIcon from "@/media/logo/lebap-ai.svg";
 import { LLM_PREFERENCE_CHANGED_EVENT } from "@/pages/GeneralSettings/LLMPreference";
 import EmbeddedLemonadeUtils from "./utils";
 

@@ -40,11 +40,11 @@ function addBranding(slide, bgColor) {
       x: 8.025,
       y: 5.17,
       w: 1.5,
-      h: 0.24,
+      h: 0.34,
       transparency: 78,
     });
   } else {
-    slide.addText("AnythingLLM", {
+    slide.addText("Lebap AI", {
       x: 7.85,
       y: 5.17,
       w: 1.85,

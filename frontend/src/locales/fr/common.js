@@ -3,17 +3,17 @@ const TRANSLATIONS = {
   onboarding: {
     survey: {
       email: "Adresse e-mail",
-      useCase: "Pour quel usage utiliserez-vous AnythingLLM ?",
+      useCase: "Pour quel usage utiliserez-vous Lebap AI ?",
       useCaseWork: "Pour le travail",
       useCasePersonal: "Pour un usage personnel",
       useCaseOther: "Autre",
-      comment: "Comment avez-vous découvert AnythingLLM ?",
+      comment: "Comment avez-vous découvert Lebap AI ?",
       commentPlaceholder: "Recherche, recommandation, Twitter, YouTube, etc.",
       skip: "Ignorer l'enquête",
       thankYou: "Merci pour votre retour !",
       title: "Bienvenue",
       description:
-        "Aidez-nous à améliorer AnythingLLM en répondant à quelques questions.",
+        "Aidez-nous à améliorer Lebap AI en répondant à quelques questions.",
     },
     home: {
       getStarted: "Commencer",
@@ -22,7 +22,7 @@ const TRANSLATIONS = {
     llm: {
       title: "Préférence LLM",
       description:
-        "AnythingLLM peut fonctionner avec de nombreux fournisseurs LLM. Ce sera le service qui traitera vos discussions.",
+        "Lebap AI peut fonctionner avec de nombreux fournisseurs LLM. Ce sera le service qui traitera vos discussions.",
     },
     userSetup: {
       title: "Configuration utilisateur",
@@ -43,8 +43,7 @@ const TRANSLATIONS = {
     },
     data: {
       title: "Gestion des données",
-      description:
-        "Configurez comment AnythingLLM stocke et traite vos données.",
+      description: "Configurez comment Lebap AI stocke et traite vos données.",
       settingsHint:
         "Ces paramètres peuvent être modifiés ultérieurement dans les paramètres.",
     },
@@ -99,7 +98,7 @@ const TRANSLATIONS = {
     interface: "Interface",
     branding: "Personnalisation",
     chat: "Chat",
-    "mobile-app": "AnythingLLM Mobile",
+    "mobile-app": "Lebap AI Mobile",
     "community-hub": {
       title: "Centre communautaire",
       trending: "Découvrez les tendances",
@@ -161,7 +160,7 @@ const TRANSLATIONS = {
       add: "Ajouter un nouveau message",
       save: "Enregistrer les messages",
       heading: "Expliquez-moi",
-      body: "les avantages de AnythingLLM",
+      body: "les avantages de Lebap AI",
     },
     delete: {
       title: "Supprimer l'Espace de Travail",
@@ -792,7 +791,7 @@ const TRANSLATIONS = {
       "intelligent-skill-selection": {
         title: "Sélection de compétences basée sur l'intelligence",
         description:
-          "Permettez l'utilisation illimitée d'outils et réduisez la consommation de jetons jusqu'à 80 % par requête – AnythingLLM sélectionne automatiquement les compétences appropriées pour chaque requête.",
+          "Permettez l'utilisation illimitée d'outils et réduisez la consommation de jetons jusqu'à 80 % par requête – Lebap AI sélectionne automatiquement les compétences appropriées pour chaque requête.",
         "max-tools": {
           title: "Max Tools",
           description:
@@ -830,7 +829,7 @@ const TRANSLATIONS = {
   api: {
     title: "Clés API",
     description:
-      "Les clés API permettent au titulaire d'accéder et de gérer de manière programmatique cette instance AnythingLLM.",
+      "Les clés API permettent au titulaire d'accéder et de gérer de manière programmatique cette instance Lebap AI.",
     link: "Lisez la documentation de l'API",
     generate: "Générer une nouvelle clé API",
     empty: "Aucune clé API trouvée",
@@ -844,7 +843,7 @@ const TRANSLATIONS = {
       close: "Fermer",
       create: "Créer une clé API",
       helper:
-        "Une fois créée, la clé API peut être utilisée pour accéder à cette instance AnythingLLM et la configurer de manière programmatique.",
+        "Une fois créée, la clé API peut être utilisée pour accéder à cette instance Lebap AI et la configurer de manière programmatique.",
       name: {
         label: "Nom",
         placeholder: "Intégration de production",
@@ -869,7 +868,7 @@ const TRANSLATIONS = {
   llm: {
     title: "Préférence LLM",
     description:
-      "Voici les identifiants et les paramètres de votre fournisseur LLM de chat et d'intégration préféré. Il est important que ces clés soient actuelles et correctes, sinon AnythingLLM ne fonctionnera pas correctement.",
+      "Voici les identifiants et les paramètres de votre fournisseur LLM de chat et d'intégration préféré. Il est important que ces clés soient actuelles et correctes, sinon Lebap AI ne fonctionnera pas correctement.",
     provider: "Fournisseur LLM",
     providers: {
       azure_openai: {
@@ -891,7 +890,7 @@ const TRANSLATIONS = {
       "Voici les identifiants et les paramètres de votre fournisseur de modèle de transcription préféré. Il est important que ces clés soient actuelles et correctes, sinon les fichiers multimédias et audio ne seront pas transcrits.",
     provider: "Fournisseur de transcription",
     "warn-start":
-      "L'utilisation du modèle local whisper sur des machines avec une RAM ou un CPU limités peut bloquer AnythingLLM lors du traitement des fichiers multimédias.",
+      "L'utilisation du modèle local whisper sur des machines avec une RAM ou un CPU limités peut bloquer Lebap AI lors du traitement des fichiers multimédias.",
     "warn-recommend":
       "Nous recommandons au moins 2 Go de RAM et des fichiers téléchargés <10 Mo.",
     "warn-end":
@@ -902,7 +901,7 @@ const TRANSLATIONS = {
     "desc-start":
       "Lorsque vous utilisez un LLM qui ne supporte pas nativement un moteur d'intégration - vous devrez peut-être spécifier en plus des identifiants pour intégrer le texte.",
     "desc-end":
-      "L'intégration est le processus de transformation du texte en vecteurs. Ces identifiants sont nécessaires pour transformer vos fichiers et invites en un format que AnythingLLM peut utiliser pour traiter.",
+      "L'intégration est le processus de transformation du texte en vecteurs. Ces identifiants sont nécessaires pour transformer vos fichiers et invites en un format que Lebap AI peut utiliser pour traiter.",
     provider: {
       title: "Fournisseur d'intégration",
     },
@@ -928,7 +927,7 @@ const TRANSLATIONS = {
   vector: {
     title: "Base de données vectorielle",
     description:
-      "Voici les identifiants et les paramètres de fonctionnement de votre instance AnythingLLM. Il est important que ces clés soient actuelles et correctes.",
+      "Voici les identifiants et les paramètres de fonctionnement de votre instance Lebap AI. Il est important que ces clés soient actuelles et correctes.",
     provider: {
       title: "Fournisseur de base de données vectorielle",
       description: "Aucune configuration n'est nécessaire pour LanceDB.",
@@ -973,7 +972,7 @@ const TRANSLATIONS = {
   privacy: {
     title: "Confidentialité et gestion des données",
     description:
-      "Voici votre configuration pour la gestion des données et des fournisseurs tiers connectés avec AnythingLLM.",
+      "Voici votre configuration pour la gestion des données et des fournisseurs tiers connectés avec Lebap AI.",
     anonymous: "Télémétrie anonyme activée",
   },
   connectors: {
@@ -1133,12 +1132,12 @@ const TRANSLATIONS = {
       fetching: "Récupération...",
       "fetch-website": "Récupérer le site web",
       "privacy-notice":
-        "Ces fichiers seront téléchargés sur cette instance AnythingLLM uniquement.",
+        "Ces fichiers seront téléchargés sur cette instance Lebap AI uniquement.",
     },
     pinning: {
       what_pinning: "Qu'est-ce que l'épinglage de documents ?",
       pin_explained_block1:
-        "Lorsque vous épinglez un document, AnythingLLM injectera le contenu intégral du document dans votre fenêtre de prompt comme contexte préalable pour chaque interaction.",
+        "Lorsque vous épinglez un document, Lebap AI injectera le contenu intégral du document dans votre fenêtre de prompt comme contexte préalable pour chaque interaction.",
       pin_explained_block2:
         "Ceci est idéal pour les documents que vous souhaitez référencer fréquemment ou pour fournir un contexte constant à l'IA.",
       pin_explained_block3:
@@ -1148,7 +1147,7 @@ const TRANSLATIONS = {
     watching: {
       what_watching: "Qu'est-ce que la surveillance de documents ?",
       watch_explained_block1:
-        "Lorsque vous surveillez un document, AnythingLLM re-synchronisera automatiquement le contenu du document depuis sa source de manière périodique.",
+        "Lorsque vous surveillez un document, Lebap AI re-synchronisera automatiquement le contenu du document depuis sa source de manière périodique.",
       watch_explained_block2:
         "Cela gardera le contenu à jour si le fichier source change.",
       watch_explained_block3_start:
@@ -1330,7 +1329,7 @@ const TRANSLATIONS = {
         edit_description: "Mettez à jour le contenu de cette mémoire.",
         label: "Mémoire",
         placeholder:
-          "Par exemple, le nom de l'utilisateur est Joe, l'utilisateur travaille sur AnythingLLM, etc.",
+          "Par exemple, le nom de l'utilisateur est Joe, l'utilisateur travaille sur Lebap AI, etc.",
         create: "Créer",
         save: "Enregistrer",
         cancel: "Annuler",
@@ -1575,7 +1574,7 @@ const TRANSLATIONS = {
         unauthenticated: {
           title: "Connexion requise",
           description:
-            "Vous devez vous connecter à votre compte AnythingLLM pour publier sur le Community Hub.",
+            "Vous devez vous connecter à votre compte Lebap AI pour publier sur le Community Hub.",
           button: "Se connecter",
         },
       },
@@ -1625,7 +1624,7 @@ const TRANSLATIONS = {
     password: {
       title: "Protection par mot de passe",
       description:
-        "Protégez votre instance AnythingLLM avec un mot de passe. Si vous oubliez ce mot de passe, il n'y a pas de méthode de récupération, donc assurez-vous de le sauvegarder.",
+        "Protégez votre instance Lebap AI avec un mot de passe. Si vous oubliez ce mot de passe, il n'y a pas de méthode de récupération, donc assurez-vous de le sauvegarder.",
       "password-label": "Mot de passe de l'instance",
     },
   },
@@ -1640,7 +1639,7 @@ const TRANSLATIONS = {
   telegram: {
     title: "Bot Telegram",
     description:
-      "Connectez votre instance de AnythingLLM à Telegram afin de pouvoir communiquer avec vos espaces de travail depuis n'importe quel appareil.",
+      "Connectez votre instance de Lebap AI à Telegram afin de pouvoir communiquer avec vos espaces de travail depuis n'importe quel appareil.",
     setup: {
       step1: {
         title: "Étape 1 : Créez votre bot Telegram",

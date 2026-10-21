@@ -129,10 +129,10 @@ export default function Survey({ setHeader, setForwardBtn, setBackBtn }) {
               {t("onboarding.survey.thankYou")}
             </p>
             <a
-              href={paths.mailToMintplex()}
+              href={paths.support()}
               className="text-sky-400 underline text-xs"
             >
-              team@mintplexlabs.com
+              Lebap AI support and issue tracker
             </a>
           </div>
         </div>
@@ -143,6 +143,12 @@ export default function Survey({ setHeader, setForwardBtn, setBackBtn }) {
   return (
     <div className="w-full flex justify-center bo">
       <form onSubmit={handleSubmit} ref={formRef} className="">
+        <p className="text-theme-text-secondary text-xs mb-4 max-w-xl">
+          This optional questionnaire sends the email address and answers you
+          submit to an external upstream survey service. Skip it or avoid
+          entering sensitive information if you do not want to share those
+          details.
+        </p>
         <div className="md:min-w-[400px]">
           <label
             htmlFor="email"

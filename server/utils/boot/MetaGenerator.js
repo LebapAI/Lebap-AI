@@ -27,14 +27,14 @@ class MetaGenerator {
   #customConfig = null;
 
   #defaultManifest = {
-    name: "AnythingLLM",
-    short_name: "AnythingLLM",
+    name: "Lebap AI",
+    short_name: "Lebap AI",
     display: "standalone",
     orientation: "portrait",
     start_url: "/",
     icons: [
       {
-        src: "/favicon.png",
+        src: "/lebap-ai-favicon.svg",
         sizes: "any",
       },
     ],
@@ -53,27 +53,27 @@ class MetaGenerator {
     return [
       {
         tag: "link",
-        props: { type: "image/svg+xml", href: "/favicon.png" },
+        props: { type: "image/svg+xml", href: "/lebap-ai-favicon.svg" },
         content: null,
       },
       {
         tag: "title",
         props: null,
-        content: "AnythingLLM | Your personal LLM trained on anything",
+        content: "Lebap AI | AI workspace and agent platform",
       },
 
       {
         tag: "meta",
         props: {
           name: "title",
-          content: "AnythingLLM | Your personal LLM trained on anything",
+          content: "Lebap AI | AI workspace and agent platform",
         },
       },
       {
         tag: "meta",
         props: {
-          description: "title",
-          content: "AnythingLLM | Your personal LLM trained on anything",
+          name: "description",
+          content: "Lebap AI is an AI workspace and agent platform for working with models, knowledge, and tools.",
         },
       },
 
@@ -81,20 +81,20 @@ class MetaGenerator {
       { tag: "meta", props: { property: "og:type", content: "website" } },
       {
         tag: "meta",
-        props: { property: "og:url", content: "https://anythingllm.com" },
+        props: { property: "og:url", content: "https://lebap-ai-production.up.railway.app" },
       },
       {
         tag: "meta",
         props: {
           property: "og:title",
-          content: "AnythingLLM | Your personal LLM trained on anything",
+          content: "Lebap AI | AI workspace and agent platform",
         },
       },
       {
         tag: "meta",
         props: {
           property: "og:description",
-          content: "AnythingLLM | Your personal LLM trained on anything",
+          content: "Lebap AI | AI workspace and agent platform",
         },
       },
       {
@@ -102,7 +102,7 @@ class MetaGenerator {
         props: {
           property: "og:image",
           content:
-            "https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/images/promo.png",
+            "https://lebap-ai-production.up.railway.app/lebap-ai-logo.svg",
         },
       },
 
@@ -113,20 +113,20 @@ class MetaGenerator {
       },
       {
         tag: "meta",
-        props: { property: "twitter:url", content: "https://anythingllm.com" },
+        props: { property: "twitter:url", content: "https://lebap-ai-production.up.railway.app" },
       },
       {
         tag: "meta",
         props: {
           property: "twitter:title",
-          content: "AnythingLLM | Your personal LLM trained on anything",
+          content: "Lebap AI | AI workspace and agent platform",
         },
       },
       {
         tag: "meta",
         props: {
           property: "twitter:description",
-          content: "AnythingLLM | Your personal LLM trained on anything",
+          content: "Lebap AI | AI workspace and agent platform",
         },
       },
       {
@@ -134,12 +134,12 @@ class MetaGenerator {
         props: {
           property: "twitter:image",
           content:
-            "https://raw.githubusercontent.com/Mintplex-Labs/anything-llm/master/images/promo.png",
+            "https://lebap-ai-production.up.railway.app/lebap-ai-logo.svg",
         },
       },
 
-      { tag: "link", props: { rel: "icon", href: "/favicon.png" } },
-      { tag: "link", props: { rel: "apple-touch-icon", href: "/favicon.png" } },
+      { tag: "link", props: { rel: "icon", href: "/lebap-ai-favicon.svg" } },
+      { tag: "link", props: { rel: "apple-touch-icon", href: "/lebap-ai-favicon.svg" } },
 
       // PWA specific tags
       {
@@ -204,12 +204,12 @@ class MetaGenerator {
   }
 
   #validUrl(faviconUrl = null) {
-    if (faviconUrl === null) return "/favicon.png";
+    if (faviconUrl === null) return "/lebap-ai-favicon.svg";
     try {
       const url = new URL(faviconUrl);
       return url.toString();
     } catch {
-      return "/favicon.png";
+      return "/lebap-ai-favicon.svg";
     }
   }
 
@@ -245,7 +245,7 @@ class MetaGenerator {
             props: null,
             content:
               customTitle ??
-              "AnythingLLM | Your personal LLM trained on anything",
+              "Lebap AI | AI workspace and agent platform",
           };
         }
         // Override meta title
@@ -256,7 +256,7 @@ class MetaGenerator {
               name: "title",
               content:
                 customTitle ??
-                "AnythingLLM | Your personal LLM trained on anything",
+                "Lebap AI | AI workspace and agent platform",
             },
           };
         }
@@ -268,7 +268,7 @@ class MetaGenerator {
               property: "og:title",
               content:
                 customTitle ??
-                "AnythingLLM | Your personal LLM trained on anything",
+                "Lebap AI | AI workspace and agent platform",
             },
           };
         }
@@ -280,7 +280,7 @@ class MetaGenerator {
               property: "twitter:title",
               content:
                 customTitle ??
-                "AnythingLLM | Your personal LLM trained on anything",
+                "Lebap AI | AI workspace and agent platform",
             },
           };
         }
@@ -346,20 +346,20 @@ class MetaGenerator {
       const { SystemSettings } = require("../../models/systemSettings");
       const manifestName = await SystemSettings.getValueOrFallback(
         { label: "meta_page_title" },
-        "AnythingLLM"
+        "Lebap AI"
       );
       const faviconURL = await SystemSettings.getValueOrFallback(
         { label: "meta_page_favicon" },
         null
       );
 
-      let iconUrl = "/favicon.png";
+      let iconUrl = "/lebap-ai-favicon.svg";
       if (faviconURL) {
         try {
           new URL(faviconURL);
           iconUrl = faviconURL;
         } catch {
-          iconUrl = "/favicon.png";
+          iconUrl = "/lebap-ai-favicon.svg";
         }
       }
 

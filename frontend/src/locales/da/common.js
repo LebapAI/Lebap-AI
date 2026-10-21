@@ -8,7 +8,7 @@ const TRANSLATIONS = {
     llm: {
       title: "LLM-præference",
       description:
-        "AnythingLLM kan arbejde med mange LLM-udbydere. Dette vil være den tjeneste, der håndterer chat.",
+        "Lebap AI kan arbejde med mange LLM-udbydere. Dette vil være den tjeneste, der håndterer chat.",
     },
     userSetup: {
       title: "Brugeropsætning",
@@ -35,15 +35,15 @@ const TRANSLATIONS = {
         "Disse indstillinger kan ændres når som helst under indstillingerne.",
     },
     survey: {
-      title: "Velkommen til AnythingLLM",
+      title: "Velkommen til Lebap AI",
       description:
-        "Hjælp os med at gøre AnythingLLM tilpasset dine behov. Valgfrit.",
+        "Hjælp os med at gøre Lebap AI tilpasset dine behov. Valgfrit.",
       email: "Hvad er din e-mail?",
-      useCase: "Hvad vil du bruge AnythingLLM til?",
+      useCase: "Hvad vil du bruge Lebap AI til?",
       useCaseWork: "Til arbejde",
       useCasePersonal: "Til personligt brug",
       useCaseOther: "Andet",
-      comment: "Hvordan hørte du om AnythingLLM?",
+      comment: "Hvordan hørte du om Lebap AI?",
       commentPlaceholder:
         "Reddit, Twitter, GitHub, YouTube, etc. - Fortæl os, hvordan du fandt os!",
       skip: "Spring undersøgelsen over",
@@ -101,7 +101,7 @@ const TRANSLATIONS = {
     interface: "Brugerpræferencer",
     branding: "Brandstrategi og white-labeling",
     chat: "Chat",
-    "mobile-app": "AnythingLLM Mobile",
+    "mobile-app": "Lebap AI Mobile",
     "community-hub": {
       title: "Fælleshus",
       trending: "Udforsk populære emner",
@@ -161,7 +161,7 @@ const TRANSLATIONS = {
       add: "Tilføj ny besked",
       save: "Gem beskeder",
       heading: "Forklar mig",
-      body: "fordelene ved AnythingLLM",
+      body: "fordelene ved Lebap AI",
     },
     delete: {
       title: "Slet arbejdsområde",
@@ -767,7 +767,7 @@ const TRANSLATIONS = {
       "intelligent-skill-selection": {
         title: "Intelligent valg af færdigheder",
         description:
-          "Aktiver ubegrænsede værktøjer og reducer brugen af cut-tokens med op til 80 % pr. forespørgsel – AnythingLLM vælger automatisk de relevante færdigheder til hver forespørgsel.",
+          "Aktiver ubegrænsede værktøjer og reducer brugen af cut-tokens med op til 80 % pr. forespørgsel – Lebap AI vælger automatisk de relevante færdigheder til hver forespørgsel.",
         "max-tools": {
           title: "Max Tools",
           description:
@@ -804,7 +804,7 @@ const TRANSLATIONS = {
   api: {
     title: "API-nøgler",
     description:
-      "API-nøgler giver indehaveren mulighed for programmatisk at få adgang til og administrere denne AnythingLLM-instans.",
+      "API-nøgler giver indehaveren mulighed for programmatisk at få adgang til og administrere denne Lebap AI-instans.",
     link: "Læs API-dokumentationen",
     generate: "Generér ny API-nøgle",
     empty: "Ingen API-nøgler fundet",
@@ -818,7 +818,7 @@ const TRANSLATIONS = {
       close: "Luk",
       create: "Opret API-nøgle",
       helper:
-        "Når API-nøglen er oprettet, kan den bruges til programmatisk at få adgang til og konfigurere denne AnythingLLM-instans.",
+        "Når API-nøglen er oprettet, kan den bruges til programmatisk at få adgang til og konfigurere denne Lebap AI-instans.",
       name: {
         label: "Navn",
         placeholder: "Produktionsintegration",
@@ -843,7 +843,7 @@ const TRANSLATIONS = {
   llm: {
     title: "LLM-præference",
     description:
-      "Disse er legitimationsoplysningerne og indstillingerne for din foretrukne LLM chat- og indlejringsudbyder. Det er vigtigt, at disse nøgler er opdaterede og korrekte, ellers vil AnythingLLM ikke fungere korrekt.",
+      "Disse er legitimationsoplysningerne og indstillingerne for din foretrukne LLM chat- og indlejringsudbyder. Det er vigtigt, at disse nøgler er opdaterede og korrekte, ellers vil Lebap AI ikke fungere korrekt.",
     provider: "LLM-udbyder",
     providers: {
       azure_openai: {
@@ -866,7 +866,7 @@ const TRANSLATIONS = {
       "Disse er legitimationsoplysningerne og indstillingerne for din foretrukne transskriptionsmodeludbyder. Det er vigtigt, at disse nøgler er opdaterede og korrekte, ellers vil mediefiler og lyd ikke blive transskriberet.",
     provider: "Transskriptionsudbyder",
     "warn-start":
-      "Brug af den lokale whisper-model på maskiner med begrænset RAM eller CPU kan få AnythingLLM til at gå i stå under behandling af mediefiler.",
+      "Brug af den lokale whisper-model på maskiner med begrænset RAM eller CPU kan få Lebap AI til at gå i stå under behandling af mediefiler.",
     "warn-recommend": "Vi anbefaler mindst 2GB RAM og upload af filer <10Mb.",
     "warn-end":
       "Den indbyggede model vil automatisk blive downloadet ved første brug.",
@@ -876,7 +876,7 @@ const TRANSLATIONS = {
     "desc-start":
       "Når du bruger en LLM, der ikke understøtter en indlejringsmotor natively, skal du muligvis yderligere angive legitimationsoplysninger til indlejring af tekst.",
     "desc-end":
-      "Indlejring er processen med at omdanne tekst til vektorer. Disse legitimationsoplysninger er nødvendige for at omdanne dine filer og prompts til et format, som AnythingLLM kan bruge til behandling.",
+      "Indlejring er processen med at omdanne tekst til vektorer. Disse legitimationsoplysninger er nødvendige for at omdanne dine filer og prompts til et format, som Lebap AI kan bruge til behandling.",
     provider: {
       title: "Indlejringsudbyder",
     },
@@ -902,7 +902,7 @@ const TRANSLATIONS = {
   vector: {
     title: "Vektordatabase",
     description:
-      "Disse er legitimationsoplysningerne og indstillingerne for, hvordan din AnythingLLM-instans vil fungere. Det er vigtigt, at disse nøgler er opdaterede og korrekte.",
+      "Disse er legitimationsoplysningerne og indstillingerne for, hvordan din Lebap AI-instans vil fungere. Det er vigtigt, at disse nøgler er opdaterede og korrekte.",
     provider: {
       title: "Vektordatabaseudbyder",
       description: "Ingen konfiguration er nødvendig for LanceDB.",
@@ -947,7 +947,7 @@ const TRANSLATIONS = {
   privacy: {
     title: "Privatliv & datahåndtering",
     description:
-      "Dette er din konfiguration for, hvordan tilsluttede tredjepartsudbydere og AnythingLLM håndterer dine data.",
+      "Dette er din konfiguration for, hvordan tilsluttede tredjepartsudbydere og Lebap AI håndterer dine data.",
     anonymous: "Anonym telemetri aktiveret",
   },
   connectors: {
@@ -1108,22 +1108,22 @@ const TRANSLATIONS = {
       fetching: "Henter...",
       "fetch-website": "Hent hjemmeside",
       "privacy-notice":
-        "Disse filer vil blive uploadet til dokumentbehandleren, der kører på denne AnythingLLM-instans. Filene sendes ikke eller deles med en tredjepart.",
+        "Disse filer vil blive uploadet til dokumentbehandleren, der kører på denne Lebap AI-instans. Filene sendes ikke eller deles med en tredjepart.",
     },
     pinning: {
       what_pinning: "Hvad er dokumentfastlåsning?",
       pin_explained_block1:
-        "Når du <b>fastlåser</b> et dokument i AnythingLLM, vil vi indsætte hele dokumentets indhold i din prompt-vindue, så din LLM kan forstå det fuldt ud.",
+        "Når du <b>fastlåser</b> et dokument i Lebap AI, vil vi indsætte hele dokumentets indhold i din prompt-vindue, så din LLM kan forstå det fuldt ud.",
       pin_explained_block2:
         "Dette fungerer bedst med <b>store kontekstmodeller</b> eller små filer, der er kritiske for dens vidensbase.",
       pin_explained_block3:
-        "Hvis du ikke får de svar, du ønsker fra AnythingLLM som standard, er fastlåsning en fremragende måde at få svar af højere kvalitet med et enkelt klik.",
+        "Hvis du ikke får de svar, du ønsker fra Lebap AI som standard, er fastlåsning en fremragende måde at få svar af højere kvalitet med et enkelt klik.",
       accept: "Okay, jeg har forstået",
     },
     watching: {
       what_watching: "Hvad gør det at overvåge et dokument?",
       watch_explained_block1:
-        "Når du <b>overvåger</b> et dokument i AnythingLLM, vil vi <i>automatisk</i> synkronisere dokumentets indhold fra dets oprindelige kilde med jævne mellemrum. Dette vil automatisk opdatere indholdet i alle arbejdsområder, hvor denne fil administreres.",
+        "Når du <b>overvåger</b> et dokument i Lebap AI, vil vi <i>automatisk</i> synkronisere dokumentets indhold fra dets oprindelige kilde med jævne mellemrum. Dette vil automatisk opdatere indholdet i alle arbejdsområder, hvor denne fil administreres.",
       watch_explained_block2:
         "Denne funktion understøtter i øjeblikket kun onlinebaseret indhold og vil ikke være tilgængelig for manuelt uploadede dokumenter.",
       watch_explained_block3_start:
@@ -1303,7 +1303,7 @@ const TRANSLATIONS = {
         edit_description: "Opdater indholdet i denne hukommelse.",
         label: "Hukommelse",
         placeholder:
-          "f.eks. Brugerens navn er Joe, brugeren arbejder med AnythingLLM, osv.",
+          "f.eks. Brugerens navn er Joe, brugeren arbejder med Lebap AI, osv.",
         create: "Opret",
         save: "Gem",
         cancel: "Annullér",
@@ -1352,15 +1352,15 @@ const TRANSLATIONS = {
   customization: {
     interface: {
       title: "Brugerpræferencer",
-      description: "Konfigurer dine præferencer for AnythingLLM.",
+      description: "Konfigurer dine præferencer for Lebap AI.",
     },
     branding: {
       title: 'Brandstrategi og "white label"-løsninger',
-      description: "Mærk din AnythingLLM-instans med dit eget brand.",
+      description: "Mærk din Lebap AI-instans med dit eget brand.",
     },
     chat: {
       title: "Chat",
-      description: "Angiv dine præferencer for chat med AnythingLLM.",
+      description: "Angiv dine præferencer for chat med Lebap AI.",
       auto_submit: {
         title: "Automatisk indtastning af taleinput",
         description:
@@ -1398,7 +1398,7 @@ const TRANSLATIONS = {
       "display-language": {
         title: "Visningssprog",
         description:
-          "Vælg det foretrukne sprog til at vise AnythingLLM's brugergrænseflade i – når oversættelser er tilgængelige.",
+          "Vælg det foretrukne sprog til at vise Lebap AI's brugergrænseflade i – når oversættelser er tilgængelige.",
       },
       logo: {
         title: "Brand Logo",
@@ -1550,7 +1550,7 @@ const TRANSLATIONS = {
         unauthenticated: {
           title: "Krav om godkendelse",
           description:
-            "Du skal verificere din identitet via AnythingLLM Community Hub, før du kan publicere indhold.",
+            "Du skal verificere din identitet via Lebap AI Community Hub, før du kan publicere indhold.",
           button: "Forbind til fællesskabscenter",
         },
       },
@@ -1601,7 +1601,7 @@ const TRANSLATIONS = {
     password: {
       title: "Adgangskodebeskyttelse",
       description:
-        "Beskyt din AnythingLLM-instans med en adgangskode. Hvis du glemmer den, findes der ingen genoprettelsesmetode, så sørg for at gemme denne adgangskode.",
+        "Beskyt din Lebap AI-instans med en adgangskode. Hvis du glemmer den, findes der ingen genoprettelsesmetode, så sørg for at gemme denne adgangskode.",
       "password-label": "Instansadgangskode",
     },
   },
@@ -1615,7 +1615,7 @@ const TRANSLATIONS = {
   telegram: {
     title: "Telegram-bot",
     description:
-      "Forbind dit AnythingLLM-instans med Telegram, så du kan kommunikere med dine arbejdsområder fra enhver enhed.",
+      "Forbind dit Lebap AI-instans med Telegram, så du kan kommunikere med dine arbejdsområder fra enhver enhed.",
     setup: {
       step1: {
         title: "Trin 1: Opret din Telegram-bot",

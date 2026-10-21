@@ -3,8 +3,9 @@
 ## Status and repository rules
 
 - Upstream baseline content has been incorporated into the integrated working history. Keep a backup ref until migration completeness and build/test checks are confirmed; do not delete source branches before that gate.
-- Active implementation branch: `lebap-ai/organized` (created from the integrated `lebap-ai/development` head on 2026-10-17).
-- Work only on `lebap-ai/organized`; avoid parallel implementation branches and duplicate implementations.
+- Keep `main` stable while changes are reviewed.
+- The current branding migration is being developed on `brand/official-logo-assets` in [PR #3](https://github.com/LebapAI/Lebap-AI/pull/3).
+- Avoid parallel implementations; merge only after relevant checks pass.
 - Preserve upstream license and third-party notices. Audit submodules and dependency licenses before redistribution.
 - Do not describe the platform as production-ready until builds, tests, security review, and deployment verification pass.
 

@@ -11,6 +11,7 @@ const { User } = require("../../../models/user");
  */
 async function validDeviceToken(request, response, next) {
   try {
+    // Keep the legacy header name so existing mobile clients continue to authenticate.
     const token = request.header("x-anythingllm-mobile-device-token");
     if (!token)
       return response.status(400).json({ error: "Device token is required" });

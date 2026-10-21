@@ -1,7 +1,7 @@
 <a name="readme-top"></a>
 
 <p align="center">
-  <a href="https://anythingllm.com"><img src="https://github.com/Mintplex-Labs/anything-llm/blob/master/images/wordmark.png?raw=true" alt="AnythingLLM logo"></a>
+  <a href="https://github.com/LebapAI/Lebap-AI"><img src="https://github.com/LebapAI/Lebap-AI/blob/master/images/wordmark.png?raw=true" alt="Lebap AI logo"></a>
 </p>
 
 <div align='center'>
@@ -9,7 +9,7 @@
 </div>
 
 <p align="center" dir="rtl">
-    <b>AnythingLLM:</b> اپلیکیشن همه‌کاره هوش مصنوعی که دنبالش بودید.<br />
+    <b>Lebap AI:</b> اپلیکیشن همه‌کاره هوش مصنوعی که دنبالش بودید.<br />
     با اسناد خود چت کنید، از عامل‌های هوش مصنوعی استفاده کنید، با قابلیت پیکربندی بالا، چند کاربره، و بدون نیاز به تنظیمات پیچیده.
 </p>
 
@@ -17,10 +17,10 @@
   <a href="https://discord.gg/6UyHPeGZAC" target="_blank">
       <img src="https://img.shields.io/badge/chat-mintplex_labs-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAH1UExURQAAAP////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////r6+ubn5+7u7/3+/v39/enq6urq6/v7+97f39rb26eoqT1BQ0pOT4+Rkuzs7cnKykZKS0NHSHl8fdzd3ejo6UxPUUBDRdzc3RwgIh8jJSAkJm5xcvHx8aanqB4iJFBTVezt7V5hYlJVVuLj43p9fiImKCMnKZKUlaaoqSElJ21wcfT09O3u7uvr6zE0Nr6/wCUpK5qcnf7+/nh7fEdKTHx+f0tPUOTl5aipqiouMGtubz5CRDQ4OsTGxufn515hY7a3uH1/gXBydIOFhlVYWvX29qaoqCQoKs7Pz/Pz87/AwUtOUNfY2dHR0mhrbOvr7E5RUy8zNXR2d/f39+Xl5UZJSx0hIzQ3Odra2/z8/GlsbaGjpERHSezs7L/BwScrLTQ4Odna2zM3Obm7u3x/gKSmp9jZ2T1AQu/v71pdXkVISr2+vygsLiInKTg7PaOlpisvMcXGxzk8PldaXPLy8u7u7rm6u7S1tsDBwvj4+MPExbe4ueXm5s/Q0Kyf7ewAAAAodFJOUwAABClsrNjx/QM2l9/7lhmI6jTB/kA1GgKJN+nea6vy/MLZQYeVKK3rVA5tAAAAAWJLR0QB/wIt3gAAAAd0SU1FB+cKBAAmMZBHjXIAAAISSURBVDjLY2CAAkYmZhZWNnYODnY2VhZmJkYGVMDIycXNw6sBBbw8fFycyEoYGfkFBDVQgKAAPyMjQl5IWEQDDYgIC8FUMDKKsmlgAWyiEBWMjGJY5YEqxMAqGMWFNXAAYXGgAkYJSQ2cQFKCkYFRShq3AmkpRgYJbghbU0tbB0Tr6ukbgGhDI10gySfBwCwDUWBsYmpmDqQtLK2sbTQ0bO3sHYA8GWYGWWj4WTs6Obu4ami4OTm7exhqeHp5+4DCVJZBDmqdr7ufn3+ArkZgkJ+fU3CIRmgYWFiOARYGvo5OQUHhEUAFTkF+kVHRsLBgkIeyYmLjwoOc4hMSk5JTnINS06DC8gwcEEZ6RqZGlpOfc3ZObl5+gZ+TR2ERWFyBQQFMF5eklmqUpQb5+ReU61ZUOvkFVVXXQBSAraitq29o1GiKcfLzc29u0mjxBzq0tQ0kww5xZHtHUGeXhkZhdxBYgZ4d0LI6c4gjwd7siQQraOp1AivQ6CuAKZCDBBRQQQNQgUb/BGf3cqCCiZOcnCe3QQIKHNRTpk6bDgpZjRkzg3pBQTBrdtCcuZCgluAD0vPmL1gIdvSixUuWgqNs2YJ+DUhkEYxuggkGmOQUcckrioPTJCOXEnZ5JS5YslbGnuyVERlDDFvGEUPOWvwqaH6RVkHKeuDMK6SKnHlVhTgx8jeTmqy6Eij7K6nLqiGyPwChsa1MUrnq1wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMy0xMC0wNFQwMDozODo0OSswMDowMB9V0a8AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjMtMTAtMDRUMDA6Mzg6NDkrMDA6MDBuCGkTAAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDIzLTEwLTA0VDAwOjM4OjQ5KzAwOjAwOR1IzAAAAABJRU5ErkJggg==" alt="Discord">
   </a> |
-  <a href="https://github.com/Mintplex-Labs/anything-llm/blob/master/LICENSE" target="_blank">
+  <a href="https://github.com/LebapAI/Lebap-AI/blob/master/LICENSE" target="_blank">
       <img src="https://img.shields.io/static/v1?label=license&message=MIT&color=white" alt="License">
   </a> |
-  <a href="https://docs.anythingllm.com" target="_blank">
+  <a href="https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md" target="_blank">
     مستندات
   </a> |
   <a href="https://my.mintplexlabs.com/aio-checkout?product=anythingllm" target="_blank">
@@ -33,14 +33,14 @@
 </p>
 
 <p align="center" dir="rtl">
-👈 AnythingLLM برای دسکتاپ (مک، ویندوز و لینوکس)! <a href="https://anythingllm.com/download" target="_blank">دانلود کنید</a>
+👈 Lebap AI برای دسکتاپ (مک، ویندوز و لینوکس)! <a href="https://github.com/LebapAI/Lebap-AI/download" target="_blank">دانلود کنید</a>
 </p>
 
 <div dir="rtl">
 با اسناد خود چت کنید. گردش‌کارهای پیچیده را با عامل‌های هوش مصنوعی خودکار کنید. بسیار قابل پیکربندی، آماده برای چند کاربر، آزموده‌شده در عمل — و به‌صورت پیش‌فرض بدون هیچ دردسری به‌صورت محلی اجرا می‌شود.
 </div>
 
-![Chatting](https://github.com/Mintplex-Labs/anything-llm/releases/download/v1.11.2/AnythingLLM720p.gif)
+![Chatting](https://github.com/LebapAI/Lebap-AI/releases/download/v1.11.2/Lebap AI720p.gif)
 
 <details>
 <summary><kbd>دموی ویدیویی را تماشا کنید!</kbd></summary>
@@ -53,20 +53,20 @@
 
 ### نمای کلی محصول
 
-AnythingLLM اپلیکیشن همه‌کاره هوش مصنوعی است که به شما امکان می‌دهد بدون هیچ سازشی یک ChatGPT خصوصی و کاملاً کارآمد بسازید. LLM محلی یا ابری مورد علاقه خود را متصل کنید، اسناد خود را وارد کنید و در عرض چند دقیقه شروع به چت کنید. به‌صورت آماده، عامل‌های داخلی، پشتیبانی چند کاربره، پایگاه‌های داده برداری و خطوط پردازش اسناد را در اختیار دارید — بدون نیاز به پیکربندی اضافی.
+Lebap AI اپلیکیشن همه‌کاره هوش مصنوعی است که به شما امکان می‌دهد بدون هیچ سازشی یک ChatGPT خصوصی و کاملاً کارآمد بسازید. LLM محلی یا ابری مورد علاقه خود را متصل کنید، اسناد خود را وارد کنید و در عرض چند دقیقه شروع به چت کنید. به‌صورت آماده، عامل‌های داخلی، پشتیبانی چند کاربره، پایگاه‌های داده برداری و خطوط پردازش اسناد را در اختیار دارید — بدون نیاز به پیکربندی اضافی.
 
-AnythingLLM همچنین از چندین کاربر پشتیبانی می‌کند که می‌توانید دسترسی و تجربه هر کاربر را بدون به خطر انداختن امنیت یا حریم خصوصی نمونه یا مالکیت فکری خود کنترل کنید.
+Lebap AI همچنین از چندین کاربر پشتیبانی می‌کند که می‌توانید دسترسی و تجربه هر کاربر را بدون به خطر انداختن امنیت یا حریم خصوصی نمونه یا مالکیت فکری خود کنترل کنید.
 
-## ویژگی‌های جذاب AnythingLLM
+## ویژگی‌های جذاب Lebap AI
 
-- [مسیریابی پویای مدل](https://docs.anythingllm.com/model-router/overview) - بر اساس قواعدی که تعریف می‌کنید، چت‌ها را به‌صورت خودکار به بهترین ارائه‌دهنده و مدل هدایت کنید.
-- [حافظه خودکار و مدیریت‌شده توسط کاربر](https://docs.anythingllm.com/features/memories) - کاری کنید LLM شما اطلاعات مهم درباره شما یا فضای کاری‌تان را به خاطر بسپارد.
-- [وظایف زمان‌بندی‌شده](https://docs.anythingllm.com/scheduled-jobs/overview) - وظایف یا پرامپت‌های تکرارشونده را با زمان‌بندی cron و با تمام قابلیت‌های عامل اجرا کنید.
-- [انتخاب هوشمند مهارت](https://docs.anythingllm.com/agent/intelligent-tool-selection) ابزارهای **نامحدود** را برای مدل‌های خود فعال کنید و در عین حال مصرف توکن هر پرس‌وجو را تا ۸۰٪ کاهش دهید
-- [سازنده عامل هوش مصنوعی بدون کدنویسی](https://docs.anythingllm.com/agent-flows/overview)
-- [سازگاری با MCP](https://docs.anythingllm.com/mcp-compatibility/overview)
-- [پشتیبانی چندوجهی (هم LLMهای متن‌باز و هم تجاری!)](https://docs.anythingllm.com/features/language-models)
-- [عامل‌های هوش مصنوعی سفارشی](https://docs.anythingllm.com/agent/custom/introduction)
+- [مسیریابی پویای مدل](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/model-router/overview) - بر اساس قواعدی که تعریف می‌کنید، چت‌ها را به‌صورت خودکار به بهترین ارائه‌دهنده و مدل هدایت کنید.
+- [حافظه خودکار و مدیریت‌شده توسط کاربر](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/features/memories) - کاری کنید LLM شما اطلاعات مهم درباره شما یا فضای کاری‌تان را به خاطر بسپارد.
+- [وظایف زمان‌بندی‌شده](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/scheduled-jobs/overview) - وظایف یا پرامپت‌های تکرارشونده را با زمان‌بندی cron و با تمام قابلیت‌های عامل اجرا کنید.
+- [انتخاب هوشمند مهارت](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/agent/intelligent-tool-selection) ابزارهای **نامحدود** را برای مدل‌های خود فعال کنید و در عین حال مصرف توکن هر پرس‌وجو را تا ۸۰٪ کاهش دهید
+- [سازنده عامل هوش مصنوعی بدون کدنویسی](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/agent-flows/overview)
+- [سازگاری با MCP](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/mcp-compatibility/overview)
+- [پشتیبانی چندوجهی (هم LLMهای متن‌باز و هم تجاری!)](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/features/language-models)
+- [عامل‌های هوش مصنوعی سفارشی](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/agent/custom/introduction)
 - 👤 پشتیبانی از نمونه چند کاربره و مدیریت مجوزها _فقط نسخه Docker_
 - 🦾 عامل‌ها در فضای کاری شما (مرور وب و غیره)
 - 💬 [ویجت چت قابل جاسازی سفارشی برای وب‌سایت شما](https://github.com/Mintplex-Labs/anythingllm-embed/blob/main/README.md) _فقط نسخه Docker_
@@ -125,7 +125,7 @@ AnythingLLM همچنین از چندین کاربر پشتیبانی می‌کن
 
 **مدل‌های Embedder:**
 
-- [AnythingLLM Native Embedder](/server/storage/models/README.md) (default)
+- [Lebap AI Native Embedder](/server/storage/models/README.md) (default)
 - [OpenAI](https://openai.com)
 - [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
 - [Gemini](https://ai.google.dev/)
@@ -142,7 +142,7 @@ AnythingLLM همچنین از چندین کاربر پشتیبانی می‌کن
 
 **مدل‌های رونویسی صوتی:**
 
-- [AnythingLLM Built-in](https://github.com/Mintplex-Labs/anything-llm/tree/master/server/storage/models#audiovideo-transcription) (default)
+- [Lebap AI Built-in](https://github.com/LebapAI/Lebap-AI/tree/master/server/storage/models#audiovideo-transcription) (default)
 - [OpenAI](https://openai.com/)
 
 **پشتیبانی TTS (تبدیل متن به گفتار):**
@@ -184,7 +184,7 @@ AnythingLLM همچنین از چندین کاربر پشتیبانی می‌کن
 
 ## 🛳 میزبانی شخصی
 
-Mintplex Labs و جامعه کاربران، روش‌ها، اسکریپت‌ها و قالب‌های متعددی را برای اجرای AnythingLLM به صورت محلی نگهداری می‌کنند. برای مطالعه نحوه استقرار در محیط مورد نظر خود یا استقرار خودکار، به جدول زیر مراجعه کنید.
+Mintplex Labs و جامعه کاربران، روش‌ها، اسکریپت‌ها و قالب‌های متعددی را برای اجرای Lebap AI به صورت محلی نگهداری می‌کنند. برای مطالعه نحوه استقرار در محیط مورد نظر خود یا استقرار خودکار، به جدول زیر مراجعه کنید.
 
 </div>
 
@@ -198,7 +198,7 @@ Mintplex Labs و جامعه کاربران، روش‌ها، اسکریپت‌ه
 
 <div dir="rtl">
 
-[یا راه‌اندازی نمونه تولیدی AnythingLLM بدون Docker →](../BARE_METAL.md)
+[یا راه‌اندازی نمونه تولیدی Lebap AI بدون Docker →](../BARE_METAL.md)
 
 ## راه‌اندازی برای توسعه
 
@@ -212,18 +212,18 @@ Mintplex Labs و جامعه کاربران، روش‌ها، اسکریپت‌ه
 
 ## تله‌متری و حریم خصوصی
 
-AnythingLLM توسط Mintplex Labs Inc دارای ویژگی تله‌متری است که اطلاعات استفاده ناشناس را جمع‌آوری می‌کند.
+Lebap AI توسط Mintplex Labs Inc دارای ویژگی تله‌متری است که اطلاعات استفاده ناشناس را جمع‌آوری می‌کند.
 
 </div>
 
 <details>
-<summary><kbd>اطلاعات بیشتر درباره تله‌متری و حریم خصوصی AnythingLLM</kbd></summary>
+<summary><kbd>اطلاعات بیشتر درباره تله‌متری و حریم خصوصی Lebap AI</kbd></summary>
 
 <div dir="rtl">
 
 ### چرا؟
 
-ما از این اطلاعات برای درک نحوه استفاده از AnythingLLM، اولویت‌بندی کار روی ویژگی‌های جدید و رفع اشکالات، و بهبود عملکرد و پایداری AnythingLLM استفاده می‌کنیم.
+ما از این اطلاعات برای درک نحوه استفاده از Lebap AI، اولویت‌بندی کار روی ویژگی‌های جدید و رفع اشکالات، و بهبود عملکرد و پایداری Lebap AI استفاده می‌کنیم.
 
 ### غیرفعال کردن
 
@@ -267,7 +267,7 @@ AnythingLLM توسط Mintplex Labs Inc دارای ویژگی تله‌متری �
 
 ## 👋 مشارکت
 
-- [مشارکت در AnythingLLM](../CONTRIBUTING.md) - نحوه مشارکت در AnythingLLM.
+- [مشارکت در Lebap AI](../CONTRIBUTING.md) - نحوه مشارکت در Lebap AI.
 
 ## 🌟 مشارکت‌کنندگان
 
@@ -281,9 +281,9 @@ AnythingLLM توسط Mintplex Labs Inc دارای ویژگی تله‌متری �
 
 ## 🔗 محصولات بیشتر
 
-- **[AnythingLLM Mobile (با مجوز متن‌باز)][anythingllm-mobile]:** همان تجربه‌ی AnythingLLM روی دستگاه، اما این بار روی گوشی شما.
-- **[افزونه مرورگر AnythingLLM][anythingllm-extension]:** افزونه مرورگری که امکان استفاده از AnythingLLM در مرورگر را فراهم می‌کند.
-- **[AnythingLLM Embed][anythingllm-embed]:** ویجتی که امکان جاسازی AnythingLLM در وب‌سایت شما را فراهم می‌کند.
+- **[Lebap AI Mobile (با مجوز متن‌باز)][anythingllm-mobile]:** همان تجربه‌ی Lebap AI روی دستگاه، اما این بار روی گوشی شما.
+- **[افزونه مرورگر Lebap AI][anythingllm-extension]:** افزونه مرورگری که امکان استفاده از Lebap AI در مرورگر را فراهم می‌کند.
+- **[Lebap AI Embed][anythingllm-embed]:** ویجتی که امکان جاسازی Lebap AI در وب‌سایت شما را فراهم می‌کند.
 
 </div>
 
@@ -318,9 +318,9 @@ This project is [MIT](../LICENSE) licensed.
 [do-btn]: https://www.deploytodo.com/do-btn-blue.svg
 [do-deploy]: ../cloud-deployments/digitalocean/terraform/DEPLOY.md
 [render-btn]: https://render.com/images/deploy-to-render-button.svg
-[render-deploy]: https://render.com/deploy?repo=https://github.com/Mintplex-Labs/anything-llm&branch=render
+[render-deploy]: https://render.com/deploy?repo=https://github.com/LebapAI/Lebap-AI&branch=render
 [render-btn]: https://render.com/images/deploy-to-render-button.svg
-[render-deploy]: https://render.com/deploy?repo=https://github.com/Mintplex-Labs/anything-llm&branch=render
+[render-deploy]: https://render.com/deploy?repo=https://github.com/LebapAI/Lebap-AI&branch=render
 [railway-btn]: https://railway.app/button.svg
 [railway-deploy]: https://railway.app/template/HNSCS1?referralCode=WFgJkn
 [repocloud-btn]: https://d16t0pc4846x52.cloudfront.net/deploylobe.svg

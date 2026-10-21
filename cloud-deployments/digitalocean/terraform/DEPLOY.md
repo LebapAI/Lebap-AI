@@ -1,6 +1,8 @@
-# How to deploy a private AnythingLLM instance on DigitalOcean using Terraform
+> **Lebap AI migration note:** This inherited template may still reference upstream container resources. Verify the image and startup configuration before using it to deploy Lebap AI.
 
-With a DigitalOcean account, you can easily deploy a private AnythingLLM instance using Terraform. This will create a URL that you can access from any browser over HTTP (HTTPS not supported). This single instance will run on your own keys, and they will not be exposed. However, if you want your instance to be protected, it is highly recommended that you set a password once setup is complete.
+# How to deploy a private Lebap AI instance on DigitalOcean using Terraform
+
+With a DigitalOcean account, you can easily deploy a private Lebap AI instance using Terraform. This will create a URL that you can access from any browser over HTTP (HTTPS not supported). This single instance will run on your own keys, and they will not be exposed. However, if you want your instance to be protected, it is highly recommended that you set a password once setup is complete.
 
 The output of this Terraform configuration will be:
 - 1 DigitalOcean Droplet

@@ -49,7 +49,7 @@ export default function Sidebar() {
                 className={`flex items-center gap-3 transition-opacity duration-500 ${showSidebar ? "opacity-100" : "opacity-0"}`}
               >
                 <img
-                  src="/lebap-ai-logo.svg"
+                  src="/lebap-ai-favicon.svg"
                   alt=""
                   aria-hidden="true"
                   className="h-10 w-10 shrink-0 object-contain"
@@ -130,7 +130,7 @@ export function SidebarMobileHeader() {
         <div className="flex items-center justify-center flex-grow">
           <div className="flex items-center justify-center gap-2">
             <img
-              src="/lebap-ai-logo.svg"
+              src="/lebap-ai-favicon.svg"
               alt=""
               aria-hidden="true"
               className="h-9 w-9 object-contain"
@@ -168,7 +168,7 @@ export function SidebarMobileHeader() {
             <div className="flex w-full items-center justify-between gap-x-4">
               <div className="flex shrink-1 w-fit items-center justify-start">
                 <img
-                  src="/lebap-ai-logo.svg"
+                  src="/lebap-ai-favicon.svg"
                   alt="Lebap AI"
                   className="rounded w-full max-h-[40px]"
                   style={{ objectFit: "contain" }}

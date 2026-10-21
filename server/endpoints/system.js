@@ -1007,7 +1007,7 @@ function systemEndpoints(app) {
     try {
       const currentLogoFilename = await SystemSettings.currentLogoFilename();
       const isDefaultLogo =
-        !currentLogoFilename || currentLogoFilename === LOGO_FILENAME;
+        !currentLogoFilename || isDefaultFilename(currentLogoFilename);
       response.status(200).json({ isDefaultLogo });
     } catch (error) {
       console.error("Error processing the logo request:", error);
@@ -1074,7 +1074,10 @@ function systemEndpoints(app) {
         } = reqBody(request) || {};
         const { expiresAt, error: expiryError } = resolveApiKeyExpiry(expiresInDays);
         if (expiryError) {
-          return response.status(400).json({ apiKey: null, error: expiryError });
+          return response.status(400).json({
+            apiKey: null,
+            error: expiryError,
+          });
         }
         const workspaces = await Workspace.where();
         const { workspaceSlugs, error: scopeError } = resolveWorkspaceScope(
@@ -1082,9 +1085,15 @@ function systemEndpoints(app) {
           workspaces.map((workspace) => workspace.slug)
         );
         if (scopeError) {
-          return response.status(400).json({ apiKey: null, error: scopeError });
+          return response.status(400).json({
+            apiKey: null,
+            error: scopeError,
+          });
         }
-        const { apiKey, error } = await ApiKey.create(null, name, { workspaceSlugs, expiresAt });
+        const { apiKey, error } = await ApiKey.create(null, name, {
+          workspaceSlugs,
+          expiresAt,
+        });
         await EventLogs.logEvent(
           "api_key_created",
           {
@@ -1134,7 +1143,10 @@ function systemEndpoints(app) {
           { apiKeyId: Number(id), revokedBy: response.locals?.user?.username },
           response?.locals?.user?.id
         );
-        return response.status(200).json({ success: true, revokedId: Number(id) });
+        return response.status(200).json({
+          success: true,
+          revokedId: Number(id),
+        });
       } catch (error) {
         console.error(error);
         response.status(500).end();

@@ -1,7 +1,7 @@
 <a name="readme-top"></a>
 
 <p align="center">
-  <a href="https://anythingllm.com"><img src="https://github.com/Mintplex-Labs/anything-llm/blob/master/images/wordmark.png?raw=true" alt="AnythingLLM logo"></a>
+  <a href="https://github.com/LebapAI/Lebap-AI"><img src="https://github.com/LebapAI/Lebap-AI/blob/master/images/wordmark.png?raw=true" alt="Lebap AI logo"></a>
 </p>
 
 <div align='center'>
@@ -9,7 +9,7 @@
 </div>
 
 <p align="center">
-    <b>AnythingLLM：</b> 您一直在寻找的全方位 AI 应用程序。<br />
+    <b>Lebap AI：</b> 您一直在寻找的全方位 AI 应用程序。<br />
     与您的文档聊天，使用 AI 智能体，高度可配置，支持多用户，无需繁琐设置。
 </p>
 
@@ -17,10 +17,10 @@
   <a href="https://discord.gg/6UyHPeGZAC" target="_blank">
       <img src="https://img.shields.io/badge/chat-mintplex_labs-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAH1UExURQAAAP////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////r6+ubn5+7u7/3+/v39/enq6urq6/v7+97f39rb26eoqT1BQ0pOT4+Rkuzs7cnKykZKS0NHSHl8fdzd3ejo6UxPUUBDRdzc3RwgIh8jJSAkJm5xcvHx8aanqB4iJFBTVezt7V5hYlJVVuLj43p9fiImKCMnKZKUlaaoqSElJ21wcfT09O3u7uvr6zE0Nr6/wCUpK5qcnf7+/nh7fEdKTHx+f0tPUOTl5aipqiouMGtubz5CRDQ4OsTGxufn515hY7a3uH1/gXBydIOFhlVYWvX29qaoqCQoKs7Pz/Pz87/AwUtOUNfY2dHR0mhrbOvr7E5RUy8zNXR2d/f39+Xl5UZJSx0hIzQ3Odra2/z8/GlsbaGjpERHSezs7L/BwScrLTQ4Odna2zM3Obm7u3x/gKSmp9jZ2T1AQu/v71pdXkVISr2+vygsLiInKTg7PaOlpisvMcXGxzk8PldaXPLy8u7u7rm6u7S1tsDBwvj4+MPExbe4ueXm5s/Q0Kyf7ewAAAAodFJOUwAABClsrNjx/QM2l9/7lhmI6jTB/kA1GgKJN+nea6vy/MLZQYeVKK3rVA5tAAAAAWJLR0QB/wIt3gAAAAd0SU1FB+cKBAAmMZBHjXIAAAISSURBVDjLY2CAAkYmZhZWNnYODnY2VhZmJkYGVMDIycXNw6sBBbw8fFycyEoYGfkFBDVQgKAAPyMjQl5IWEQDDYgIC8FUMDKKsmlgAWyiEBWMjGJY5YEqxMAqGMWFNXAAYXGgAkYJSQ2cQFKCkYFRShq3AmkpRgYJbghbU0tbB0Tr6ukbgGhDI10gySfBwCwDUWBsYmpmDqQtLK2sbTQ0bO3sHYA8GWYGWWj4WTs6Obu4ami4OTm7exhqeHp5+4DCVJZBDmqdr7ufn3+ArkZgkJ+fU3CIRmgYWFiOARYGvo5OQUHhEUAFTkF+kVHRsLBgkIeyYmLjwoOc4hMSk5JTnINS06DC8gwcEEZ6RqZGlpOfc3ZObl5+gZ+TR2ERWFyBQQFMF5eklmqUpQb5+ReU61ZUOvkFVVXXQBSAraitq29o1GiKcfLzc29u0mjxBzq0tQ0kww5xZHtHUGeXhkZhdxBYgZ4d0LI6c4gjwd7siQQraOp1AivQ6CuAKZCDBBRQQQNQgUb/BGf3cqCCiZOcnCe3QQIKHNRTpk6bDgpZjRkzg3pBQTBrdtCcuZCgluAD0vPmL1gIdvSixUuWgqNs2YJ+DUhkEYxuggkGmOQUcckrioPTJCOXEnZ5JS5YslbGnuyVERlDDFvGEUPOWvwqaH6RVkHKeuDMK6SKnHlVhTgx8jeTmqy6Eij7K6nLqiGyPwChsa1MUrnq1wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMy0xMC0wNFQwMDozODo0OSswMDowMB9V0a8AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjMtMTAtMDRUMDA6Mzg6NDkrMDA6MDBuCGkTAAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDIzLTEwLTA0VDAwOjM4OjQ5KzAwOjAwOR1IzAAAAABJRU5ErkJggg==" alt="Discord">
   </a> |
-  <a href="https://github.com/Mintplex-Labs/anything-llm/blob/master/LICENSE" target="_blank">
+  <a href="https://github.com/LebapAI/Lebap-AI/blob/master/LICENSE" target="_blank">
       <img src="https://img.shields.io/static/v1?label=license&message=MIT&color=white" alt="许可证">
   </a> |
-  <a href="https://docs.anythingllm.com" target="_blank">
+  <a href="https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md" target="_blank">
     文档
   </a> |
   <a href="https://my.mintplexlabs.com/aio-checkout?product=anythingllm" target="_blank">
@@ -33,12 +33,12 @@
 </p>
 
 <p align="center">
-👉 适用于桌面端（Mac、Windows 和 Linux）的 AnythingLLM！<a href="https://anythingllm.com/download" target="_blank">立即下载</a>
+👉 适用于桌面端（Mac、Windows 和 Linux）的 Lebap AI！<a href="https://github.com/LebapAI/Lebap-AI/download" target="_blank">立即下载</a>
 </p>
 
 与您的文档聊天。使用 AI 智能体自动化复杂工作流。高度可配置、支持多用户、经过实战检验——默认本地运行，零配置摩擦。
 
-![Chatting](https://github.com/Mintplex-Labs/anything-llm/releases/download/v1.11.2/AnythingLLM720p.gif)
+![Chatting](https://github.com/LebapAI/Lebap-AI/releases/download/v1.11.2/Lebap AI720p.gif)
 
 <details>
 <summary><kbd>观看演示视频！</kbd></summary>
@@ -49,20 +49,20 @@
 
 ### 产品概览
 
-AnythingLLM 是一款全方位 AI 应用程序，让您毫无妥协地构建私有的、功能完备的 ChatGPT。接入您喜爱的本地或云端 LLM，导入您的文档，几分钟内即可开始聊天。开箱即用即可获得内置智能体、多用户支持、向量数据库和文档处理管道——无需额外配置。
+Lebap AI 是一款全方位 AI 应用程序，让您毫无妥协地构建私有的、功能完备的 ChatGPT。接入您喜爱的本地或云端 LLM，导入您的文档，几分钟内即可开始聊天。开箱即用即可获得内置智能体、多用户支持、向量数据库和文档处理管道——无需额外配置。
 
-AnythingLLM 还支持多用户，您可以控制每个用户的访问权限和使用体验，同时不会损害实例的安全性、隐私性或您的知识产权。
+Lebap AI 还支持多用户，您可以控制每个用户的访问权限和使用体验，同时不会损害实例的安全性、隐私性或您的知识产权。
 
-## AnythingLLM 的酷炫特性
+## Lebap AI 的酷炫特性
 
-- [动态模型路由](https://docs.anythingllm.com/model-router/overview) - 根据您定义的规则，自动将聊天路由到最合适的提供商与模型。
-- [自动与用户管理的记忆](https://docs.anythingllm.com/features/memories) - 让您的 LLM 记住关于您或您工作区的重要信息。
-- [定时任务](https://docs.anythingllm.com/scheduled-jobs/overview) - 以 cron 计划运行周期性任务或提示词，并具备完整的智能体能力。
-- [智能技能选择](https://docs.anythingllm.com/agent/intelligent-tool-selection) 为您的模型启用**无限**工具，同时将每次查询的 token 用量最多降低 80%
-- [无代码 AI 智能体构建器](https://docs.anythingllm.com/agent-flows/overview)
-- [兼容 MCP](https://docs.anythingllm.com/mcp-compatibility/overview)
-- [多模态支持（闭源与开源 LLM 均可！）](https://docs.anythingllm.com/features/language-models)
-- [自定义 AI 智能体](https://docs.anythingllm.com/agent/custom/introduction)
+- [动态模型路由](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/model-router/overview) - 根据您定义的规则，自动将聊天路由到最合适的提供商与模型。
+- [自动与用户管理的记忆](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/features/memories) - 让您的 LLM 记住关于您或您工作区的重要信息。
+- [定时任务](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/scheduled-jobs/overview) - 以 cron 计划运行周期性任务或提示词，并具备完整的智能体能力。
+- [智能技能选择](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/agent/intelligent-tool-selection) 为您的模型启用**无限**工具，同时将每次查询的 token 用量最多降低 80%
+- [无代码 AI 智能体构建器](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/agent-flows/overview)
+- [兼容 MCP](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/mcp-compatibility/overview)
+- [多模态支持（闭源与开源 LLM 均可！）](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/features/language-models)
+- [自定义 AI 智能体](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/agent/custom/introduction)
 - 👤 多用户实例支持与权限管理 _仅限 Docker 版本_
 - 🦾 工作区内的智能体（浏览网页等）
 - 💬 [为您的网站定制的可嵌入聊天组件](https://github.com/Mintplex-Labs/anythingllm-embed/blob/main/README.md) _仅限 Docker 版本_
@@ -119,7 +119,7 @@ AnythingLLM 还支持多用户，您可以控制每个用户的访问权限和�
 
 **嵌入模型：**
 
-- [AnythingLLM Native Embedder](/server/storage/models/README.md) (default)
+- [Lebap AI Native Embedder](/server/storage/models/README.md) (default)
 - [OpenAI](https://openai.com)
 - [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
 - [Gemini](https://ai.google.dev/)
@@ -136,7 +136,7 @@ AnythingLLM 还支持多用户，您可以控制每个用户的访问权限和�
 
 **音频转录模型：**
 
-- [AnythingLLM Built-in](https://github.com/Mintplex-Labs/anything-llm/tree/master/server/storage/models#audiovideo-transcription) (default)
+- [Lebap AI Built-in](https://github.com/LebapAI/Lebap-AI/tree/master/server/storage/models#audiovideo-transcription) (default)
 - [OpenAI](https://openai.com/)
 
 **TTS（文本转语音）支持：**
@@ -176,7 +176,7 @@ AnythingLLM 还支持多用户，您可以控制每个用户的访问权限和�
 
 ## 🛳 自托管
 
-Mintplex Labs 与社区维护了多种部署方式、脚本和模板，您可以使用它们在本地运行 AnythingLLM。请参阅下表，了解如何在您偏好的环境中部署或自动部署。
+Mintplex Labs 与社区维护了多种部署方式、脚本和模板，您可以使用它们在本地运行 Lebap AI。请参阅下表，了解如何在您偏好的环境中部署或自动部署。
 | Docker | AWS | GCP | Digital Ocean | Render.com |
 |----------------------------------------|----|-----|---------------|------------|
 | [![Deploy on Docker][docker-btn]][docker-deploy] | [![Deploy on AWS][aws-btn]][aws-deploy] | [![Deploy on GCP][gcp-btn]][gcp-deploy] | [![Deploy on DigitalOcean][do-btn]][do-deploy] | [![Deploy on Render.com][render-btn]][render-deploy] |
@@ -185,7 +185,7 @@ Mintplex Labs 与社区维护了多种部署方式、脚本和模板，您可以
 | --------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- |
 | [![Deploy on Railway][railway-btn]][railway-deploy] | [![Deploy on RepoCloud][repocloud-btn]][repocloud-deploy] | [![Deploy on Elestio][elestio-btn]][elestio-deploy] | [![Deploy on Northflank][northflank-btn]][northflank-deploy] | [![Deploy on Sealos][sealos-btn]][sealos-deploy] |
 
-[或者不使用 Docker 搭建生产环境的 AnythingLLM 实例 →](../BARE_METAL.md)
+[或者不使用 Docker 搭建生产环境的 Lebap AI 实例 →](../BARE_METAL.md)
 
 ## 如何设置开发环境
 
@@ -199,14 +199,14 @@ Mintplex Labs 与社区维护了多种部署方式、脚本和模板，您可以
 
 ## 远程信息收集与隐私保护
 
-由 Mintplex Labs Inc 开发的 AnythingLLM 包含一项收集匿名使用信息的遥测功能。
+由 Mintplex Labs Inc 开发的 Lebap AI 包含一项收集匿名使用信息的遥测功能。
 
 <details>
-<summary><kbd>有关 AnythingLLM 遥测与隐私保护的更多信息</kbd></summary>
+<summary><kbd>有关 Lebap AI 遥测与隐私保护的更多信息</kbd></summary>
 
 ### 为什么收集信息？
 
-我们使用这些信息来帮助我们理解 AnythingLLM 的使用情况，帮助我们确定新功能和错误修复的优先级，并帮助我们提升 AnythingLLM 的性能与稳定性。
+我们使用这些信息来帮助我们理解 Lebap AI 的使用情况，帮助我们确定新功能和错误修复的优先级，并帮助我们提升 Lebap AI 的性能与稳定性。
 
 ### 怎样关闭
 
@@ -246,7 +246,7 @@ Mintplex Labs 与社区维护了多种部署方式、脚本和模板，您可以
 
 ## 👋 参与贡献
 
-- [为 AnythingLLM 做贡献](../CONTRIBUTING.md) - 如何为 AnythingLLM 做贡献。
+- [为 Lebap AI 做贡献](../CONTRIBUTING.md) - 如何为 Lebap AI 做贡献。
 
 ## 🌟 贡献者们
 
@@ -256,9 +256,9 @@ Mintplex Labs 与社区维护了多种部署方式、脚本和模板，您可以
 
 ## 🔗 更多产品
 
-- **[AnythingLLM Mobile（开源许可）][anythingllm-mobile]：** 同样的 AnythingLLM 本地设备体验，现在就在您的手机上。
-- **[AnythingLLM 浏览器扩展][anythingllm-extension]：** 让您在浏览器中使用 AnythingLLM 的浏览器扩展。
-- **[AnythingLLM Embed][anythingllm-embed]：** 让您将 AnythingLLM 嵌入自己网站的组件。
+- **[Lebap AI Mobile（开源许可）][anythingllm-mobile]：** 同样的 Lebap AI 本地设备体验，现在就在您的手机上。
+- **[Lebap AI 浏览器扩展][anythingllm-extension]：** 让您在浏览器中使用 Lebap AI 的浏览器扩展。
+- **[Lebap AI Embed][anythingllm-embed]：** 让您将 Lebap AI 嵌入自己网站的组件。
 
 <div align="right">
 
@@ -287,9 +287,9 @@ Mintplex Labs 与社区维护了多种部署方式、脚本和模板，您可以
 [do-btn]: https://www.deploytodo.com/do-btn-blue.svg
 [do-deploy]: ../cloud-deployments/digitalocean/terraform/DEPLOY.md
 [render-btn]: https://render.com/images/deploy-to-render-button.svg
-[render-deploy]: https://render.com/deploy?repo=https://github.com/Mintplex-Labs/anything-llm&branch=render
+[render-deploy]: https://render.com/deploy?repo=https://github.com/LebapAI/Lebap-AI&branch=render
 [render-btn]: https://render.com/images/deploy-to-render-button.svg
-[render-deploy]: https://render.com/deploy?repo=https://github.com/Mintplex-Labs/anything-llm&branch=render
+[render-deploy]: https://render.com/deploy?repo=https://github.com/LebapAI/Lebap-AI&branch=render
 [railway-btn]: https://railway.app/button.svg
 [railway-deploy]: https://railway.app/template/HNSCS1?referralCode=WFgJkn
 [repocloud-btn]: https://d16t0pc4846x52.cloudfront.net/deploylobe.svg
