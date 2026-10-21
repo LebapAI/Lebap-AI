@@ -39,8 +39,7 @@ The repository contains an existing AI workspace application and partial Lebap A
 
 ## Working branch and engineering status
 
-- **Stable branch:** `main` remains unchanged during review.
-- **Current branding migration:** `brand/official-logo-assets`, tracked in [PR #3](https://github.com/LebapAI/Lebap-AI/pull/3). Merge only after checks pass.
+- **Canonical working branch:** `main`. All ongoing implementation work targets `main`; do not create additional working branches.
 - **Capability matrix:** [`docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md`](docs/LEBAP_AI_IMPLEMENTATION_MATRIX.md)
 - **Current engineering status:** [`docs/LEBAP_AI_PROGRESS.md`](docs/LEBAP_AI_PROGRESS.md)
 - **Repository layout and migration baseline:** [`docs/REPOSITORY_STRUCTURE.md`](docs/REPOSITORY_STRUCTURE.md)
