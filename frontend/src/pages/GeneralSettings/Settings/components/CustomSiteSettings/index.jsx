@@ -70,7 +70,9 @@ export default function CustomSiteSettings() {
                 return { ...prev, title: e.target.value };
               });
             }}
-            value={settings.title ?? "Lebap AI | AI workspace and agent platform"}
+            value={
+              settings.title ?? "Lebap AI | AI workspace and agent platform"
+            }
           />
         </div>
       </div>
