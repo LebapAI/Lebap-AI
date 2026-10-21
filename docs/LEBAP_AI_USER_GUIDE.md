@@ -40,7 +40,7 @@ Some filenames, database names, environment variables, package dependencies, and
 
 - The Community Hub integration still relies on an upstream hosted service; it is not hosted by Lebap AI.
 - The optional onboarding questionnaire currently sends submitted answers to an external upstream survey service. The onboarding screen discloses this before submission; skip the survey or avoid sensitive information if you do not want to share those details.
-- Telemetry is disabled unless the server operator configures LEBAP_AI_TELEMETRY_KEY. Review the configured destination and event properties before enabling it.
+- Telemetry is disabled by default. Sending requires both LEBAP_AI_TELEMETRY_KEY to be configured and DISABLE_TELEMETRY=false. Review the configured destination and event properties before enabling it.
 
 ## Troubleshooting
 
