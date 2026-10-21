@@ -1,4 +1,9 @@
-const { resolveWorkspaceScope, parseWorkspaceSlugs, isWorkspaceAllowed, filterWorkspacesByApiKeyScope } = require("./apiKeyScopes");
+const {
+  resolveWorkspaceScope,
+  parseWorkspaceSlugs,
+  isWorkspaceAllowed,
+  filterWorkspacesByApiKeyScope,
+} = require("./apiKeyScopes");
 const { apiKeyWorkspaceScope } = require("./middleware/apiKeyWorkspaceScope");
 
 describe("resolveWorkspaceScope", () => {
@@ -12,7 +17,9 @@ describe("resolveWorkspaceScope", () => {
   });
 
   test("accepts explicit valid scopes and removes duplicates", () => {
-    expect(resolveWorkspaceScope([" support ", "research", "support"], available)).toEqual({
+    expect(
+      resolveWorkspaceScope([" support ", "research", "support"], available)
+    ).toEqual({
       workspaceSlugs: ["support", "research"],
       error: null,
     });
@@ -35,7 +42,9 @@ describe("resolveWorkspaceScope", () => {
   });
 
   test("deduplicates the workspace inventory before returning the compatibility scope", () => {
-    expect(resolveWorkspaceScope(undefined, ["research", "research", "support"])).toEqual({
+    expect(
+      resolveWorkspaceScope(undefined, ["research", "research", "support"])
+    ).toEqual({
       workspaceSlugs: ["research", "support"],
       error: null,
     });
@@ -48,7 +57,7 @@ describe("parseWorkspaceSlugs", () => {
     expect(parseWorkspaceSlugs(undefined)).toBeNull();
   });
 
-  test.each(["", "not-json", "{}", "[]", "[\"\"]", "[\"support\", 3]"])(
+  test.each(["", "not-json", "{}", "[]", '[""]', '["support", 3]'])(
     "fails closed for malformed persisted scopes: %p",
     (value) => {
       expect(parseWorkspaceSlugs(value)).toEqual([]);
@@ -56,10 +65,9 @@ describe("parseWorkspaceSlugs", () => {
   );
 
   test("parses, trims, and deduplicates a valid persisted scope", () => {
-    expect(parseWorkspaceSlugs('[\"support\", \" research \", \"support\"]')).toEqual([
-      "support",
-      "research",
-    ]);
+    expect(parseWorkspaceSlugs('["support", " research ", "support"]')).toEqual(
+      ["support", "research"]
+    );
   });
 });
 
@@ -80,7 +88,6 @@ describe("isWorkspaceAllowed", () => {
   });
 });
 
-
 describe("filterWorkspacesByApiKeyScope", () => {
   const workspaces = [
     { slug: "research", name: "Research" },
@@ -89,10 +96,9 @@ describe("filterWorkspacesByApiKeyScope", () => {
   ];
 
   test("returns only explicitly allowed workspace records", () => {
-    expect(filterWorkspacesByApiKeyScope(workspaces, ["support", "research"])).toEqual([
-      workspaces[0],
-      workspaces[2],
-    ]);
+    expect(
+      filterWorkspacesByApiKeyScope(workspaces, ["support", "research"])
+    ).toEqual([workspaces[0], workspaces[2]]);
   });
 
   test("keeps legacy unrestricted keys backward-compatible", () => {
@@ -106,16 +112,27 @@ describe("filterWorkspacesByApiKeyScope", () => {
   });
 });
 
-
 describe("apiKeyWorkspaceScope middleware", () => {
-  function makeContext({ scopes, method = "GET", path = "/v1/workspace/research", params = {}, body = {} } = {}) {
+  function makeContext({
+    scopes,
+    method = "GET",
+    path = "/v1/workspace/research",
+    params = {},
+    body = {},
+  } = {}) {
     const request = { method, path, params, body };
     const response = {
       locals: { apiKey: { workspaceSlugs: scopes } },
       statusCode: null,
       payload: null,
-      status(code) { this.statusCode = code; return this; },
-      json(payload) { this.payload = payload; return this; },
+      status(code) {
+        this.statusCode = code;
+        return this;
+      },
+      json(payload) {
+        this.payload = payload;
+        return this;
+      },
     };
     const next = jest.fn();
     return { request, response, next };
@@ -129,34 +146,54 @@ describe("apiKeyWorkspaceScope middleware", () => {
   });
 
   test("allows a workspace listed in the scope", () => {
-    const ctx = makeContext({ scopes: ["research"], params: { slug: "research" } });
+    const ctx = makeContext({
+      scopes: ["research"],
+      params: { slug: "research" },
+    });
     apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
     expect(ctx.next).toHaveBeenCalledTimes(1);
   });
 
   test("denies a workspace outside the scope", () => {
-    const ctx = makeContext({ scopes: ["research"], params: { slug: "billing" } });
+    const ctx = makeContext({
+      scopes: ["research"],
+      params: { slug: "billing" },
+    });
     apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
     expect(ctx.response.statusCode).toBe(403);
     expect(ctx.next).not.toHaveBeenCalled();
   });
 
   test("denies scoped keys from creating unscoped workspaces", () => {
-    const ctx = makeContext({ scopes: ["research"], method: "POST", path: "/v1/workspace/new" });
+    const ctx = makeContext({
+      scopes: ["research"],
+      method: "POST",
+      path: "/v1/workspace/new",
+    });
     apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
     expect(ctx.response.statusCode).toBe(403);
   });
 
   test("filters workspace list responses to the allowlist", () => {
-    const ctx = makeContext({ scopes: ["research"], method: "GET", path: "/v1/workspaces" });
+    const ctx = makeContext({
+      scopes: ["research"],
+      method: "GET",
+      path: "/v1/workspaces",
+    });
     apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
     expect(ctx.next).toHaveBeenCalledTimes(1);
-    ctx.response.json({ workspaces: [{ slug: "research" }, { slug: "billing" }] });
+    ctx.response.json({
+      workspaces: [{ slug: "research" }, { slug: "billing" }],
+    });
     expect(ctx.response.payload.workspaces).toEqual([{ slug: "research" }]);
   });
 
   test("denies document operations that do not identify an allowed workspace", () => {
-    const ctx = makeContext({ scopes: ["research"], method: "POST", path: "/v1/document/remove-folder" });
+    const ctx = makeContext({
+      scopes: ["research"],
+      method: "POST",
+      path: "/v1/document/remove-folder",
+    });
     apiKeyWorkspaceScope(ctx.request, ctx.response, ctx.next);
     expect(ctx.response.statusCode).toBe(403);
   });
