@@ -93,22 +93,13 @@ function TelemetryLogs({ settings }) {
         </div>
         <div className="flex flex-col items-left space-y-2">
           <p className="text-theme-text-secondary text-xs rounded-lg w-96">
-            Telemetry is disabled by default. Sending requires both LEBAP_AI_TELEMETRY_KEY
-            to be configured and DISABLE_TELEMETRY=false. Review the destination project,
-            IP/data settings, and event properties before enabling it. Do not send
-            prompts, document contents, secrets, or personal data. Event payloads
-            should be limited to non-sensitive usage metadata. To see the list of event
-            tags collected you can
-            look on{" "}
-            <a
-              href="https://github.com/LebapAI/Lebap-AI/search?q=sendTelemetry"
-              className="underline text-blue-400"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Lebap AI source code
-            </a>
-            .
+            Telemetry is disabled by default. Sending requires both
+            LEBAP_AI_TELEMETRY_KEY to be configured and DISABLE_TELEMETRY=false.
+            Review the destination project, IP/data settings, and event
+            properties before enabling it. Do not send prompts, document
+            contents, secrets, or personal data. Event payloads should be
+            limited to non-sensitive usage metadata. Review the event definitions
+            in the source code: 
           </p>
           <p className="text-theme-text-secondary text-xs rounded-lg w-96">
             As an open-source project we respect your right to privacy. We are
