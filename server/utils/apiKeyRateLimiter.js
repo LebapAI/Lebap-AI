@@ -4,13 +4,17 @@ const WINDOW_MS = 60 * 1000;
 const DEFAULT_REQUESTS_PER_MINUTE = 120;
 let lastCleanupWindow = null;
 
-function configuredRequestsPerMinute(value = process.env.API_KEY_RATE_LIMIT_PER_MINUTE) {
+function configuredRequestsPerMinute(
+  value = process.env.API_KEY_RATE_LIMIT_PER_MINUTE
+) {
   if (value === undefined || value === null || value === "") {
     return DEFAULT_REQUESTS_PER_MINUTE;
   }
   const parsed = Number(value);
   if (!Number.isSafeInteger(parsed) || parsed < 1 || parsed > 100000) {
-    throw new TypeError("API_KEY_RATE_LIMIT_PER_MINUTE must be an integer between 1 and 100000");
+    throw new TypeError(
+      "API_KEY_RATE_LIMIT_PER_MINUTE must be an integer between 1 and 100000"
+    );
   }
   return parsed;
 }
@@ -20,7 +24,11 @@ function configuredRequestsPerMinute(value = process.env.API_KEY_RATE_LIMIT_PER_
  * The database counter is shared by all app instances; process memory is used
  * only to throttle best-effort cleanup, never to make allow/deny decisions.
  */
-async function consumeApiKeyRateLimit(apiKeyId, now = Date.now(), limit = configuredRequestsPerMinute()) {
+async function consumeApiKeyRateLimit(
+  apiKeyId,
+  now = Date.now(),
+  limit = configuredRequestsPerMinute()
+) {
   if (!Number.isSafeInteger(apiKeyId) || apiKeyId <= 0) {
     throw new TypeError("apiKeyId must be a positive safe integer");
   }
