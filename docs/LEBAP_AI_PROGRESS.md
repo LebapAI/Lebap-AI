@@ -10,8 +10,7 @@
 - `lebap-ai/development` has been deleted after confirming its commit history was fully incorporated into `lebap-ai/organized`; it had no unique commits missing from the canonical branch.
 - `main` remains the default branch and is now the branch for ongoing implementation.
 - `migration/anythingllm-upstream` remains as an upstream-history reference until its retention, provenance, licensing, and recovery role are explicitly verified.
-- `lebap-ai/organized` has been deleted after its history was incorporated into `main`; it is no longer an active working branch.
-- The current remote branch list contains `main` and `migration/anythingllm-upstream`. Keep the migration reference until its provenance, licensing, and recovery role are explicitly verified.
+- `lebap-ai/organized` remains as a redundant branch pointer for now; remove it after confirming the canonical `main` head and branch protections. Current remote branch list also includes `migration/anythingllm-upstream`.
 - Do not delete additional branches until unique commits, files, tags, open PR references, and recovery requirements are checked.
 
 ## What exists in source

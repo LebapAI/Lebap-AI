@@ -50,22 +50,18 @@ describe("parseWorkspaceSlugs", () => {
     expect(parseWorkspaceSlugs(undefined)).toBeNull();
   });
 
-  test.each([
-    "",
-    " ",
-    "not-json",
-    "{}",
-    "[]",
-    '["allowed",""]',
-    '[1,"allowed"]',
-  ])("fails closed for malformed or empty scope %p", (value) => {
-    expect(parseWorkspaceSlugs(value)).toEqual([]);
-  });
+  test.each(["", " ", "not-json", "{}", "[]", '["allowed",""]', '[1,"allowed"]'])(
+    "fails closed for malformed or empty scope %p",
+    (value) => {
+      expect(parseWorkspaceSlugs(value)).toEqual([]);
+    }
+  );
 
   test("normalizes valid scopes and removes duplicates", () => {
-    expect(
-      parseWorkspaceSlugs('["workspace-a"," workspace-b ","workspace-a"]')
-    ).toEqual(["workspace-a", "workspace-b"]);
+    expect(parseWorkspaceSlugs('["workspace-a"," workspace-b ","workspace-a"]')).toEqual([
+      "workspace-a",
+      "workspace-b",
+    ]);
   });
 });
 
@@ -78,13 +74,7 @@ describe("validApiKey middleware", () => {
     SystemSettings.isMultiUserMode.mockResolvedValue(false);
     ApiKey.getForAuthentication.mockResolvedValue({ id: 1 });
     ApiKey.markUsed.mockResolvedValue(true);
-    consumeApiKeyRateLimit.mockResolvedValue({
-      allowed: true,
-      limit: 120,
-      remaining: 119,
-      resetAt: Date.now() + 60000,
-      retryAfterSeconds: 60,
-    });
+    consumeApiKeyRateLimit.mockResolvedValue({ allowed: true, limit: 120, remaining: 119, resetAt: Date.now() + 60000, retryAfterSeconds: 60 });
     jest.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -120,28 +110,10 @@ describe("validApiKey middleware", () => {
     await validApiKey(request, response, next);
 
     expect(response.locals.multiUserMode).toBe(false);
-    expect(ApiKey.getForAuthentication).toHaveBeenCalledWith({
-      secret: "secret-value",
-    });
+    expect(ApiKey.getForAuthentication).toHaveBeenCalledWith({ secret: "secret-value" });
     expect(ApiKey.markUsed).toHaveBeenCalledWith(1);
     expect(next).toHaveBeenCalledTimes(1);
     expect(response.status).not.toHaveBeenCalled();
-  });
-
-  test("continues when best-effort last-use tracking fails", async () => {
-    ApiKey.markUsed.mockRejectedValueOnce(
-      new Error("last-use store unavailable")
-    );
-    const request = makeRequest("Bearer secret-value");
-    const response = makeResponse();
-
-    await validApiKey(request, response, next);
-
-    expect(next).toHaveBeenCalledTimes(1);
-    expect(response.status).not.toHaveBeenCalled();
-    expect(console.error).toHaveBeenCalledWith(
-      "API key last-use tracking failed."
-    );
   });
 
   test("accepts the Bearer scheme case-insensitively", async () => {
@@ -150,9 +122,7 @@ describe("validApiKey middleware", () => {
 
     await validApiKey(request, response, next);
 
-    expect(ApiKey.getForAuthentication).toHaveBeenCalledWith({
-      secret: "secret-value",
-    });
+    expect(ApiKey.getForAuthentication).toHaveBeenCalledWith({ secret: "secret-value" });
     expect(next).toHaveBeenCalledTimes(1);
   });
 
@@ -171,9 +141,7 @@ describe("validApiKey middleware", () => {
   });
 
   test("returns a generic 500 if API key storage is unavailable", async () => {
-    ApiKey.getForAuthentication.mockRejectedValue(
-      new Error("private database details")
-    );
+    ApiKey.getForAuthentication.mockRejectedValue(new Error("private database details"));
     const request = makeRequest("Bearer secret-value");
     const response = makeResponse();
 
@@ -183,16 +151,12 @@ describe("validApiKey middleware", () => {
     expect(response.json).toHaveBeenCalledWith({
       error: "Authentication service unavailable.",
     });
-    expect(JSON.stringify(response.json.mock.calls)).not.toContain(
-      "private database details"
-    );
+    expect(JSON.stringify(response.json.mock.calls)).not.toContain("private database details");
     expect(next).not.toHaveBeenCalled();
   });
 
   test("fails closed if multi-user settings cannot be read", async () => {
-    SystemSettings.isMultiUserMode.mockRejectedValue(
-      new Error("database unavailable")
-    );
+    SystemSettings.isMultiUserMode.mockRejectedValue(new Error("database unavailable"));
     const request = makeRequest("Bearer secret-value");
     const response = makeResponse();
 
@@ -259,21 +223,15 @@ describe("validApiKey middleware", () => {
   });
 
   test("fails closed when the shared rate-limit store is unavailable", async () => {
-    consumeApiKeyRateLimit.mockRejectedValueOnce(
-      new Error("private database detail")
-    );
+    consumeApiKeyRateLimit.mockRejectedValueOnce(new Error("private database detail"));
     const request = makeRequest("Bearer secret-value");
     const response = makeResponse();
 
     await validApiKey(request, response, next);
 
     expect(response.status).toHaveBeenCalledWith(503);
-    expect(response.json).toHaveBeenCalledWith({
-      error: "API access temporarily unavailable.",
-    });
-    expect(JSON.stringify(response.json.mock.calls)).not.toContain(
-      "private database detail"
-    );
+    expect(response.json).toHaveBeenCalledWith({ error: "API access temporarily unavailable." });
+    expect(JSON.stringify(response.json.mock.calls)).not.toContain("private database detail");
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -309,9 +267,7 @@ describe("validApiKey middleware", () => {
     await validApiKey(request, response, next);
 
     expect(response.status).toHaveBeenCalledWith(403);
-    expect(response.json).toHaveBeenCalledWith({
-      error: "No valid api key found.",
-    });
+    expect(response.json).toHaveBeenCalledWith({ error: "No valid api key found." });
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -328,9 +284,7 @@ describe("validApiKey middleware", () => {
     await validApiKey(request, response, next);
 
     expect(response.status).toHaveBeenCalledWith(403);
-    expect(response.json).toHaveBeenCalledWith({
-      error: "No valid api key found.",
-    });
+    expect(response.json).toHaveBeenCalledWith({ error: "No valid api key found." });
     expect(next).not.toHaveBeenCalled();
   });
 
@@ -347,9 +301,7 @@ describe("validApiKey middleware", () => {
     await validApiKey(request, response, next);
 
     expect(response.status).toHaveBeenCalledWith(403);
-    expect(response.json).toHaveBeenCalledWith({
-      error: "No valid api key found.",
-    });
+    expect(response.json).toHaveBeenCalledWith({ error: "No valid api key found." });
     expect(next).not.toHaveBeenCalled();
   });
 

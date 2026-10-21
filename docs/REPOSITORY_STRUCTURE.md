@@ -35,8 +35,8 @@
 
 ## Branch comparison snapshot
 
-- Current remote branches at the latest check: `main` and `migration/anythingllm-upstream`.
-- `main` was fast-forwarded to the former `lebap-ai/organized` HEAD (`e40d844e4bce686389c77a8e9429cdd4cdc59c42`) on 2026-10-20. The former `lebap-ai/organized` branch has since been deleted after confirming its history was incorporated into `main`.
+- Current remote branches: `main`, `lebap-ai/organized`, and `migration/anythingllm-upstream`.
+- `main` was fast-forwarded to the former `lebap-ai/organized` HEAD (`e40d844e4bce686389c77a8e9429cdd4cdc59c42`) on 2026-10-20. `lebap-ai/organized` is now redundant but still exists as a branch ref.
 - The deleted `lebap-ai/development` branch was an ancestor of `lebap-ai/organized`; it had no unique commits absent from the canonical working branch.
 - Backend test workflow [39462989790](https://github.com/LebapAI/Lebap-AI/actions/runs/39462989790) completed successfully on source commit `911d3940d8cd58717b7c1070294ffbbd1a258026`.
 - Frontend build/lint workflow [39462992668](https://github.com/LebapAI/Lebap-AI/actions/runs/39462992668) completed successfully on source commit `5751c7258989a6f077b5db106be65a97eacb45ff`.

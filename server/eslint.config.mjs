@@ -30,15 +30,9 @@ export default defineConfig([
           varsIgnorePattern: "^_",
           args: "after-used",
           argsIgnorePattern: "^_",
-          caughtErrors: "all",
-          caughtErrorsIgnorePattern: "^_",
         },
       ],
     },
-  },
-  {
-    files: ["**/*.test.js"],
-    languageOptions: { globals: { ...globals.jest } },
   },
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
 ]);

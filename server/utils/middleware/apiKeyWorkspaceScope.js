@@ -1,7 +1,4 @@
-const {
-  filterWorkspacesByApiKeyScope,
-  isWorkspaceAllowed,
-} = require("../apiKeyScopes");
+const { filterWorkspacesByApiKeyScope, isWorkspaceAllowed } = require("../apiKeyScopes");
 
 const SAFE_DOCUMENT_METADATA_PATHS = new Set([
   "/v1/document/accepted-file-types",
@@ -65,16 +62,13 @@ function apiKeyWorkspaceScope(request, response, next) {
   }
 
   const addToWorkspaces = request.body?.addToWorkspaces;
-  if (
-    addToWorkspaces !== undefined &&
-    addToWorkspaces !== null &&
-    addToWorkspaces !== ""
-  ) {
-    const requested = Array.isArray(addToWorkspaces)
-      ? addToWorkspaces
-      : typeof addToWorkspaces === "string"
-        ? addToWorkspaces.split(",").map((item) => item.trim())
-        : null;
+  if (addToWorkspaces !== undefined && addToWorkspaces !== null && addToWorkspaces !== "") {
+    const requested =
+      Array.isArray(addToWorkspaces)
+        ? addToWorkspaces
+        : typeof addToWorkspaces === "string"
+          ? addToWorkspaces.split(",").map((item) => item.trim())
+          : null;
     if (
       !requested ||
       requested.length === 0 ||

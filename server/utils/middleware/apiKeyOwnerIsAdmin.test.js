@@ -95,10 +95,7 @@ describe("apiKeyOwnerIsAdmin", () => {
   });
 
   test("denies workspace-scoped keys on privileged routes outside scoped chat", async () => {
-    const response = makeResponse({
-      createdBy: 7,
-      workspaceSlugs: ["workspace-a"],
-    });
+    const response = makeResponse({ createdBy: 7, workspaceSlugs: ["workspace-a"] });
     const next = jest.fn();
     const request = { route: { path: "/v1/admin/api-keys" } };
 
@@ -113,11 +110,7 @@ describe("apiKeyOwnerIsAdmin", () => {
   });
 
   test("permits workspace-scoped keys to continue to owner validation on OpenAI chat routes", async () => {
-    User.getForAuthorization.mockResolvedValue({
-      id: 7,
-      role: "admin",
-      suspended: 0,
-    });
+    User.getForAuthorization.mockResolvedValue({ id: 7, role: "admin", suspended: 0 });
     const response = makeResponse({ createdBy: 7, workspaceSlugs: ["workspace-a"] });
     const next = jest.fn();
     const request = { route: { path: "/v1/openai/chat/completions" } };
@@ -127,4 +120,5 @@ describe("apiKeyOwnerIsAdmin", () => {
     expect(next).toHaveBeenCalledTimes(1);
     expect(response.status).not.toHaveBeenCalled();
   });
+
 });
