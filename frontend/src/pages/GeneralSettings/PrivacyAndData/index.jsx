@@ -93,8 +93,8 @@ function TelemetryLogs({ settings }) {
         </div>
         <div className="flex flex-col items-left space-y-2">
           <p className="text-theme-text-secondary text-xs rounded-lg w-96">
-            Telemetry is not sent unless the server operator configures
-            LEBAP_AI_TELEMETRY_KEY. When configured, review the destination project,
+            Telemetry is disabled by default. Sending requires both LEBAP_AI_TELEMETRY_KEY
+            to be configured and DISABLE_TELEMETRY=false. Review the destination project,
             IP/data settings, and event properties before enabling it. Do not send
             prompts, document contents, secrets, or personal data. Event payloads
             should be limited to non-sensitive usage metadata. To see the list of event
