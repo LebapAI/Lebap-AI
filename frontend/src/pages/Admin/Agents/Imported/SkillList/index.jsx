@@ -13,12 +13,12 @@ export default function ImportedSkillList({
         <p>
           Learn about agent skills in the{" "}
           <a
-            href="https://docs.anythingllm.com/agent/custom/developer-guide"
+            href="https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md#agent-skills"
             target="_blank"
             className="text-theme-text-secondary underline hover:text-cta-button"
             rel="noreferrer"
           >
-            AnythingLLM Agent Docs
+            Upstream agent documentation
           </a>
           .
         </p>

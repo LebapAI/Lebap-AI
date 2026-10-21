@@ -1,7 +1,7 @@
 <a name="readme-top"></a>
 
 <p align="center">
-  <a href="https://anythingllm.com"><img src="https://github.com/Mintplex-Labs/anything-llm/blob/master/images/wordmark.png?raw=true" alt="AnythingLLM logo"></a>
+  <a href="https://github.com/LebapAI/Lebap-AI"><img src="https://github.com/LebapAI/Lebap-AI/blob/master/images/wordmark.png?raw=true" alt="Lebap AI logo"></a>
 </p>
 
 <div align='center'>
@@ -9,7 +9,7 @@
 </div>
 
 <p align="center">
-    <b>AnythingLLM:</b> あなたが探していたオールインワン AI アプリ。<br />
+    <b>Lebap AI:</b> あなたが探していたオールインワン AI アプリ。<br />
     ドキュメントとチャットし、AI エージェントを活用。高度にカスタマイズ可能で、マルチユーザー対応、面倒な設定は不要です。
 </p>
 
@@ -17,10 +17,10 @@
   <a href="https://discord.gg/6UyHPeGZAC" target="_blank">
       <img src="https://img.shields.io/badge/chat-mintplex_labs-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAH1UExURQAAAP////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////r6+ubn5+7u7/3+/v39/enq6urq6/v7+97f39rb26eoqT1BQ0pOT4+Rkuzs7cnKykZKS0NHSHl8fdzd3ejo6UxPUUBDRdzc3RwgIh8jJSAkJm5xcvHx8aanqB4iJFBTVezt7V5hYlJVVuLj43p9fiImKCMnKZKUlaaoqSElJ21wcfT09O3u7uvr6zE0Nr6/wCUpK5qcnf7+/nh7fEdKTHx+f0tPUOTl5aipqiouMGtubz5CRDQ4OsTGxufn515hY7a3uH1/gXBydIOFhlVYWvX29qaoqCQoKs7Pz/Pz87/AwUtOUNfY2dHR0mhrbOvr7E5RUy8zNXR2d/f39+Xl5UZJSx0hIzQ3Odra2/z8/GlsbaGjpERHSezs7L/BwScrLTQ4Odna2zM3Obm7u3x/gKSmp9jZ2T1AQu/v71pdXkVISr2+vygsLiInKTg7PaOlpisvMcXGxzk8PldaXPLy8u7u7rm6u7S1tsDBwvj4+MPExbe4ueXm5s/Q0Kyf7ewAAAAodFJOUwAABClsrNjx/QM2l9/7lhmI6jTB/kA1GgKJN+nea6vy/MLZQYeVKK3rVA5tAAAAAWJLR0QB/wIt3gAAAAd0SU1FB+cKBAAmMZBHjXIAAAISSURBVDjLY2CAAkYmZhZWNnYODnY2VhZmJkYGVMDIycXNw6sBBbw8fFycyEoYGfkFBDVQgKAAPyMjQl5IWEQDDYgIC8FUMDKKsmlgAWyiEBWMjGJY5YEqxMAqGMWFNXAAYXGgAkYJSQ2cQFKCkYFRShq3AmkpRgYJbghbU0tbB0Tr6ukbgGhDI10gySfBwCwDUWBsYmpmDqQtLK2sbTQ0bO3sHYA8GWYGWWj4WTs6Obu4ami4OTm7exhqeHp5+4DCVJZBDmqdr7ufn3+ArkZgkJ+fU3CIRmgYWFiOARYGvo5OQUHhEUAFTkF+kVHRsLBgkIeyYmLjwoOc4hMSk5JTnINS06DC8gwcEEZ6RqZGlpOfc3ZObl5+gZ+TR2ERWFyBQQFMF5eklmqUpQb5+ReU61ZUOvkFVVXXQBSAraitq29o1GiKcfLzc29u0mjxBzq0tQ0kww5xZHtHUGeXhkZhdxBYgZ4d0LI6c4gjwd7siQQraOp1AivQ6CuAKZCDBBRQQQNQgUb/BGf3cqCCiZOcnCe3QQIKHNRTpk6bDgpZjRkzg3pBQTBrdtCcuZCgluAD0vPmL1gIdvSixUuWgqNs2YJ+DUhkEYxuggkGmOQUcckrioPTJCOXEnZ5JS5YslbGnuyVERlDDFvGEUPOWvwqaH6RVkHKeuDMK6SKnHlVhTgx8jeTmqy6Eij7K6nLqiGyPwChsa1MUrnq1wAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyMy0xMC0wNFQwMDozODo0OSswMDowMB9V0a8AAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjMtMTAtMDRUMDA6Mzg6NDkrMDA6MDBuCGkTAAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDIzLTEwLTA0VDAwOjM4OjQ5KzAwOjAwOR1IzAAAAABJRU5ErkJggg==" alt="Discord">
   </a> |
-  <a href="https://github.com/Mintplex-Labs/anything-llm/blob/master/LICENSE" target="_blank">
+  <a href="https://github.com/LebapAI/Lebap-AI/blob/master/LICENSE" target="_blank">
       <img src="https://img.shields.io/static/v1?label=license&message=MIT&color=white" alt="ライセンス">
   </a> |
-  <a href="https://docs.anythingllm.com" target="_blank">
+  <a href="https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md" target="_blank">
     ドキュメント
   </a> |
   <a href="https://my.mintplexlabs.com/aio-checkout?product=anythingllm" target="_blank">
@@ -33,12 +33,12 @@
 </p>
 
 <p align="center">
-👉 デスクトップ版 AnythingLLM（Mac、Windows、Linux 対応）！<a href="https://anythingllm.com/download" target="_blank">今すぐダウンロード</a>
+👉 デスクトップ版 Lebap AI（Mac、Windows、Linux 対応）！<a href="https://github.com/LebapAI/Lebap-AI/download" target="_blank">今すぐダウンロード</a>
 </p>
 
 ドキュメントとチャットしましょう。AI エージェントで複雑なワークフローを自動化。高度にカスタマイズ可能でマルチユーザー対応、実運用で鍛えられ、既定ではローカルで動作し、面倒な初期設定は一切不要です。
 
-![Chatting](https://github.com/Mintplex-Labs/anything-llm/releases/download/v1.11.2/AnythingLLM720p.gif)
+![Chatting](https://github.com/LebapAI/Lebap-AI/releases/download/v1.11.2/Lebap AI720p.gif)
 
 <details>
 <summary><kbd>デモを見る！</kbd></summary>
@@ -49,20 +49,20 @@
 
 ### 製品概要
 
-AnythingLLM は、妥協のないプライベートで高機能な ChatGPT を構築できるオールインワン AI アプリケーションです。お気に入りのローカルまたはクラウドの LLM を接続し、ドキュメントを取り込めば、数分でチャットを開始できます。組み込みエージェント、マルチユーザー対応、ベクトルデータベース、ドキュメントパイプラインが最初から揃っており、追加設定は不要です。
+Lebap AI は、妥協のないプライベートで高機能な ChatGPT を構築できるオールインワン AI アプリケーションです。お気に入りのローカルまたはクラウドの LLM を接続し、ドキュメントを取り込めば、数分でチャットを開始できます。組み込みエージェント、マルチユーザー対応、ベクトルデータベース、ドキュメントパイプラインが最初から揃っており、追加設定は不要です。
 
-AnythingLLM は複数ユーザーもサポートしており、インスタンスのセキュリティやプライバシー、知的財産を損なうことなく、ユーザーごとにアクセス権と体験を制御できます。
+Lebap AI は複数ユーザーもサポートしており、インスタンスのセキュリティやプライバシー、知的財産を損なうことなく、ユーザーごとにアクセス権と体験を制御できます。
 
-## AnythingLLM のクールな機能
+## Lebap AI のクールな機能
 
-- [動的モデルルーティング](https://docs.anythingllm.com/model-router/overview) - 定義したルールに基づき、会話に最適なプロバイダーとモデルへ自動的にチャットを振り分けます。
-- [自動およびユーザー管理のメモリ](https://docs.anythingllm.com/features/memories) - あなたやワークスペースに関する重要な情報を LLM に記憶させます。
-- [スケジュールタスク](https://docs.anythingllm.com/scheduled-jobs/overview) - cron スケジュールで定期的なタスクやプロンプトを、エージェント機能をフルに使って実行します。
-- [インテリジェントなスキル選択](https://docs.anythingllm.com/agent/intelligent-tool-selection) モデルで**無制限**のツールを有効にしつつ、クエリあたりのトークン使用量を最大 80% 削減します
-- [ノーコード AI エージェントビルダー](https://docs.anythingllm.com/agent-flows/overview)
-- [MCP 互換](https://docs.anythingllm.com/mcp-compatibility/overview)
-- [マルチモーダル対応（クローズドソースとオープンソースの LLM の両方！）](https://docs.anythingllm.com/features/language-models)
-- [カスタム AI エージェント](https://docs.anythingllm.com/agent/custom/introduction)
+- [動的モデルルーティング](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/model-router/overview) - 定義したルールに基づき、会話に最適なプロバイダーとモデルへ自動的にチャットを振り分けます。
+- [自動およびユーザー管理のメモリ](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/features/memories) - あなたやワークスペースに関する重要な情報を LLM に記憶させます。
+- [スケジュールタスク](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/scheduled-jobs/overview) - cron スケジュールで定期的なタスクやプロンプトを、エージェント機能をフルに使って実行します。
+- [インテリジェントなスキル選択](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/agent/intelligent-tool-selection) モデルで**無制限**のツールを有効にしつつ、クエリあたりのトークン使用量を最大 80% 削減します
+- [ノーコード AI エージェントビルダー](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/agent-flows/overview)
+- [MCP 互換](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/mcp-compatibility/overview)
+- [マルチモーダル対応（クローズドソースとオープンソースの LLM の両方！）](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/features/language-models)
+- [カスタム AI エージェント](https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md/agent/custom/introduction)
 - 👤 マルチユーザーインスタンス対応と権限管理 _Docker 版のみ_
 - 🦾 ワークスペース内のエージェント（ウェブ閲覧など）
 - 💬 [ウェブサイト向けのカスタム埋め込みチャットウィジェット](https://github.com/Mintplex-Labs/anythingllm-embed/blob/main/README.md) _Docker 版のみ_
@@ -119,7 +119,7 @@ AnythingLLM は複数ユーザーもサポートしており、インスタン�
 
 **埋め込みモデル：**
 
-- [AnythingLLM Native Embedder](/server/storage/models/README.md) (default)
+- [Lebap AI Native Embedder](/server/storage/models/README.md) (default)
 - [OpenAI](https://openai.com)
 - [Azure OpenAI](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
 - [Gemini](https://ai.google.dev/)
@@ -136,7 +136,7 @@ AnythingLLM は複数ユーザーもサポートしており、インスタン�
 
 **音声文字起こしモデル：**
 
-- [AnythingLLM Built-in](https://github.com/Mintplex-Labs/anything-llm/tree/master/server/storage/models#audiovideo-transcription) (default)
+- [Lebap AI Built-in](https://github.com/LebapAI/Lebap-AI/tree/master/server/storage/models#audiovideo-transcription) (default)
 - [OpenAI](https://openai.com/)
 
 **TTS（テキスト読み上げ）サポート：**
@@ -176,7 +176,7 @@ AnythingLLM は複数ユーザーもサポートしており、インスタン�
 
 ## 🛳 セルフホスティング
 
-Mintplex Labs とコミュニティは、AnythingLLM をローカルで実行するための多数のデプロイ方法、スクリプト、テンプレートを維持しています。以下の表を参照して、お好みの環境へのデプロイ方法をご確認いただくか、自動デプロイをご利用ください。
+Mintplex Labs とコミュニティは、Lebap AI をローカルで実行するための多数のデプロイ方法、スクリプト、テンプレートを維持しています。以下の表を参照して、お好みの環境へのデプロイ方法をご確認いただくか、自動デプロイをご利用ください。
 | Docker | AWS | GCP | Digital Ocean | Render.com |
 |----------------------------------------|----|-----|---------------|------------|
 | [![Deploy on Docker][docker-btn]][docker-deploy] | [![Deploy on AWS][aws-btn]][aws-deploy] | [![Deploy on GCP][gcp-btn]][gcp-deploy] | [![Deploy on DigitalOcean][do-btn]][do-deploy] | [![Deploy on Render.com][render-btn]][render-deploy] |
@@ -185,7 +185,7 @@ Mintplex Labs とコミュニティは、AnythingLLM をローカルで実行す
 | --------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------- |
 | [![Deploy on Railway][railway-btn]][railway-deploy] | [![Deploy on RepoCloud][repocloud-btn]][repocloud-deploy] | [![Deploy on Elestio][elestio-btn]][elestio-deploy] | [![Deploy on Northflank][northflank-btn]][northflank-deploy] | [![Deploy on Sealos][sealos-btn]][sealos-deploy] |
 
-[または Docker を使わずに本番環境の AnythingLLM インスタンスを構築する →](../BARE_METAL.md)
+[または Docker を使わずに本番環境の Lebap AI インスタンスを構築する →](../BARE_METAL.md)
 
 ## 開発環境のセットアップ方法
 
@@ -199,14 +199,14 @@ Mintplex Labs とコミュニティは、AnythingLLM をローカルで実行す
 
 ## テレメトリーとプライバシー
 
-Mintplex Labs Inc による AnythingLLM には、匿名の使用情報を収集するテレメトリー機能が含まれています。
+Mintplex Labs Inc による Lebap AI には、匿名の使用情報を収集するテレメトリー機能が含まれています。
 
 <details>
-<summary><kbd>AnythingLLM のテレメトリーとプライバシーについての詳細</kbd></summary>
+<summary><kbd>Lebap AI のテレメトリーとプライバシーについての詳細</kbd></summary>
 
 ### なぜ？
 
-この情報は、AnythingLLM がどのように使われているかを理解し、新機能やバグ修正の優先順位を決め、AnythingLLM のパフォーマンスと安定性を向上させるために利用します。
+この情報は、Lebap AI がどのように使われているかを理解し、新機能やバグ修正の優先順位を決め、Lebap AI のパフォーマンスと安定性を向上させるために利用します。
 
 ### オプトアウト
 
@@ -246,7 +246,7 @@ Mintplex Labs Inc による AnythingLLM には、匿名の使用情報を収集�
 
 ## 👋 コントリビュート
 
-- [AnythingLLM へのコントリビュート](../CONTRIBUTING.md) - AnythingLLM に貢献する方法。
+- [Lebap AI へのコントリビュート](../CONTRIBUTING.md) - Lebap AI に貢献する方法。
 
 ## 🌟 コントリビューター
 
@@ -256,9 +256,9 @@ Mintplex Labs Inc による AnythingLLM には、匿名の使用情報を収集�
 
 ## 🔗 その他の製品
 
-- **[AnythingLLM Mobile（オープンソースライセンス）][anythingllm-mobile]：** デバイス上で動く AnythingLLM と同じ体験を、スマートフォンで。
-- **[AnythingLLM ブラウザ拡張機能][anythingllm-extension]：** ブラウザ内で AnythingLLM を利用できるブラウザ拡張機能。
-- **[AnythingLLM Embed][anythingllm-embed]：** 自分のウェブサイトに AnythingLLM を埋め込めるウィジェット。
+- **[Lebap AI Mobile（オープンソースライセンス）][anythingllm-mobile]：** デバイス上で動く Lebap AI と同じ体験を、スマートフォンで。
+- **[Lebap AI ブラウザ拡張機能][anythingllm-extension]：** ブラウザ内で Lebap AI を利用できるブラウザ拡張機能。
+- **[Lebap AI Embed][anythingllm-embed]：** 自分のウェブサイトに Lebap AI を埋め込めるウィジェット。
 
 <div align="right">
 
@@ -287,9 +287,9 @@ Copyright © 2026 [Mintplex Labs][profile-link]。<br />
 [do-btn]: https://www.deploytodo.com/do-btn-blue.svg
 [do-deploy]: ../cloud-deployments/digitalocean/terraform/DEPLOY.md
 [render-btn]: https://render.com/images/deploy-to-render-button.svg
-[render-deploy]: https://render.com/deploy?repo=https://github.com/Mintplex-Labs/anything-llm&branch=render
+[render-deploy]: https://render.com/deploy?repo=https://github.com/LebapAI/Lebap-AI&branch=render
 [render-btn]: https://render.com/images/deploy-to-render-button.svg
-[render-deploy]: https://render.com/deploy?repo=https://github.com/Mintplex-Labs/anything-llm&branch=render
+[render-deploy]: https://render.com/deploy?repo=https://github.com/LebapAI/Lebap-AI&branch=render
 [railway-btn]: https://railway.app/button.svg
 [railway-deploy]: https://railway.app/template/HNSCS1?referralCode=WFgJkn
 [repocloud-btn]: https://d16t0pc4846x52.cloudfront.net/deploylobe.svg

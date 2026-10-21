@@ -4,7 +4,7 @@ import Sidebar from "@/components/SettingsSidebar";
 import { isMobile } from "react-device-detect";
 import System from "@/models/system";
 import showToast from "@/utils/toast";
-import AnythingLLMIcon from "@/media/logo/anything-llm-icon.png";
+import LebapAILogo from "@/media/logo/lebap-ai.svg";
 import OpenAiLogo from "@/media/llmprovider/openai.png";
 import GenericOpenAiLogo from "@/media/llmprovider/generic-openai.png";
 import AzureOpenAiLogo from "@/media/llmprovider/azure.png";
@@ -93,7 +93,7 @@ import ProviderSearchMenu from "@/components/lib/ProviderSearchMenu";
 export const MODEL_ROUTER_PROVIDER = {
   name: "Model Router",
   value: "anythingllm-router",
-  logo: AnythingLLMIcon,
+  logo: LebapAILogo,
   options: (settings) => <ModelRouterOptions settings={settings} />,
   description:
     "Route messages to different LLM providers based on rules you define.",
@@ -552,7 +552,7 @@ export default function GeneralLLMPreference() {
                   selected={
                     selectedLLMObject ?? {
                       name: "None selected",
-                      logo: AnythingLLMIcon,
+                      logo: LebapAILogo,
                       description: "You need to select an LLM",
                     }
                   }

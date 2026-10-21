@@ -3,7 +3,7 @@ import Sidebar from "@/components/SettingsSidebar";
 import { isMobile } from "react-device-detect";
 import System from "@/models/system";
 import showToast from "@/utils/toast";
-import AnythingLLMIcon from "@/media/logo/anything-llm-icon.png";
+import LebapAILogo from "@/media/logo/lebap-ai.svg";
 import OpenAiLogo from "@/media/llmprovider/openai.png";
 import OllamaLogo from "@/media/llmprovider/ollama.png";
 import LemonadeLogo from "@/media/llmprovider/lemonade.png";
@@ -174,7 +174,7 @@ export default function ImageGenerationPreference() {
                   selected={
                     selectedProviderObject ?? {
                       name: "None selected",
-                      logo: AnythingLLMIcon,
+                      logo: LebapAILogo,
                       description:
                         "You need to select an image generation provider",
                     }

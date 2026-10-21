@@ -8,12 +8,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/coinsells/Lebap-AI.git"
+    "url": "git+https://github.com/LebapAI/Lebap-AI.git"
   },
   "bugs": {
-    "url": "https://github.com/coinsells/Lebap-AI/issues"
+    "url": "https://github.com/LebapAI/Lebap-AI/issues"
   },
-  "homepage": "https://github.com/coinsells/Lebap-AI#readme",
+  "homepage": "https://github.com/LebapAI/Lebap-AI#readme",
   "engines": {
     "node": ">=18"
   },

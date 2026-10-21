@@ -5,7 +5,7 @@
 # If the current UID has no entry, dynamically add one using nss_wrapper-style injection.
 if ! whoami &> /dev/null 2>&1; then
   if [ -w /etc/passwd ]; then
-    echo "anythingllm:x:$(id -u):0:AnythingLLM User:/app:/bin/bash" >> /etc/passwd
+    echo "anythingllm:x:$(id -u):0:Lebap AI User:/app:/bin/bash" >> /etc/passwd
   fi
 fi
 export HOME=/app
@@ -20,7 +20,7 @@ if [ -z "$STORAGE_DIR" ]; then
     echo "It can also result in weird errors in various parts of the application."
     echo ""
     echo "Please run the container with the official docker command at"
-    echo "https://docs.anythingllm.com/installation-docker/quickstart"
+    echo "https://github.com/LebapAI/Lebap-AI#readme"
     echo ""
     echo "⚠️  ⚠️  ⚠️  WARNING: STORAGE_DIR environment variable is not set! ⚠️  ⚠️  ⚠️"
     echo "================================================================"

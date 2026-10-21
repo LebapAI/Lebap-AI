@@ -6,8 +6,9 @@
   "start_url": "/",
   "icons": [
     {
-      "src": "/favicon.png",
-      "sizes": "any"
+      "src": "/lebap-ai-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }

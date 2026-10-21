@@ -55,22 +55,27 @@ export default {
     },
   },
   github: () => {
-    return "https://github.com/Mintplex-Labs/anything-llm";
+    return "https://github.com/LebapAI/Lebap-AI";
   },
-  discord: () => {
-    return "https://discord.com/invite/6UyHPeGZAC";
+  support: () => {
+    return "https://github.com/LebapAI/Lebap-AI/issues/new";
   },
   docs: (path = "") => {
-    return `https://docs.anythingllm.com${path}`;
+    const sectionByLegacyPath = {
+      "/channels/telegram": "#model-providers-and-integrations",
+      "/agent/usage/file-system-agent": "#agent-skills",
+      "/agent/usage/gmail-agent": "#agent-skills",
+      "/agent/usage/outlook-agent": "#agent-skills",
+      "/agent/usage/google-calendar-agent": "#agent-skills",
+    };
+    const section = sectionByLegacyPath[path] || "";
+    return `https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md${section}`;
   },
   chatModes: () => {
-    return "https://docs.anythingllm.com/features/chat-modes";
-  },
-  mailToMintplex: () => {
-    return "mailto:team@mintplexlabs.com";
+    return "https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md#getting-started";
   },
   hosting: () => {
-    return "https://my.mintplexlabs.com/aio-checkout?product=anythingllm";
+    return "https://lebap-ai-production.up.railway.app";
   },
   workspace: {
     chat: (slug, options = {}) => {
@@ -210,6 +215,7 @@ export default {
     },
   },
   communityHub: {
+    // This external hub is retained for compatibility until Lebap AI hosts its own catalog.
     website: () => {
       return import.meta.env.DEV
         ? `http://localhost:5173`
@@ -240,17 +246,17 @@ export default {
       return `${this.website()}/me`;
     },
     noPrivateItems: () => {
-      return "https://docs.anythingllm.com/community-hub/faq#no-private-items";
+      return "https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md#deployment-and-persistence";
     },
   },
 
-  // TODO: Migrate all docs.anythingllm.com links to the new docs.
+  // Help links point to the Lebap AI user guide.
   documentation: {
     mobileIntroduction: () => {
-      return "https://docs.anythingllm.com/mobile/overview";
+      return "https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md#getting-started";
     },
     contextWindows: () => {
-      return "https://docs.anythingllm.com/chatting-with-documents/introduction#you-exceed-the-context-window---what-now";
+      return "https://github.com/LebapAI/Lebap-AI/blob/main/docs/LEBAP_AI_USER_GUIDE.md#getting-started";
     },
   },
 

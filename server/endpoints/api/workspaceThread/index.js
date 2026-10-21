@@ -272,12 +272,12 @@ function apiWorkspaceThreadEndpoints(app) {
                 history: [
                   {
                     "role": "user",
-                    "content": "What is AnythingLLM?",
+                    "content": "What is Lebap AI?",
                     "sentAt": 1692851630
                   },
                   {
                     "role": "assistant",
-                    "content": "AnythingLLM is a platform that allows you to convert notes, PDFs, and other source materials into a chatbot. It ensures privacy, cites its answers, and allows multiple people to interact with the same documents simultaneously. It is particularly useful for businesses to enhance the visibility and readability of various written communications such as SOPs, contracts, and sales calls. You can try it out with a free trial to see if it meets your business needs.",
+                    "content": "Lebap AI is an AI workspace and agent platform for connecting models, working with knowledge sources, and configuring tools and integrations.",
                     "sources": [{"source": "object about source document and snippets used"}]
                   }
                 ]
@@ -353,7 +353,7 @@ function apiWorkspaceThreadEndpoints(app) {
         content: {
           "application/json": {
             example: {
-              message: "What is AnythingLLM?",
+              message: "What is Lebap AI?",
               mode: "query | chat",
               userId: 1,
               attachments: [
@@ -377,7 +377,7 @@ function apiWorkspaceThreadEndpoints(app) {
                 id: 'chat-uuid',
                 type: "abort | textResponse",
                 textResponse: "Response to your query",
-                sources: [{title: "anythingllm.txt", chunk: "This is a context chunk used in the answer of the prompt by the LLM."}],
+                sources: [{title: "lebap-ai.txt", chunk: "This is a context chunk used in the answer of the prompt by the LLM."}],
                 close: true,
                 error: "null | text string of the failure mode."
               }
@@ -510,7 +510,7 @@ function apiWorkspaceThreadEndpoints(app) {
         content: {
           "application/json": {
             example: {
-              message: "What is AnythingLLM?",
+              message: "What is Lebap AI?",
               mode: "query | chat",
               userId: 1,
               attachments: [
@@ -559,7 +559,7 @@ function apiWorkspaceThreadEndpoints(app) {
                   id: 'uuid-123',
                   type: "abort | textResponseChunk",
                   textResponse: "final chunk of LLM output!",
-                  sources: [{title: "anythingllm.txt", chunk: "This is a context chunk used in the answer of the prompt by the LLM. This will only return in the final chunk."}],
+                  sources: [{title: "lebap-ai.txt", chunk: "This is a context chunk used in the answer of the prompt by the LLM. This will only return in the final chunk."}],
                   close: true,
                   error: "null | text string of the failure mode."
                 }

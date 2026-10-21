@@ -4,8 +4,8 @@ const { getType } = require("mime");
 const { v4 } = require("uuid");
 const { SystemSettings } = require("../../models/systemSettings");
 const { normalizePath, isWithin } = require(".");
-const LOGO_FILENAME = "anything-llm.png";
-const LOGO_FILENAME_DARK = "anything-llm-invert.png";
+const LOGO_FILENAME = "lebap-ai.svg";
+const LOGO_FILENAME_DARK = "lebap-ai-light.svg";
 
 /**
  * Checks if the filename is the default logo filename for dark or light mode.
@@ -13,7 +13,12 @@ const LOGO_FILENAME_DARK = "anything-llm-invert.png";
  * @returns {boolean} Whether the filename is the default logo filename.
  */
 function isDefaultFilename(filename) {
-  return [LOGO_FILENAME, LOGO_FILENAME_DARK].includes(filename);
+  return [
+    LOGO_FILENAME,
+    LOGO_FILENAME_DARK,
+    "anything-llm.png",
+    "anything-llm-invert.png",
+  ].includes(filename);
 }
 
 function validFilename(newFilename = "") {
@@ -32,10 +37,17 @@ function getDefaultFilename(darkMode = true) {
 
 async function determineLogoFilepath(defaultFilename = LOGO_FILENAME) {
   const currentLogoFilename = await SystemSettings.currentLogoFilename();
+  const bundledAssetsPath = path.join(__dirname, "../../storage/assets");
   const basePath = process.env.STORAGE_DIR
     ? path.join(process.env.STORAGE_DIR, "assets")
-    : path.join(__dirname, "../../storage/assets");
+    : bundledAssetsPath;
   const defaultFilepath = path.join(basePath, defaultFilename);
+  // A mounted persistent storage directory can hide bundled assets.
+  // Prefer the persistent copy when present, but fall back to the bundled
+  // Lebap AI logo so first-run installs still show the correct branding.
+  const fallbackDefaultFilepath = fs.existsSync(defaultFilepath)
+    ? defaultFilepath
+    : path.join(bundledAssetsPath, defaultFilename);
 
   if (currentLogoFilename && validFilename(currentLogoFilename)) {
     const customLogoPath = path.join(
@@ -43,11 +55,13 @@ async function determineLogoFilepath(defaultFilename = LOGO_FILENAME) {
       normalizePath(currentLogoFilename)
     );
     if (!isWithin(path.resolve(basePath), path.resolve(customLogoPath)))
-      return defaultFilepath;
-    return fs.existsSync(customLogoPath) ? customLogoPath : defaultFilepath;
+      return fallbackDefaultFilepath;
+    return fs.existsSync(customLogoPath)
+      ? customLogoPath
+      : fallbackDefaultFilepath;
   }
 
-  return defaultFilepath;
+  return fallbackDefaultFilepath;
 }
 
 function fetchLogo(logoPath) {

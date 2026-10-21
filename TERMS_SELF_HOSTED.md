@@ -1,4 +1,8 @@
-# AnythingLLM Self-Hosted: Data Privacy & Terms of Service
+# Upstream Self-Hosted Terms Reference
+
+> **Important:** This is an inherited upstream document and describes the original AnythingLLM / Mintplex Labs implementation. It is not a legally reviewed privacy policy or terms of service for Lebap AI. Do not rely on it as a statement of Lebap AI's telemetry destinations, hosting practices, or legal terms. Review the current code and deployment configuration before making privacy claims.
+
+
 
 This document outlines the privacy standards, data handling procedures, and licensing terms for the self-hosted version of AnythingLLM, developed by Mintplex Labs Inc.
 

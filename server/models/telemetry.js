@@ -8,7 +8,7 @@ const TelemetryCooldown = new Map();
 
 const Telemetry = {
   // Write-only key. It can't read events or any of your other data, so it's safe to use in public apps.
-  pubkey: "phc_9qu7QLpV8L84P3vFmEiZxL020t2EqIubP7HHHxrSsqS",
+  pubkey: process.env.LEBAP_AI_TELEMETRY_KEY || "",
   stubDevelopmentEvents: true, // [DO NOT TOUCH] Core team only.
   label: "telemetry_id",
   /*
@@ -47,7 +47,12 @@ const Telemetry = {
   },
 
   client: function () {
-    if (process.env.DISABLE_TELEMETRY === "true" || this.isDev()) return null;
+    if (
+      process.env.DISABLE_TELEMETRY === "true" ||
+      this.isDev() ||
+      !this.pubkey
+    )
+      return null;
     const { PostHog } = require("posthog-node");
     return new PostHog(this.pubkey);
   },

@@ -1,9 +1,9 @@
 > [!IMPORTANT]
-> This is a community-maintained template and is not officially supported by the AnythingLLM team. You could encounter issues or even deployment failures in future versions of AnythingLLM. We do our best to keep this template and all community contributions backwards compatible, but we cannot guarantee it.
+> This is a community-maintained template and is not officially supported by the Lebap AI team. You could encounter issues or even deployment failures in future versions of Lebap AI. We do our best to keep this template and all community contributions backwards compatible, but we cannot guarantee it.
 
-# OpenShift Deployment Template for AnythingLLM
+# OpenShift Deployment Template for Lebap AI
 
-This directory contains a specialized Dockerfile and entrypoint script for deploying AnythingLLM on **Red Hat OpenShift** clusters.
+This directory contains a specialized Dockerfile and entrypoint script for deploying Lebap AI on **Red Hat OpenShift** clusters.
 
 ## Why This Template Exists
 
@@ -13,7 +13,7 @@ OpenShift has a unique security model that differs from standard Docker/Kubernet
 2. **GID 0 Requirement**: All containers run with GID 0 (root group) as the primary group
 3. **Restricted SCCs**: The default Security Context Constraints (SCCs) prevent containers from running as specific users
 
-These requirements are incompatible with the standard AnythingLLM Docker image, which uses a fixed `anythingllm` user with UID/GID 1000.
+These requirements are incompatible with the standard Lebap AI Docker image, which uses a fixed `anythingllm` user with UID/GID 1000.
 
 ## Key Differences from Standard Dockerfile
 
@@ -43,7 +43,7 @@ Use this template **only** if you are deploying to:
 From the repository root:
 
 ```bash
-docker build -f cloud-deployments/openshift/Dockerfile -t anythingllm:openshift .
+docker build -f cloud-deployments/openshift/Dockerfile -t lebap-ai:openshift .
 ```
 
 For multi-architecture builds:
@@ -52,7 +52,7 @@ For multi-architecture builds:
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
   -f cloud-deployments/openshift/Dockerfile \
-  -t your-registry/anythingllm:openshift \
+  -t your-registry/lebap-ai:openshift \
   --push .
 ```
 
@@ -62,16 +62,16 @@ docker buildx build \
 
 ```bash
 # Create a new project (namespace)
-oc new-project anythingllm
+oc new-project lebap-ai
 
 # Create a deployment
-oc new-app your-registry/anythingllm:openshift
+oc new-app your-registry/lebap-ai:openshift
 
 # Expose the service
-oc expose svc/anythingllm --port=3001
+oc expose svc/lebap-ai --port=3001
 
 # Set required environment variables
-oc set env deployment/anythingllm \
+oc set env deployment/lebap-ai \
   STORAGE_DIR=/app/server/storage \
   JWT_SECRET=$(openssl rand -hex 32)
 ```
@@ -82,20 +82,20 @@ oc set env deployment/anythingllm \
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: anythingllm
+  name: lebap-ai
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: anythingllm
+      app: lebap-ai
   template:
     metadata:
       labels:
-        app: anythingllm
+        app: lebap-ai
     spec:
       containers:
-      - name: anythingllm
-        image: your-registry/anythingllm:openshift
+      - name: lebap-ai
+        image: your-registry/lebap-ai:openshift
         ports:
         - containerPort: 3001
         env:
@@ -104,7 +104,7 @@ spec:
         - name: JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: anythingllm-secrets
+              name: lebap-ai-secrets
               key: jwt-secret
         volumeMounts:
         - name: storage
@@ -112,7 +112,7 @@ spec:
       volumes:
       - name: storage
         persistentVolumeClaim:
-          claimName: anythingllm-storage
+          claimName: lebap-ai-storage
 ```
 
 ## Persistent Storage
@@ -123,7 +123,7 @@ OpenShift PersistentVolumeClaims work with this image. Ensure the PVC is created
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: anythingllm-storage
+  name: lebap-ai-storage
 spec:
   accessModes:
     - ReadWriteOnce

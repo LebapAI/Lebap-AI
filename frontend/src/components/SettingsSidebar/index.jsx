@@ -187,16 +187,14 @@ export default function SettingsSidebar() {
 }
 
 function SupportEmail() {
-  const [supportEmail, setSupportEmail] = useState(paths.mailToMintplex());
+  const [supportEmail, setSupportEmail] = useState(paths.support());
   const { t } = useTranslation();
 
   useEffect(() => {
     const fetchSupportEmail = async () => {
       const supportEmail = await System.fetchSupportEmail();
       setSupportEmail(
-        supportEmail?.email
-          ? `mailto:${supportEmail.email}`
-          : paths.mailToMintplex()
+        supportEmail?.email ? `mailto:${supportEmail.email}` : paths.support()
       );
     };
     fetchSupportEmail();

@@ -21,8 +21,8 @@ function waitForElm(selector) {
 // Force change the Swagger logo in the header
 waitForElm(".topbar-wrapper").then((elm) => {
   if (window.SWAGGER_DOCS_ENV === "development") {
-    elm.innerHTML = `<img href='${window.location.origin}' src='http://localhost:3000/public/anything-llm-light.png' width='200'/>`;
+    elm.innerHTML = `<a href='${window.location.origin}'><img src='http://localhost:3000/lebap-ai-logo.svg' alt='Lebap AI' width='200'/></a>`;
   } else {
-    elm.innerHTML = `<img href='${window.location.origin}' src='${window.location.origin}/anything-llm-light.png' width='200'/>`;
+    elm.innerHTML = `<a href='${window.location.origin}'><img src='${window.location.origin}/lebap-ai-logo.svg' alt='Lebap AI' width='200'/></a>`;
   }
 });
